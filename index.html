@@ -1,196 +1,121 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Askme Master | FidaHakim Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Carbon v45.0 — Askme</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --bd-green: #006a4e; --bd-red: #f42a41; --bg: #010409; --glass: rgba(0, 106, 78, 0.05); }
-        body { font-family: 'Outfit', 'Hind Siliguri', sans-serif; background: var(--bg); color: #e6edf3; height: 100dvh; display: flex; margin: 0; overflow: hidden; }
-        
-        /* Patriotic Theme Gradient */
-        .patriotic-gradient { background: linear-gradient(135deg, var(--bd-green) 0%, #010409 100%); }
-        
-        /* Bangladesh Flag Icon */
-        .flag-box { width: 32px; height: 19.2px; background: var(--bd-green); position: relative; border-radius: 3px; display: inline-block; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
-        .flag-circle { width: 11px; height: 11px; background: var(--bd-red); border-radius: 50%; position: absolute; top: 50%; left: 45%; transform: translate(-50%, -50%); box-shadow: 0 0 10px var(--bd-red); }
-
-        /* Glowing FidaHakim Badge */
-        .dev-badge { background: rgba(244, 42, 65, 0.1); border: 1px solid var(--bd-red); color: var(--bd-red); padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 0 15px rgba(244, 42, 65, 0.2); }
-
-        #chat-flow { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
-        .msg { padding: 16px 20px; border-radius: 24px; max-width: 85%; line-height: 1.7; position: relative; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .user { align-self: flex-end; background: var(--bd-green); color: white; border-bottom-right-radius: 4px; box-shadow: 0 8px 20px -5px rgba(0, 106, 78, 0.4); }
-        .ai { align-self: flex-start; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08); border-bottom-left-radius: 4px; backdrop-filter: blur(10px); }
-        
-        .no-scrollbar::-webkit-scrollbar { width: 0; background: transparent; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .input-container { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(0, 106, 78, 0.3); border-radius: 24px; }
-        .bd-shadow { box-shadow: 0 0 30px rgba(0, 106, 78, 0.15); }
+        :root[data-theme="dark"] { --bg: #131314; --side: rgba(30,31,32,0.95); --txt: #e3e3e3; --accent: #4285f4; }
+        :root[data-theme="bd"] { --bg: #011a14; --side: rgba(2,44,34,0.95); --txt: #ecfdf5; --accent: #ef4444; }
+        body { background: var(--bg); color: var(--txt); font-family: 'Segoe UI', sans-serif; height: 100dvh; overflow: hidden; transition: 0.3s; margin: 0; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--side); transition: 0.3s ease; z-index: 1000; padding: 25px; backdrop-filter: blur(15px); }
+        .sidebar.open { left: 0; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); visibility: hidden; opacity: 0; transition: 0.3s; z-index: 900; }
+        .overlay.show { visibility: visible; opacity: 1; }
+        .btn-ctrl { width: 100%; padding: 12px; border-radius: 12px; margin-bottom: 8px; font-size: 14px; text-align: left; border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
+        .active-on { background: rgba(66, 133, 244, 0.1); color: var(--accent); border-color: transparent; font-weight: bold; }
+        .chat-area { height: calc(100vh - 140px); overflow-y: auto; scrollbar-width: none; }
+        .input-box { max-width: 820px; width: 92%; margin: 0 auto; background: #1e1f20; border-radius: 28px; display: flex; align-items: center; padding: 6px 16px; border: 1px solid transparent; }
+        .input-box:focus-within { border-color: #5f6368; }
     </style>
 </head>
-<body class="patriotic-gradient">
+<body class="flex flex-col">
 
-    <aside class="hidden lg:flex w-72 flex-col p-6 m-4 mr-0 rounded-[30px] bg-black/40 border border-white/5 backdrop-blur-3xl">
-        <div class="mb-8 flex flex-col items-center text-center">
-            <div class="flag-box mb-4"><div class="flag-circle"></div></div>
-            <h2 class="text-2xl font-black tracking-tighter text-white">Askme <span class="text-emerald-500">Master</span></h2>
-            <div class="mt-2 dev-badge">Developer: FidaHakim</div>
+    <div id="overlay" class="overlay" onclick="tglSide()"></div>
+
+    <aside id="side" class="sidebar">
+        <h2 class="text-xl font-bold mb-8 flex items-center gap-2">✨ Askme Core</h2>
+        <div class="flex-1 space-y-1">
+            <button id="n-b" onclick="tgl('n')" class="btn-ctrl active-on">🌐 Online Mode</button>
+            <button id="b-b" onclick="tgl('b')" class="btn-ctrl">🇧🇩 BD Heritage</button>
         </div>
-
-        <div class="flex-1 overflow-y-auto no-scrollbar space-y-3" id="history-list">
-            <p class="text-[10px] text-emerald-500/50 font-bold uppercase tracking-[0.2em] mb-4">Memory Nodes</p>
-        </div>
-
-        <div class="pt-6 border-t border-white/10">
-            <div class="flex items-center gap-3 text-slate-400">
-                <i class="fas fa-map-marker-alt text-red-500"></i>
-                <div class="text-[11px] font-bold">Dhaka, BD</div>
-            </div>
+        <div class="mt-auto pt-4 border-t border-white/10 text-[11px] opacity-40">
+            Developer: <b>FidaHakim</b><br>v45.0 Logic Nexus
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col p-4">
-        <header class="flex justify-between items-center p-4 bg-white/5 rounded-3xl border border-white/10 mb-4 backdrop-blur-md bd-shadow">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20">
-                    <i class="fas fa-microchip text-sm"></i>
-                </div>
-                <div>
-                    <h1 class="text-sm font-black text-white uppercase tracking-tighter">Patriot Station</h1>
-                    <span id="status" class="text-[9px] font-bold text-emerald-500 uppercase">System Live • Puter Cloud</span>
-                </div>
-            </div>
+    <header class="p-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <button onclick="tglSide()" class="p-2 hover:bg-white/5 rounded-full transition"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+            <button id="mute-btn" onclick="tglVox()" class="p-2 hover:bg-white/5 rounded-full transition text-lg">🔊</button>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-xs shadow-lg">FH</div>
+    </header>
 
-            <div onclick="toggleMode()" id="mode-btn" class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 cursor-pointer hover:bg-emerald-500/10 transition-all">
-                <div id="mode-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span id="mode-label" class="text-[10px] font-bold text-white uppercase">Online</span>
-            </div>
-        </header>
-
-        <div id="chat-flow" class="no-scrollbar"></div>
-
-        <footer class="mt-auto pt-4">
-            <div class="max-w-4xl mx-auto input-container p-2 flex items-end gap-2 bd-shadow">
-                <button onclick="localAction('joke')" class="w-11 h-11 flex items-center justify-center text-slate-500 hover:text-emerald-500 transition">
-                    <i class="fas fa-face-smile"></i>
-                </button>
-                
-                <textarea id="u-input" rows="1" class="flex-1 bg-transparent p-3 outline-none text-sm text-white placeholder-slate-600 resize-none max-h-32" placeholder="Askme-কে কিছু জিজ্ঞেস করুন..." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-                
-                <button onclick="processChat()" class="w-11 h-11 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-lg transition-all active:scale-90">
-                    <i class="fas fa-paper-plane text-xs"></i>
-                </button>
-            </div>
-            <p class="text-[9px] text-center mt-3 text-emerald-500/40 font-bold uppercase tracking-[0.3em]">
-                Askme Master v79 • Build by FidaHakim 🇧🇩
-            </p>
-        </footer>
+    <main id="chat" class="chat-area px-4">
+        <div id="hero" class="h-full flex flex-col items-center justify-center text-center">
+            <h1 class="text-5xl font-bold mb-4">Hello, <span class="text-blue-400">Askme</span></h1>
+            <p class="opacity-40 max-w-sm">Ready with Math, 40 Countries, and Legacy Logic.</p>
+        </div>
     </main>
 
-    <script>
-        let isOnline = true;
+    <div class="pb-6 pt-2">
+        <div class="input-box shadow-2xl">
+            <label class="p-2 cursor-pointer opacity-50 hover:opacity-100 transition"><input type="file" id="f" class="hidden" onchange="pre()">➕</label>
+            <input id="in" class="flex-1 bg-transparent border-none outline-none p-3 text-[16px]" placeholder="Type logic, countries, or math..." onkeypress="if(event.key==='Enter') run()">
+            <button onclick="mic()" class="p-2 opacity-50 hover:opacity-100">🎤</button>
+            <button onclick="run()" class="p-2 text-blue-400 font-bold ml-1">➔</button>
+        </div>
+        <p class="text-[9px] text-center opacity-20 mt-3 tracking-widest uppercase">Feb 7, 2026 | Architect: FidaHakim</p>
+    </div>
 
-        window.onload = () => {
-            loadMemory();
-            if (document.getElementById('chat-flow').children.length === 0) {
-                addMsg('ai', "স্বাগতম **Askme**! \nআমি আপনার মাস্টার এআই স্টেশন। ডেভেলপার **FidaHakim** এর তৈরি এই সিস্টেমে আমি আপনাকে সাহায্য করার জন্য প্রস্তুত।", false);
-            }
-        };
+<script>
+let img = null, net = true, vox = true;
 
-        function toggleMode() {
-            isOnline = !isOnline;
-            const label = document.getElementById('mode-label');
-            const dot = document.getElementById('mode-dot');
-            const status = document.getElementById('status');
-            
-            label.innerText = isOnline ? "Online" : "Offline";
-            dot.className = isOnline ? "w-2 h-2 rounded-full bg-emerald-500 animate-pulse" : "w-2 h-2 rounded-full bg-red-500";
-            status.innerText = isOnline ? "System Live • Puter Cloud" : "Local Brain • Offline Mode";
-            
-            addMsg('ai', isOnline ? "🌐 **অনলাইন মোড চালু হয়েছে।**" : "🔌 **অফলাইন মোড।** আমি এখন লোকাল প্রসেসিং ব্যবহার করছি।", false);
-        }
+// 🧠 EXPANDED LOGIC DATABASE
+const brain = {
+    // Legacy & Personal
+    "biryani": "বিরিয়ানি মানেই আলু! 🍛", "rickshaw": "মামা যাবেন? - 'না'। 🛺",
+    "fidahakim": "আমার মহান স্থপতি **FidaHakim**। 🇧🇩", "hello": "আসসালামু আলাইকুম! কেমন আছেন **Askme**?",
+    
+    // Countries (Top Used)
+    "bangladesh": "ঢাকা (রাজধানী), টাকা (মুদ্রা) 🇧🇩", "usa": "Washington D.C., Dollar 🇺🇸",
+    "india": "New Delhi, Rupee 🇮🇳", "japan": "Tokyo, Yen 🇯🇵", "canada": "Ottawa, Dollar 🇨🇦",
+    "uk": "London, Pound 🇬🇧", "france": "Paris, Euro 🇫🇷", "brazil": "Brasília, Real 🇧🇷",
+    
+    // Tech & Science
+    "python": "Python একটি অত্যন্ত জনপ্রিয় এবং সহজ প্রোগ্রামিং ল্যাঙ্গুয়েজ। 🐍",
+    "ai": "আমি কৃত্রিম বুদ্ধিমত্তা সম্পন্ন একজন সহকারী, যা **Askme**-র জন্য ডিজাইন করা হয়েছে। 🤖",
+    "water": "পানির অপর নাম জীবন। রাসায়নিক সংকেত: H₂O 💧"
+};
 
-        async function processChat() {
-            const input = document.getElementById('u-input');
-            const text = input.value.trim();
-            if (!text) return;
+const tglSide = () => { document.getElementById('side').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); };
+function tglVox() { vox = !vox; document.getElementById('mute-btn').innerText = vox ? "🔊" : "🔇"; if(!vox) window.speechSynthesis.cancel(); }
+function tgl(x) {
+    if(x==='n') { net = !net; document.getElementById('n-b').classList.toggle('active-on'); document.getElementById('n-b').innerText = net?'🌐 Online Mode':'🔴 Offline Mode'; }
+    if(x==='b') { document.documentElement.dataset.theme = document.documentElement.dataset.theme==='bd'?'dark':'bd'; document.getElementById('b-b').classList.toggle('active-on'); }
+}
+function pre() { const f = document.getElementById('f').files[0]; const r = new FileReader(); r.onload=(e)=>img=e.target.result; r.readAsDataURL(f); add('user', 'Image attached.'); }
 
-            addMsg('user', text);
-            input.value = '';
-            input.style.height = 'auto';
-            const aiBox = addMsg('ai', '<i class="fas fa-atom fa-spin text-emerald-500"></i> Thinking...');
+function add(r, t) {
+    document.getElementById('hero')?.remove();
+    const d = document.createElement('div');
+    d.className = "max-w-[800px] mx-auto py-5 flex gap-5 animate-in fade-in slide-in-from-bottom-2";
+    d.innerHTML = `<div class="text-xl">${r==='ai'?'✨':'👤'}</div><div class="flex-1 text-[16px]">${marked.parse(t)}</div>`;
+    document.getElementById('chat').appendChild(d);
+    document.getElementById('chat').scrollTo({top: 1e7, behavior: 'smooth'});
+    if(r==='ai' && vox) { window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t.replace(/[#*]/g,'')); u.lang='bn-BD'; window.speechSynthesis.speak(u); }
+}
 
-            // Math Engine
-            if (/^[0-9+\-*/().\s^]+$/.test(text)) {
-                try {
-                    const result = eval(text.replace(/\^/g, '**'));
-                    aiBox.innerHTML = `📊 **Math Result:** ${result}`;
-                    return;
-                } catch(e) {}
-            }
+async function run() {
+    const q = document.getElementById('in').value.trim(); if(!q && !img) return;
+    add('user', q || "Analyzing..."); document.getElementById('in').value = "";
+    const low = q.toLowerCase();
 
-            if (isOnline) {
-                puter.ai.chat(text, { model: 'gemini-3-flash-preview' }).then(res => {
-                    aiBox.innerHTML = marked.parse(res.toString());
-                    saveMemory('ai', res.toString());
-                }).catch(() => {
-                    aiBox.innerHTML = "🛑 সার্ভার সংযোগ বিচ্ছিন্ন।";
-                });
-            } else {
-                aiBox.innerHTML = "আমি বর্তমানে অফলাইন মোডে আছি। জটিল উত্তরের জন্য অনলাইন মোড চালু করুন।";
-            }
-        }
+    // 1. Logic Check
+    for(const k in brain) if(low.includes(k)) { setTimeout(()=>add('ai', brain[k]), 400); return; }
+    
+    // 2. Calculator Logic
+    try { if(/^[0-9\+\-\*\/\(\)\. ]+$/.test(low)) { add('ai', `**হিসাব:** ${eval(low)}`); return; } } catch(e){}
 
-        function localAction(type) {
-            if(type === 'joke') {
-                const jokes = ["Why don't scientists trust atoms? Because they make up everything!", "বই কেন কাঁদে? কারণ তার অনেকগুলো সমস্যা (problems)!"];
-                addMsg('ai', `🎭 ${jokes[Math.floor(Math.random() * jokes.length)]}`, false);
-            }
-        }
-
-        function addMsg(role, text, save = true) {
-            const d = document.createElement('div');
-            d.className = `msg ${role} prose prose-invert max-w-full lg:max-w-[85%]`;
-            d.innerHTML = text.includes('<i') ? text : marked.parse(text);
-            document.getElementById('chat-flow').appendChild(d);
-            document.getElementById('chat-flow').scrollTop = 999999;
-            if (role === 'user' && save) saveMemory(role, text);
-            return d;
-        }
-
-        function saveMemory(role, text) {
-            let history = JSON.parse(localStorage.getItem('askme_v79_mem')) || [];
-            history.push({ role, text });
-            if (history.length > 15) history.shift();
-            localStorage.setItem('askme_v79_mem', JSON.stringify(history));
-            renderHistory();
-        }
-
-        function renderHistory() {
-            const history = JSON.parse(localStorage.getItem('askme_v79_mem')) || [];
-            const list = document.getElementById('history-list');
-            list.innerHTML = '<p class="text-[10px] text-emerald-500/50 font-bold uppercase tracking-[0.2em] mb-4">Memory Nodes</p>';
-            history.filter(m => m.role === 'user').reverse().slice(0, 5).forEach(m => {
-                const item = document.createElement('div');
-                item.className = "p-3 bg-white/5 rounded-2xl truncate cursor-pointer hover:bg-emerald-500/10 transition-all text-[11px] border border-white/5";
-                item.innerText = m.text;
-                item.onclick = () => document.getElementById('u-input').value = m.text;
-                list.appendChild(item);
-            });
-        }
-
-        function loadMemory() {
-            const history = JSON.parse(localStorage.getItem('askme_v79_mem')) || [];
-            history.forEach(m => addMsg(m.role, m.text, false));
-            renderHistory();
-        }
-    </script>
+    // 3. Online AI
+    if(net) { try { const r = await (img ? puter.ai.chat(q, img) : puter.ai.chat(q)); add('ai', r.toString()); } catch(e){ add('ai', "Nexus Error."); } } 
+    else add('ai', "সিস্টেম বর্তমানে অফলাইনে আছে।"); img = null;
+}
+function mic() { const r=new (window.SpeechRecognition||window.webkitSpeechRecognition)(); r.lang='bn-BD'; r.onresult=(e)=>{document.getElementById('in').value=e.results[0][0].transcript; run();}; r.start(); }
+</script>
 </body>
 </html>
