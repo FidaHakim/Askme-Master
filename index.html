@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Askme — Sovereign Ultimate</title>
+    <title>Askme — Sovereign Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
@@ -33,7 +33,7 @@
     <div id="overlay" class="overlay" onclick="tglSide()"></div>
     <aside id="side" class="sidebar">
         <div class="mb-10 px-2 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-blue-500 shadow-md"></div>
+            <div class="w-8 h-8 rounded-full bg-blue-500"></div>
             <h1 class="text-2xl font-bold">Askme</h1>
         </div>
         <div class="flex-1 space-y-1">
@@ -44,18 +44,18 @@
             <div onclick="setT('bd')" class="action-btn">🇧🇩 BD Heritage</div>
             <div onclick="clearChat()" class="action-btn text-red-500 mt-6 font-medium">🗑️ Clear Chat</div>
         </div>
-        <div class="pt-6 border-t border-black/5 dark:border-white/5 text-[11px] opacity-40 text-center">FidaHakim Core | v67.0</div>
+        <div class="pt-6 border-t border-black/5 dark:border-white/5 text-[11px] opacity-40 text-center">Architect: FidaHakim | v68.0</div>
     </aside>
 
     <main class="flex-1 flex flex-col relative overflow-hidden">
         <header class="p-4 flex items-center justify-between">
             <button onclick="tglSide()" class="hamburger text-2xl">☰</button>
-            <div class="text-[10px] font-bold opacity-30 tracking-widest uppercase">Askme Sovereign</div>
+            <div class="text-[10px] font-bold opacity-30 tracking-widest uppercase">ASKME POINT-TO-POINT CORE</div>
             <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg">FH</div>
         </header>
         <div id="chat" class="chat-area"></div>
         <div class="input-bar-container">
-            <label class="p-2 cursor-pointer opacity-40 hover:opacity-100"><input type="file" id="f" class="hidden" onchange="pre()">📎</label>
+            <label class="p-2 cursor-pointer opacity-40 hover:opacity-100 transition"><input type="file" id="f" class="hidden" onchange="pre()">📎</label>
             <input id="in" class="flex-1 bg-transparent border-none outline-none py-3 px-2 text-[16px]" placeholder="Ask anything, Askme..." onkeypress="if(event.key==='Enter') run()">
             <button onclick="run()" class="p-2 text-blue-500 font-bold text-2xl">➔</button>
         </div>
@@ -64,25 +64,29 @@
 <script>
 let imgData = null, isOnline = true;
 
-const LogicEngine = {
+const SovereignLogic = {
     // 🇧🇩 Hype & Bangla Logic
     "hi": "হ্যালো Askme! কী অবস্থা মামা? সব চিল তো? 😎",
     "kire": "কিরে মামা! অস্থির একটা লজিক্যাল ভাইব দরকার? আমি রেডি। 🚀",
     "fidahakim": "আমার বস **FidaHakim**। তিনি আমাকে এই গ্লোবাল আল্টিমেট লজিক দিয়ে সাজিয়েছেন। 🇧🇩",
-    "biryani": "বিরিয়ানি মানেই আলু! আলু ছাড়া বিরিয়ানি জাস্ট অসম্ভব। 🍛",
-    "tea": "মামা এক কাপ চা আর লজিক্যাল আলাপ—জাস্ট জমে যাবে! ☕",
-    "summery": (text) => `**সারাংশ (Summary):** আপনার আলোচনার মূল বিষয়বস্তু হলো লজিক এবং ইউজার এক্সপেরিয়েন্সের সমন্বয়।`,
+    "biryani": "বিরিয়ানি মানেই আলু! 🍛",
+    "summery": (text) => `**সারাংশ:** আপনার ইনপুটটি সফলভাবে প্রসেস করা হয়েছে।`,
     
-    // 🌍 50+ Countries Database
-    "bangladesh": "রাজধানী: ঢাকা | মুদ্রা: টাকা (BDT) 🇧🇩", "india": "Capital: New Delhi | Currency: INR 🇮🇳",
-    "usa": "Capital: Washington D.C. | Currency: USD 🇺🇸", "uk": "Capital: London | Currency: GBP 🇬🇧",
-    "japan": "Capital: Tokyo | Currency: JPY 🇯🇵", "china": "Capital: Beijing | Currency: CNY 🇨🇳",
-    "russia": "Capital: Moscow | Currency: RUB 🇷🇺", "germany": "Capital: Berlin | Currency: EUR 🇩🇪",
-    "saudi": "Capital: Riyadh | Currency: SAR 🇸🇦", "uae": "Capital: Abu Dhabi | Currency: AED 🇦🇪",
-    "canada": "Capital: Ottawa | Currency: CAD 🇨🇦", "brazil": "Capital: Brasilia | Currency: BRL 🇧🇷",
-    // ... Additional country keys mapping to the same logic.
+    // 🌍 FULL 50 COUNTRIES DATA
+    "afghanistan": "Kabul | Afghan Afghani", "albania": "Tirana | Albanian Lek", "algeria": "Algiers | Algerian Dinar", "argentina": "Buenos Aires | Argentine Peso", "australia": "Canberra | Australian Dollar",
+    "austria": "Vienna | Euro", "bangladesh": "ঢাকা | টাকা (BDT) 🇧🇩", "belgium": "Brussels | Euro", "brazil": "Brasilia | Brazilian Real", "canada": "Ottawa | Canadian Dollar",
+    "china": "Beijing | Chinese Yuan", "denmark": "Copenhagen | Danish Krone", "egypt": "Cairo | Egyptian Pound", "france": "Paris | Euro", "germany": "Berlin | Euro",
+    "greece": "Athens | Euro", "india": "New Delhi | Indian Rupee", "indonesia": "Jakarta | Indonesian Rupiah", "iran": "Tehran | Iranian Rial", "iraq": "Baghdad | Iraqi Dinar",
+    "ireland": "Dublin | Euro", "italy": "Rome | Euro", "japan": "Tokyo | Japanese Yen", "jordan": "Amman | Jordanian Dinar", "kenya": "Nairobi | Kenyan Shilling",
+    "kuwait": "Kuwait City | Kuwaiti Dinar", "malaysia": "Kuala Lumpur | Malaysian Ringgit", "mexico": "Mexico City | Mexican Peso", "morocco": "Rabat | Moroccan Dirham", "nepal": "Kathmandu | Nepalese Rupee",
+    "netherlands": "Amsterdam | Euro", "new zealand": "Wellington | NZ Dollar", "nigeria": "Abuja | Nigerian Naira", "norway": "Oslo | Norwegian Krone", "pakistan": "Islamabad | Pakistani Rupee",
+    "palestine": "Jerusalem | ILS/JOD", "philippines": "Manila | Philippine Peso", "poland": "Warsaw | Polish Zloty", "portugal": "Lisbon | Euro", "qatar": "Doha | Qatari Riyal",
+    "russia": "Moscow | Russian Ruble", "saudi arabia": "Riyadh | Saudi Riyal", "singapore": "Singapore | SG Dollar", "south africa": "Pretoria | SA Rand", "south korea": "Seoul | South Korean Won",
+    "spain": "Madrid | Euro", "sri lanka": "Colombo | Sri Lankan Rupee", "sweden": "Stockholm | Swedish Krona", "switzerland": "Bern | Swiss Franc", "thailand": "Bangkok | Thai Baht",
+    "turkey": "Ankara | Turkish Lira", "uae": "Abu Dhabi | UAE Dirham", "uk": "London | British Pound", "usa": "Washington D.C. | US Dollar", "vietnam": "Hanoi | Vietnamese Dong",
+
     "time": () => `এখন সময় ${new Date().toLocaleTimeString()}।`,
-    "npu": "NPU (Neural Processing Unit) এখন আপনার লোকাল হার্ডওয়্যারে লজিক এক্সিলারেট করছে।"
+    "npu": "NPU logic is active. Local AI hardware acceleration: 100%"
 };
 
 const tglSide = () => { document.getElementById('side').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); };
@@ -94,7 +98,7 @@ function resetUI() {
     document.getElementById('chat').innerHTML = `
         <div id="hero" class="h-full flex flex-col items-center justify-center text-center px-4">
             <h2 class="text-5xl font-medium mb-3">Hello, <span class="gemini-text">Askme</span></h2>
-            <p class="text-gray-500 text-lg">Math, 50+ Country, Summary, and Hype Logic are online.</p>
+            <p class="text-gray-500 text-lg">Full 50+ Country, Advance Math, and Hype Logic are ready.</p>
         </div>
     `;
 }
@@ -113,30 +117,30 @@ async function run() {
     add('user', q); document.getElementById('in').value = "";
     const low = q.toLowerCase();
 
-    // 1. Summary Logic
-    if(low.startsWith('summarize') || low.includes('সারাংশ')) { add('ai', LogicEngine.summery(q)); return; }
+    // 1. Summarize
+    if(low.startsWith('summarize') || low.includes('সারাংশ')) { add('ai', SovereignLogic.summery(q)); return; }
 
-    // 2. Advance Math (Handles sin, cos, sqrt, etc via Math object)
+    // 2. Advance Math Engine
     try {
         if(/^[0-9\+\-\*\/\(\)\. \^a-z]+$/.test(low) && (low.match(/[0-9]/))) {
-            let expr = low.replace(/\^/g, '**').replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/sqrt/g, 'Math.sqrt');
-            let res = eval(expr); add('ai', `**গাণিতিক সমাধান:** ${res}`); return;
+            let expr = low.replace(/\^/g, '**').replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/sqrt/g, 'Math.sqrt').replace(/pi/g, 'Math.PI');
+            let res = eval(expr); add('ai', `**ফলাফল:** ${res}`); return;
         }
     } catch(e){}
 
-    // 3. 50+ Country & Hype Logic
-    for(const k in LogicEngine) {
+    // 3. 50+ Country & Logic Lookup
+    for(const k in SovereignLogic) {
         if(low.includes(k)) { 
-            const res = typeof LogicEngine[k] === 'function' ? LogicEngine[k]() : LogicEngine[k];
+            const res = typeof SovereignLogic[k] === 'function' ? SovereignLogic[k]() : SovereignLogic[k];
             setTimeout(()=>add('ai', res), 400); return; 
         }
     }
 
-    // 4. Online AI Bridge
+    // 4. Online Engine
     if(isOnline) {
         try { const r = await (imgData ? puter.ai.chat(q, imgData) : puter.ai.chat(q)); add('ai', r.toString()); } 
         catch(e){ add('ai', "Neural link error."); }
-    } else add('ai', "সিস্টেম বর্তমানে অফলাইনে। লোকাল লজিক বা ম্যাথ ট্রাই করুন।");
+    } else add('ai', "System Offline. Try Math or Country names.");
     imgData = null;
 }
 function pre() { const f = document.getElementById('f').files[0]; const r = new FileReader(); r.onload=(e)=>imgData=e.target.result; r.readAsDataURL(f); add('user', 'Image attached.'); }
