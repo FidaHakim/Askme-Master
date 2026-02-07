@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gemini Carbon v46.0 — Askme</title>
+    <title>Gemini Carbon v47.0 — Askme</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
@@ -13,61 +13,62 @@
         
         body { background: var(--bg); color: var(--txt); font-family: 'Segoe UI', system-ui; height: 100dvh; overflow: hidden; margin: 0; }
         
-        /* 📱 Full-Screen Mobile Drawer */
+        /* 📱 Sidebar Drawer */
         .sidebar { position: fixed; inset: 0; left: -100%; width: 100%; background: var(--side); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; padding: 40px 25px; backdrop-filter: blur(20px); }
         .sidebar.open { left: 0; }
         
-        /* 💬 Optimized Scroll Area */
-        .chat-area { height: calc(100vh - 160px); overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
+        /* 💬 Scrollable Chat Area */
+        .chat-area { height: calc(100vh - 120px); overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
         
-        /* ⌨️ Bottom-Centric Input */
-        .input-container { position: fixed; bottom: 20px; left: 0; right: 0; padding: 0 15px; z-index: 50; }
-        .input-box { max-width: 600px; margin: 0 auto; background: #1e1f20; border-radius: 32px; display: flex; align-items: center; padding: 8px 18px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); }
+        /* ⌨️ Compact Bottom Bar */
+        .input-container { position: fixed; bottom: 12px; left: 0; right: 0; padding: 0 10px; z-index: 50; }
+        .input-box { 
+            max-width: 600px; margin: 0 auto; background: #1e1f20; border-radius: 24px; 
+            display: flex; align-items: center; padding: 4px 12px; /* Reduced padding for small height */
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
+        }
         
-        .msg-bubble { max-width: 90%; margin: 12px 0; animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } }
+        /* Smaller buttons to fit properly */
+        .btn-action { height: 40px; width: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; flex-shrink: 0; }
+        .btn-action:active { background: rgba(255,255,255,0.1); transform: scale(0.92); }
         
-        .btn-action { height: 48px; width: 48px; display: flex; items-center: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
-        .btn-action:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
+        .msg-bubble { max-width: 92%; margin: 10px 0; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } }
     </style>
 </head>
 <body class="flex flex-col">
 
     <aside id="side" class="sidebar flex flex-col items-center text-center">
         <button onclick="tglSide()" class="absolute top-6 right-6 text-3xl opacity-50">&times;</button>
-        <div class="w-16 h-16 rounded-3xl bg-blue-600 flex items-center justify-center font-bold text-xl mb-6 shadow-2xl">FH</div>
-        <h2 class="text-2xl font-bold mb-10">Askme Core</h2>
-        
+        <div class="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center font-bold text-lg mb-6 shadow-xl">FH</div>
+        <h2 class="text-xl font-bold mb-10">Askme Core</h2>
         <div class="w-full space-y-3">
-            <button id="n-b" onclick="tgl('n')" class="w-full p-4 rounded-2xl bg-white/5 font-medium border border-white/5 active:bg-blue-600/20">🌐 Online Mode: ON</button>
-            <button id="b-b" onclick="tgl('b')" class="w-full p-4 rounded-2xl bg-white/5 font-medium border border-white/5">🇧🇩 BD Heritage Theme</button>
+            <button id="n-b" onclick="tgl('n')" class="w-full p-4 rounded-xl bg-white/5 font-medium">🌐 Online Mode: ON</button>
+            <button id="b-b" onclick="tgl('b')" class="w-full p-4 rounded-xl bg-white/5 font-medium">🇧🇩 BD Heritage Theme</button>
         </div>
-        
-        <p class="mt-auto text-xs opacity-30 tracking-widest uppercase">Engineered by FidaHakim</p>
+        <p class="mt-auto text-[10px] opacity-20 tracking-widest uppercase">Dev: FidaHakim</p>
     </aside>
 
-    <header class="p-4 flex items-center justify-between">
-        <button onclick="tglSide()" class="p-2 active:bg-white/10 rounded-full transition">
-            <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
-        <button id="mute-btn" onclick="tglVox()" class="text-2xl p-2 active:bg-white/10 rounded-full">🔊</button>
+    <header class="p-3 flex items-center justify-between">
+        <button onclick="tglSide()" class="p-2 active:bg-white/10 rounded-full transition"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <button id="mute-btn" onclick="tglVox()" class="text-xl p-2 active:bg-white/10 rounded-full">🔊</button>
     </header>
 
     <main id="chat" class="chat-area px-4">
-        <div id="hero" class="h-full flex flex-col items-center justify-center text-center opacity-40">
-            <h1 class="text-4xl font-bold mb-2">Hello, Askme</h1>
-            <p class="text-sm">Mobile Optimized v46.0</p>
+        <div id="hero" class="h-full flex flex-col items-center justify-center text-center opacity-30">
+            <h1 class="text-3xl font-bold mb-1">Askme AI</h1>
+            <p class="text-xs">Compact Design v47.0</p>
         </div>
     </main>
 
     <div class="input-container">
         <div class="input-box">
-            <label class="btn-action cursor-pointer text-xl"><input type="file" id="f" class="hidden" onchange="pre()">➕</label>
-            <input id="in" class="flex-1 bg-transparent border-none outline-none py-3 px-2 text-[16px]" placeholder="Ask anything..." onkeypress="if(event.key==='Enter') run()">
-            <button onclick="mic()" class="btn-action text-xl">🎤</button>
-            <button onclick="run()" class="btn-action text-blue-400 text-2xl">➔</button>
+            <label class="btn-action cursor-pointer text-lg"><input type="file" id="f" class="hidden" onchange="pre()">➕</label>
+            <input id="in" class="flex-1 bg-transparent border-none outline-none py-2 px-2 text-[15px]" placeholder="Ask anything..." onkeypress="if(event.key==='Enter') run()">
+            <button onclick="mic()" class="btn-action text-lg">🎤</button>
+            <button onclick="run()" class="btn-action text-blue-400 text-xl font-bold">➔</button>
         </div>
-        <div class="text-[8px] text-center opacity-20 mt-3 tracking-[0.2em]">Sovereign UI • 2026</div>
+        <div class="text-[7px] text-center opacity-10 mt-1 uppercase tracking-tighter">Powered by FidaHakim • 2026</div>
     </div>
 
 <script>
@@ -76,7 +77,6 @@ const brain = { "biryani": "বিরিয়ানি মানেই আলু! 
 
 const tglSide = () => { document.getElementById('side').classList.toggle('open'); };
 function tglVox() { vox = !vox; document.getElementById('mute-btn').innerText = vox ? "🔊" : "🔇"; if(!vox) window.speechSynthesis.cancel(); }
-
 function tgl(x) {
     if(x==='n') { net = !net; document.getElementById('n-b').innerText = net?'🌐 Online Mode: ON':'🔴 Offline Mode: ON'; }
     if(x==='b') { document.documentElement.dataset.theme = document.documentElement.dataset.theme==='bd'?'dark':'bd'; }
@@ -87,8 +87,8 @@ function pre() { const f = document.getElementById('f').files[0]; const r = new 
 function add(role, text) {
     document.getElementById('hero')?.remove();
     const d = document.createElement('div');
-    d.className = `msg-bubble ${role==='ai'?'':'ml-auto bg-white/5 p-4 rounded-2xl'}`;
-    d.innerHTML = `<div class="flex gap-3">${role==='ai'?'<span class="text-lg">✨</span>':''}<div class="flex-1">${marked.parse(text)}</div></div>`;
+    d.className = `msg-bubble ${role==='ai'?'':'ml-auto bg-white/5 p-3 rounded-xl'}`;
+    d.innerHTML = `<div class="flex gap-2">${role==='ai'?'<span class="text-sm">✨</span>':''}<div class="flex-1 text-[15px]">${marked.parse(text)}</div></div>`;
     document.getElementById('chat').appendChild(d);
     document.getElementById('chat').scrollTo({top: 1e7, behavior: 'smooth'});
     if(role==='ai' && vox) { window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(text.replace(/[#*]/g,'')); u.lang='bn-BD'; window.speechSynthesis.speak(u); }
@@ -99,7 +99,7 @@ async function run() {
     add('user', q || "Analyzing..."); document.getElementById('in').value = "";
     const low = q.toLowerCase();
     for(const k in brain) if(low.includes(k)) { setTimeout(()=>add('ai', brain[k]), 400); return; }
-    try { if(/^[0-9\+\-\*\/\(\)\. ]+$/.test(low)) { add('ai', `**Result:** ${eval(low)}`); return; } } catch(e){}
+    try { if(/^[0-9\+\-\*\/\(\)\. ]+$/.test(low)) { add('ai', `**হিসাব:** ${eval(low)}`); return; } } catch(e){}
     if(net) { try { const r = await (img ? puter.ai.chat(q, img) : puter.ai.chat(q)); add('ai', r.toString()); } catch(e){ add('ai', "Error."); } } 
     else add('ai', "Offline."); img = null;
 }
