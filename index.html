@@ -1,109 +1,129 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gemini Carbon v47.0 — Askme</title>
+    <title>Askme — Sovereign Polymath</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        :root[data-theme="dark"] { --bg: #0f0f10; --side: rgba(25,25,26,0.98); --txt: #e3e3e3; --accent: #4285f4; }
-        :root[data-theme="bd"] { --bg: #011a14; --side: rgba(2,35,28,0.98); --txt: #ecfdf5; --accent: #ef4444; }
-        
-        body { background: var(--bg); color: var(--txt); font-family: 'Segoe UI', system-ui; height: 100dvh; overflow: hidden; margin: 0; }
-        
-        /* 📱 Sidebar Drawer */
-        .sidebar { position: fixed; inset: 0; left: -100%; width: 100%; background: var(--side); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; padding: 40px 25px; backdrop-filter: blur(20px); }
+        :root[data-theme="light"] { --bg: #ffffff; --side: #f0f4f9; --txt: #1f1f1f; --input: #f0f4f9; --accent: #1a73e8; }
+        :root[data-theme="dark"] { --bg: #131314; --side: #1e1f20; --txt: #e3e3e3; --input: #1e1f20; --accent: #8ab4f8; }
+        :root[data-theme="bd"] { --bg: #011a14; --side: #022c22; --txt: #ecfdf5; --input: #022c22; --accent: #ef4444; }
+
+        body { background: var(--bg); color: var(--txt); font-family: 'Segoe UI', system-ui; height: 100dvh; display: flex; margin: 0; overflow: hidden; transition: 0.3s; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--side); transition: 0.4s ease; z-index: 1000; padding: 25px; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
-        
-        /* 💬 Scrollable Chat Area */
-        .chat-area { height: calc(100vh - 120px); overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 20px; }
-        
-        /* ⌨️ Compact Bottom Bar */
-        .input-container { position: fixed; bottom: 12px; left: 0; right: 0; padding: 0 10px; z-index: 50; }
-        .input-box { 
-            max-width: 600px; margin: 0 auto; background: #1e1f20; border-radius: 24px; 
-            display: flex; align-items: center; padding: 4px 12px; /* Reduced padding for small height */
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        /* Smaller buttons to fit properly */
-        .btn-action { height: 40px; width: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; flex-shrink: 0; }
-        .btn-action:active { background: rgba(255,255,255,0.1); transform: scale(0.92); }
-        
-        .msg-bubble { max-width: 92%; margin: 10px 0; animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); visibility: hidden; opacity: 0; transition: 0.3s; z-index: 900; }
+        .overlay.show { visibility: visible; opacity: 1; }
+        @media (min-width: 1024px) { .sidebar { position: relative; left: 0; } .hamburger { display: none; } .overlay { display: none; } }
+
+        .chat-area { flex: 1; overflow-y: auto; scrollbar-width: none; padding: 15px; }
+        .input-bar-container { width: 92%; max-width: 800px; margin: 10px auto 30px; background: var(--input); border-radius: 32px; display: flex; align-items: center; padding: 8px 22px; transition: 0.2s; border: 1px solid transparent; }
+        .input-bar-container:focus-within { background: var(--bg); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .msg-row { max-width: 800px; margin: 15px auto; padding: 10px 20px; display: flex; gap: 20px; line-height: 1.7; }
+        .gemini-text { background: linear-gradient(to right, #4285f4, #9b72cb, #d96570); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; }
     </style>
 </head>
-<body class="flex flex-col">
-
-    <aside id="side" class="sidebar flex flex-col items-center text-center">
-        <button onclick="tglSide()" class="absolute top-6 right-6 text-3xl opacity-50">&times;</button>
-        <div class="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center font-bold text-lg mb-6 shadow-xl">FH</div>
-        <h2 class="text-xl font-bold mb-10">Askme Core</h2>
-        <div class="w-full space-y-3">
-            <button id="n-b" onclick="tgl('n')" class="w-full p-4 rounded-xl bg-white/5 font-medium">🌐 Online Mode: ON</button>
-            <button id="b-b" onclick="tgl('b')" class="w-full p-4 rounded-xl bg-white/5 font-medium">🇧🇩 BD Heritage Theme</button>
+<body>
+    <div id="overlay" class="overlay" onclick="tglSide()"></div>
+    <aside id="side" class="sidebar">
+        <div class="mb-10 px-2 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-blue-500 shadow-lg"></div>
+            <h1 class="text-2xl font-bold">Askme</h1>
         </div>
-        <p class="mt-auto text-[10px] opacity-20 tracking-widest uppercase">Dev: FidaHakim</p>
+        <div class="flex-1 space-y-1">
+            <div onclick="setT('light')" class="p-3 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl cursor-pointer">☀️ Light Mode</div>
+            <div onclick="setT('dark')" class="p-3 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl cursor-pointer">🌙 Dark Mode</div>
+            <div onclick="setT('bd')" class="p-3 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl cursor-pointer">🇧🇩 BD Heritage</div>
+        </div>
+        <div class="pt-6 border-t border-black/5 dark:border-white/5 text-[11px] opacity-40">
+            Architect: FidaHakim | Master: Askme
+        </div>
     </aside>
 
-    <header class="p-3 flex items-center justify-between">
-        <button onclick="tglSide()" class="p-2 active:bg-white/10 rounded-full transition"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-        <button id="mute-btn" onclick="tglVox()" class="text-xl p-2 active:bg-white/10 rounded-full">🔊</button>
-    </header>
-
-    <main id="chat" class="chat-area px-4">
-        <div id="hero" class="h-full flex flex-col items-center justify-center text-center opacity-30">
-            <h1 class="text-3xl font-bold mb-1">Askme AI</h1>
-            <p class="text-xs">Compact Design v47.0</p>
+    <main class="flex-1 flex flex-col relative overflow-hidden">
+        <header class="p-4 flex items-center justify-between">
+            <button onclick="tglSide()" class="hamburger text-2xl">☰</button>
+            <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white">FH</div>
+        </header>
+        <div id="chat" class="chat-area">
+            <div id="hero" class="h-full flex flex-col items-center justify-center text-center px-4">
+                <h2 class="text-5xl font-medium mb-3">Hello, <span class="gemini-text">Askme</span></h2>
+                <p class="text-gray-500 text-lg">Math, Country, and Bangla modules are fully synced.</p>
+            </div>
+        </div>
+        <div class="input-bar-container">
+            <label class="p-2 cursor-pointer opacity-40 hover:opacity-100"><input type="file" id="f" class="hidden" onchange="pre()">📎</label>
+            <input id="in" class="flex-1 bg-transparent border-none outline-none py-3 px-2 text-[16px]" placeholder="গাণিতিক সমস্যা বা দেশের নাম লিখুন..." onkeypress="if(event.key==='Enter') run()">
+            <button onclick="run()" class="p-2 text-blue-500 font-bold text-2xl">➔</button>
         </div>
     </main>
 
-    <div class="input-container">
-        <div class="input-box">
-            <label class="btn-action cursor-pointer text-lg"><input type="file" id="f" class="hidden" onchange="pre()">➕</label>
-            <input id="in" class="flex-1 bg-transparent border-none outline-none py-2 px-2 text-[15px]" placeholder="Ask anything..." onkeypress="if(event.key==='Enter') run()">
-            <button onclick="mic()" class="btn-action text-lg">🎤</button>
-            <button onclick="run()" class="btn-action text-blue-400 text-xl font-bold">➔</button>
-        </div>
-        <div class="text-[7px] text-center opacity-10 mt-1 uppercase tracking-tighter">Powered by FidaHakim • 2026</div>
-    </div>
-
 <script>
-let img = null, net = true, vox = true;
-const brain = { "biryani": "বিরিয়ানি মানেই আলু! 🍛", "rickshaw": "মামা যাবেন? - 'না'। 🛺", "fidahakim": "আমার মহান স্থপতি **FidaHakim**। 🇧🇩" };
+let imgData = null, net = true;
 
-const tglSide = () => { document.getElementById('side').classList.toggle('open'); };
-function tglVox() { vox = !vox; document.getElementById('mute-btn').innerText = vox ? "🔊" : "🔇"; if(!vox) window.speechSynthesis.cancel(); }
-function tgl(x) {
-    if(x==='n') { net = !net; document.getElementById('n-b').innerText = net?'🌐 Online Mode: ON':'🔴 Offline Mode: ON'; }
-    if(x==='b') { document.documentElement.dataset.theme = document.documentElement.dataset.theme==='bd'?'dark':'bd'; }
-}
+const SovereignLogic = {
+    // 🇧🇩 Bangla & Local Logic
+    "hi": "হ্যালো Askme! আমি আপনাকে কীভাবে সাহায্য করতে পারি? 😊",
+    "hello": "নমস্কার Askme! আপনার Sovereign Core এখন অনলাইনে আছে।",
+    "how are you": "আমি খুব ভালো আছি, Askme! আপনি কেমন আছেন?",
+    "fine": "শুনে খুশি হলাম। চলুন কাজ শুরু করি।",
+    "fidahakim": "আমার স্থপতি **FidaHakim**। তিনি আমাকে আপনার সব গাণিতিক এবং লজিক্যাল সমস্যার সমাধানের জন্য তৈরি করেছেন। 🇧🇩",
+    "biryani": "বিরিয়ানি মানেই আলু! আলু ছাড়া বিরিয়ানি ভাবাই যায় না। 🍛",
 
-function pre() { const f = document.getElementById('f').files[0]; const r = new FileReader(); r.onload=(e)=>img=e.target.result; r.readAsDataURL(f); add('user', 'Image attached.'); }
+    // 🌍 Country & Currency Database
+    "bangladesh": "রাজধানী: ঢাকা | মুদ্রা: টাকা (BDT) | ভাষা: বাংলা 🇧🇩",
+    "india": "রাজধানী: নতুন দিল্লি | মুদ্রা: রুপি (INR) | ভাষা: হিন্দি/ইংরেজি 🇮🇳",
+    "pakistan": "রাজধানী: ইসলামাবাদ | মুদ্রা: রুপি (PKR) | ভাষা: উর্দু 🇵🇰",
+    "usa": "Capital: Washington D.C. | Currency: USD | Language: English 🇺🇸",
+    "saudi": "রাজধানী: রিয়াদ | মুদ্রা: রিয়াল (SAR) | ভাষা: আরবি 🇸🇦",
+    "japan": "Capital: Tokyo | Currency: JPY | Language: Japanese 🇯🇵",
+    
+    // 🧠 AI & Tech
+    "npu": "NPU (Neural Processing Unit) হলো এআই ক্যালকুলেশনের জন্য বিশেষায়িত হার্ডওয়্যার।",
+    "ai": "Artificial Intelligence বা কৃত্রিম বুদ্ধিমত্তা হলো মেশিনের মাধ্যমে মানুষের মতো বুদ্ধিবৃত্তিক কাজ করানোর প্রযুক্তি।"
+};
+
+const tglSide = () => { document.getElementById('side').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); };
+function setT(t) { document.documentElement.dataset.theme = t; if(window.innerWidth < 1024) tglSide(); }
 
 function add(role, text) {
     document.getElementById('hero')?.remove();
     const d = document.createElement('div');
-    d.className = `msg-bubble ${role==='ai'?'':'ml-auto bg-white/5 p-3 rounded-xl'}`;
-    d.innerHTML = `<div class="flex gap-2">${role==='ai'?'<span class="text-sm">✨</span>':''}<div class="flex-1 text-[15px]">${marked.parse(text)}</div></div>`;
+    d.className = "msg-row";
+    d.innerHTML = `<div class="text-2xl mt-1">${role==='ai'?'✨':'👤'}</div><div class="flex-1 text-[16px]">${marked.parse(text)}</div>`;
     document.getElementById('chat').appendChild(d);
     document.getElementById('chat').scrollTo({top: 1e7, behavior: 'smooth'});
-    if(role==='ai' && vox) { window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(text.replace(/[#*]/g,'')); u.lang='bn-BD'; window.speechSynthesis.speak(u); }
 }
 
 async function run() {
-    const q = document.getElementById('in').value.trim(); if(!q && !img) return;
-    add('user', q || "Analyzing..."); document.getElementById('in').value = "";
+    const q = document.getElementById('in').value.trim(); if(!q && !imgData) return;
+    add('user', q); document.getElementById('in').value = "";
     const low = q.toLowerCase();
-    for(const k in brain) if(low.includes(k)) { setTimeout(()=>add('ai', brain[k]), 400); return; }
-    try { if(/^[0-9\+\-\*\/\(\)\. ]+$/.test(low)) { add('ai', `**হিসাব:** ${eval(low)}`); return; } } catch(e){}
-    if(net) { try { const r = await (img ? puter.ai.chat(q, img) : puter.ai.chat(q)); add('ai', r.toString()); } catch(e){ add('ai', "Error."); } } 
-    else add('ai', "Offline."); img = null;
+
+    // 1. Math Module (Advanced Calculation)
+    try { 
+        if(/^[0-9\+\-\*\/\(\)\. \^]+$/.test(low)) { 
+            let result = eval(low.replace('^', '**')); 
+            add('ai', `**গাণিতিক ফলাফল:** ${result}`); return; 
+        } 
+    } catch(e){}
+
+    // 2. Sovereign Offline Logic
+    for(const k in SovereignLogic) {
+        if(low.includes(k)) { setTimeout(()=>add('ai', SovereignLogic[k]), 400); return; }
+    }
+
+    // 3. Online Sovereign Bridge
+    if(net) { 
+        try { const r = await (imgData ? puter.ai.chat(q, imgData) : puter.ai.chat(q)); add('ai', r.toString()); } 
+        catch(e){ add('ai', "Neural bridge interrupted."); } 
+    } else add('ai', "System is in Offline Mode.");
+    imgData = null;
 }
-function mic() { const r=new (window.webkitSpeechRecognition)(); r.lang='bn-BD'; r.onresult=(e)=>{document.getElementById('in').value=e.results[0][0].transcript; run();}; r.start(); }
+function pre() { const f = document.getElementById('f').files[0]; const r = new FileReader(); r.onload=(e)=>imgData=e.target.result; r.readAsDataURL(f); add('user', 'Image attached.'); }
 </script>
 </body>
 </html>
