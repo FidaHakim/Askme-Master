@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Askme — Colossal Atlas</title>
+    <title>Askme — Continental Colossus</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
     <style>
         :root[data-theme="light"] { --bg: #ffffff; --side: #f0f4f9; --txt: #1f1f1f; --input: #f0f4f9; --accent: #1a73e8; }
-        :root[data-theme="dark"] { --bg: #0b0b0b; --side: #1a1a1b; --txt: #e3e3e3; --input: #1e1f20; --accent: #8ab4f8; }
+        :root[data-theme="dark"] { --bg: #0d0d0d; --side: #1a1a1b; --txt: #e3e3e3; --input: #1e1f20; --accent: #8ab4f8; }
         :root[data-theme="bd"] { --bg: #011a14; --side: #022c22; --txt: #ecfdf5; --input: #022c22; --accent: #ef4444; }
 
-        body { background: var(--bg); color: var(--txt); font-family: 'Segoe UI', system-ui; height: 100dvh; display: flex; margin: 0; overflow: hidden; transition: 0.3s; }
+        body { background: var(--bg); color: var(--txt); font-family: 'Segoe UI', system-ui; height: 100dvh; display: flex; margin: 0; overflow: hidden; }
         .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--side); transition: 0.4s ease; z-index: 1000; padding: 25px; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); visibility: hidden; opacity: 0; transition: 0.3s; z-index: 900; }
@@ -20,7 +20,7 @@
         @media (min-width: 1024px) { .sidebar { position: relative; left: 0; } .hamburger { display: none; } .overlay { display: none; } }
 
         .chat-area { flex: 1; overflow-y: auto; scrollbar-width: none; padding: 20px; }
-        .input-bar-container { width: 92%; max-width: 800px; margin: 10px auto 30px; background: var(--input); border-radius: 32px; display: flex; align-items: center; padding: 10px 24px; transition: 0.2s; border: 1px solid transparent; }
+        .input-bar-container { width: 92%; max-width: 800px; margin: 10px auto 30px; background: var(--input); border-radius: 32px; display: flex; align-items: center; padding: 10px 24px; transition: 0.2s; }
         .input-bar-container:focus-within { background: var(--bg); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .msg-row { max-width: 800px; margin: 15px auto; padding: 10px 20px; display: flex; gap: 20px; line-height: 1.7; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
@@ -31,30 +31,27 @@
 <body>
     <div id="overlay" class="overlay" onclick="tglSide()"></div>
     <aside id="side" class="sidebar">
-        <div class="mb-10 px-2 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-blue-500 shadow-md"></div>
-            <h1 class="text-2xl font-bold">Askme</h1>
-        </div>
+        <div class="mb-10 px-2 flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-blue-500"></div><h1 class="text-2xl font-bold">Askme</h1></div>
         <div class="flex-1 space-y-1">
             <div onclick="tglMode()" class="action-btn border border-blue-500/10 mb-4 text-center font-bold" id="m-btn">Online Mode</div>
-            <p class="text-[10px] opacity-40 uppercase font-bold px-2 mb-2">Modes</p>
-            <div onclick="setT('light')" class="action-btn">☀️ Day</div>
-            <div onclick="setT('dark')" class="action-btn">🌙 Dark</div>
-            <div onclick="setT('bd')" class="action-btn">🇧🇩 Heritage</div>
-            <div onclick="clearChat()" class="action-btn text-red-500 mt-6">🗑️ Clear Chat</div>
+            <p class="text-[10px] opacity-40 uppercase font-bold px-2">Theme Switcher</p>
+            <div onclick="setT('light')" class="action-btn">☀️ Stellar Light</div>
+            <div onclick="setT('dark')" class="action-btn">🌑 Orbit Dark</div>
+            <div onclick="setT('bd')" class="action-btn">🇧🇩 Heritage BD</div>
+            <div onclick="clearChat()" class="action-btn text-red-500 mt-6 font-medium">🗑️ Clear Session</div>
         </div>
-        <div class="pt-6 border-t border-black/5 text-[11px] opacity-40 text-center uppercase">Colossal Core | v74.0</div>
+        <div class="pt-6 border-t border-black/5 text-[11px] opacity-40 text-center uppercase tracking-widest font-bold">Titan Core v75.0</div>
     </aside>
 
     <main class="flex-1 flex flex-col relative overflow-hidden">
         <header class="p-4 flex items-center justify-between">
             <button onclick="tglSide()" class="hamburger text-2xl">☰</button>
-            <div class="text-[10px] font-bold opacity-30 tracking-widest">ATLAS LOGIC ENGINE ACTIVE</div>
+            <div class="text-[10px] font-bold opacity-30 tracking-widest uppercase">7 Continents Engine Active</div>
             <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg">FH</div>
         </header>
         <div id="chat" class="chat-area"></div>
         <div class="input-bar-container">
-            <input id="in" class="flex-1 bg-transparent border-none outline-none py-3 px-2 text-[16px]" placeholder="Math, BD symbols, or 50 Countries..." onkeypress="if(event.key==='Enter') run()">
+            <input id="in" class="flex-1 bg-transparent border-none outline-none py-3 px-2 text-[16px]" placeholder="Ask countries, math or greet me..." onkeypress="if(event.key==='Enter') run()">
             <button onclick="run()" class="p-2 text-blue-500 font-bold text-2xl">➔</button>
         </div>
     </main>
@@ -62,45 +59,40 @@
 <script>
 let isOnline = true;
 
-const AtlasData = {
-    // 🇧🇩 BANGLADESH NATIONAL DATA
-    "bd info": "🇧🇩 **Bangladesh National Symbols:**\n- **Bird:** Doel (Oriental Magpie-Robin)\n- **Animal:** Royal Bengal Tiger\n- **Fish:** Ilish (Hilsa)\n- **Flower:** Shapla (Water Lily)\n- **Fruit:** Kathal (Jackfruit)\n- **Tree:** Mango Tree\n- **Poet:** Kazi Nazrul Islam\n- **Game:** Kabaddi\n- **Anthem:** Amar Sonar Bangla",
-    "জাতীয়": "বাংলাদেশের জাতীয় বিষয়সমূহ: দোয়েল, রয়্যাল বেঙ্গল টাইগার, ইলিশ, শাপলা, কাঁঠাল এবং জাতীয় কবি কাজী নজরুল ইসলাম।",
-
-    // 🌍 50 COUNTRIES (Detailed)
-    countries: {
-        "afghanistan": "Kabul | Afghani", "algeria": "Algiers | Dinar", "argentina": "Buenos Aires | Peso", "australia": "Canberra | AUD", "austria": "Vienna | Euro",
-        "bangladesh": "Dhaka | BDT 🇧🇩", "brazil": "Brasilia | Real", "canada": "Ottawa | CAD", "china": "Beijing | Yuan", "denmark": "Copenhagen | Krone",
-        "egypt": "Cairo | Pound", "france": "Paris | Euro", "germany": "Berlin | Euro", "greece": "Athens | Euro", "india": "New Delhi | INR 🇮🇳",
-        "indonesia": "Jakarta | Rupiah", "iran": "Tehran | Rial", "iraq": "Baghdad | Dinar", "italy": "Rome | Euro", "japan": "Tokyo | JPY 🇯🇵",
-        "kuwait": "Kuwait City | Dinar", "malaysia": "Kuala Lumpur | Ringgit", "mexico": "Mexico City | Peso", "nepal": "Kathmandu | Rupee", "netherlands": "Amsterdam | Euro",
-        "new zealand": "Wellington | NZD", "norway": "Oslo | Krone", "pakistan": "Islamabad | Rupee", "palestine": "Jerusalem | JOD", "philippines": "Manila | Peso",
-        "portugal": "Lisbon | Euro", "qatar": "Doha | Riyal", "russia": "Moscow | Ruble", "saudi arabia": "Riyadh | Riyal 🇸🇦", "singapore": "Singapore | SGD",
-        "south africa": "Pretoria | Rand", "south korea": "Seoul | Won", "spain": "Madrid | Euro", "sri lanka": "Colombo | Rupee", "sweden": "Stockholm | Krona",
-        "switzerland": "Bern | Franc", "thailand": "Bangkok | Baht", "turkey": "Ankara | Lira", "uae": "Abu Dhabi | Dirham 🇦🇪", "uk": "London | GBP 🇬🇧",
-        "usa": "Washington D.C. | USD 🇺🇸", "vietnam": "Hanoi | Dong", "yemen": "Sana'a | Rial", "finland": "Helsinki | Euro", "poland": "Warsaw | Zloty"
+const ContinentalDB = {
+    "greetings": {
+        "hi": "Hello Askme! How can I assist you today? 😊",
+        "hello": "Hi there! Systems are green. What's on your mind, Askme?",
+        "how are you": "I'm functioning at peak efficiency, Askme! And you?",
+        "fine": "That's great to hear, Askme! Let's build something awesome.",
+        "kire": "কিরে মামা! সব চিল তো? 😎"
     },
-
-    // 👋 GREETINGS
-    greetings: {
-        "hi": "Hello Askme! How can I assist your colossus core today?",
-        "hello": "Hi there! Standing by for your commands, Askme.",
-        "how are you": "I'm operating at peak performance! How about you, Askme?"
+    "bd": "🇧🇩 **Bangladesh National Things:**\n* **Bird:** Doel (Magpie Robin)\n* **Animal:** Royal Bengal Tiger\n* **Fish:** Ilish (Hilsa)\n* **Flower:** Shapla (Water Lily)\n* **Fruit:** Kathal (Jackfruit)\n* **Poet:** Kazi Nazrul Islam\n* **Anthem:** Amar Sonar Bangla",
+    "countries": {
+        // ASIA (10)
+        "bangladesh": "Dhaka | BDT", "india": "New Delhi | INR", "china": "Beijing | CNY", "japan": "Tokyo | JPY", "saudi arabia": "Riyadh | SAR", "indonesia": "Jakarta | IDR", "malaysia": "Kuala Lumpur | MYR", "pakistan": "Islamabad | PKR", "south korea": "Seoul | KRW", "thailand": "Bangkok | THB",
+        // EUROPE (10)
+        "uk": "London | GBP", "france": "Paris | EUR", "germany": "Berlin | EUR", "italy": "Rome | EUR", "russia": "Moscow | RUB", "spain": "Madrid | EUR", "switzerland": "Bern | CHF", "netherlands": "Amsterdam | EUR", "norway": "Oslo | NOK", "portugal": "Lisbon | EUR",
+        // AFRICA (10)
+        "egypt": "Cairo | EGP", "south africa": "Pretoria | ZAR", "nigeria": "Abuja | NGN", "kenya": "Nairobi | KES", "morocco": "Rabat | MAD", "ethiopia": "Addis Ababa | ETB", "ghana": "Accra | GHS", "algeria": "Algiers | DZD", "uganda": "Kampala | UGX", "sudan": "Khartoum | SDG",
+        // NORTH AMERICA (5)
+        "usa": "Washington D.C. | USD", "canada": "Ottawa | CAD", "mexico": "Mexico City | MXN", "cuba": "Havana | CUP", "jamaica": "Kingston | JMD",
+        // SOUTH AMERICA (5)
+        "brazil": "Brasilia | BRL", "argentina": "Buenos Aires | ARS", "chile": "Santiago | CLP", "colombia": "Bogota | COP", "peru": "Lima | PEN",
+        // OCEANIA (5)
+        "australia": "Canberra | AUD", "new zealand": "Wellington | NZD", "fiji": "Suva | FJD", "papua new guinea": "Port Moresby | PGK", "singapore": "Singapore | SGD",
+        // MIDDLE EAST/EXTRA (5)
+        "uae": "Abu Dhabi | AED", "qatar": "Doha | QAR", "kuwait": "Kuwait City | KWD", "turkey": "Ankara | TRY", "iran": "Tehran | IRR"
     }
 };
 
 const tglSide = () => { document.getElementById('side').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); };
 function setT(t) { document.documentElement.dataset.theme = t; if(window.innerWidth < 1024) tglSide(); }
-function tglMode() { isOnline = !isOnline; document.getElementById('m-btn').innerText = isOnline ? "Online Mode" : "Atlas Offline"; }
+function tglMode() { isOnline = !isOnline; document.getElementById('m-btn').innerText = isOnline ? "Online Mode" : "Offline Mode"; }
 function clearChat() { document.getElementById('chat').innerHTML = ''; resetUI(); if(window.innerWidth < 1024) tglSide(); }
 
 function resetUI() {
-    document.getElementById('chat').innerHTML = `
-        <div id="hero" class="h-full flex flex-col items-center justify-center text-center px-4">
-            <h2 class="text-5xl font-medium mb-3">Hello, <span class="gemini-text">Askme</span></h2>
-            <p class="text-gray-500">Trigonometry, 50 Countries, and BD National Data are loaded.</p>
-        </div>
-    `;
+    document.getElementById('chat').innerHTML = `<div id="hero" class="h-full flex flex-col items-center justify-center text-center px-4"><h2 class="text-5xl font-medium mb-3">Hello, <span class="gemini-text">Askme</span></h2><p class="text-gray-500">Ask about 7 continents, BD history, or solve complex math.</p></div>`;
 }
 resetUI();
 
@@ -117,37 +109,27 @@ async function run() {
     add('user', q); document.getElementById('in').value = "";
     const low = q.toLowerCase();
 
-    // 1. ADVANCE TRIGONOMETRY & MATH
-    try {
-        if (/^[0-9\+\-\*\/\(\)\. \^a-z]+$/.test(low) && low.match(/[0-9a-z]/)) {
-            let expr = low.replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos')
-                          .replace(/tan/g, 'Math.tan').replace(/sec/g, '1/Math.cos')
-                          .replace(/cosc/g, '1/Math.sin').replace(/pie/g, 'Math.PI')
-                          .replace(/sqt/g, 'Math.sqrt').replace(/\^/g, '**');
-            
-            if (low.includes('sin') || low.includes('cos') || low.includes('tan')) {
-                // Degrees to Radians support: If user types "sin(30)", we convert 30 to rad
-                expr = expr.replace(/Math\.(sin|cos|tan)\(([^)]+)\)/g, (m, f, v) => `Math.${f}((${v}) * Math.PI / 180)`);
-            }
-            
-            let res = eval(expr);
-            if (res !== undefined) { add('ai', `**Calculated Result:** ${res}`); return; }
-        }
-    } catch(e) {}
+    // 1. ADVANCE MATH ENGINE (sin, cos, tan, sqt, pie, log)
+    if (low.match(/[0-9]/) || low.includes("sin") || low.includes("cos") || low.includes("sqt")) {
+        try {
+            let expr = low.replace(/sqt/g, 'Math.sqrt').replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/tan/g, 'Math.tan').replace(/pie/g, 'Math.PI').replace(/log/g, 'Math.log10');
+            if (expr !== low) { add('ai', `**Result:** ${eval(expr)}`); return; }
+        } catch(e){}
+    }
 
-    // 2. LOGIC LOOKUPS
-    if (low.includes("bd national") || low.includes("national") || low.includes("জাতীয়")) { add('ai', AtlasData["bd info"]); return; }
+    // 2. POINT-TO-POINT LOGIC LOOKUP
+    if (low.includes("bd") || low.includes("national")) { add('ai', ContinentalDB.bd); return; }
+    if (low.includes("fidahakim")) { add('ai', "আমার স্থপতি FidaHakim। তিনি আমাকে এই Continental Core দিয়ে সাজিয়েছেন। 🇧🇩"); return; }
+    if (low.includes("joke") || low.includes("জোকস")) { add('ai', "কেন বল্টু, তুই স্কুলে আসিস না কেন?\nবল্টু: স্যার, আমার বাবা বলেছে যার কোনো ভবিষ্যৎ নেই সেখানে গিয়ে লাভ নেই! 😂"); return; }
     
-    for (let k in AtlasData.greetings) if (low === k || low.includes(k)) { add('ai', AtlasData.greetings[k]); return; }
-    for (let k in AtlasData.countries) if (low.includes(k)) { add('ai', AtlasData.countries[k]); return; }
+    for (let k in ContinentalDB.greetings) if (low.includes(k)) { add('ai', ContinentalDB.greetings[k]); return; }
+    for (let k in ContinentalDB.countries) if (low.includes(k)) { add('ai', `**${k.toUpperCase()}**: ${ContinentalDB.countries[k]}`); return; }
 
-    // 3. ONLINE BRIDGE
+    // 3. ONLINE TITAN BRIDGE
     if (isOnline) {
         try { const r = await puter.ai.chat(q); add('ai', r.toString()); } 
-        catch(e) { add('ai', "Neural link timed out."); }
-    } else {
-        add('ai', "System is offline. Ask about countries, BD symbols, or Math (e.g., sin(30), sqt(16)).");
-    }
+        catch(e) { add('ai', "Connection Error."); }
+    } else add('ai', "I am currently Offline. Try asking about a country or a math problem!");
 }
 </script>
 </body>
