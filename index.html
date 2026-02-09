@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Askme — Hybrid Titan</title>
+    <title>Askme — Final Titan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
     <style>
-        :root { --bg: #f3f4f6; --side: #ffffff; --text: #111827; --item: #ffffff; --border: #e5e7eb; }
-        [data-theme="bd"] { --bg: #064e3b; --side: #013220; --text: #ecfdf5; --item: #065f46; --border: #064e3b; }
+        :root { --bg: #f8fafc; --side: #ffffff; --text: #0f172a; --item: #ffffff; --border: #e2e8f0; }
+        [data-theme="bd"] { --bg: #013220; --side: #064e3b; --text: #ecfdf5; --item: #065f46; --border: #064e3b; }
 
-        body { background-color: var(--bg); color: var(--text); font-family: system-ui, sans-serif; height: 100dvh; display: flex; margin: 0; overflow: hidden; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui; height: 100dvh; display: flex; margin: 0; overflow: hidden; }
 
-        /* 🛡️ SOLID SIDEBAR - TRANS-FIXED */
+        /* 🛡️ THE IRON SIDEBAR */
         #side { 
             position: fixed; top: 0; left: 0; bottom: 0; width: 280px; 
             background-color: var(--side) !important; 
@@ -21,10 +21,10 @@
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             z-index: 9999; padding: 25px;
-            box-shadow: 20px 0 50px rgba(0,0,0,0.2);
+            box-shadow: 20px 0 50px rgba(0,0,0,0.1);
         }
         #side.open { transform: translateX(0); }
-        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 9998; }
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; z-index: 9998; backdrop-filter: blur(2px); }
 
         @media (min-width: 1024px) { 
             #side { position: relative; transform: translateX(0); box-shadow: none; } 
@@ -34,15 +34,19 @@
         .chat-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .messages { flex: 1; overflow-y: auto; padding: 20px; scrollbar-width: none; }
         
-        .msg { max-width: 800px; margin: 15px auto; padding: 18px; border-radius: 20px; border-left: 6px solid; background: var(--item); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .msg { max-width: 800px; margin: 12px auto; padding: 16px; border-radius: 20px; border-left: 6px solid; background: var(--item); box-shadow: 0 4px 12px rgba(0,0,0,0.03); animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .local { border-color: #10b981; }
         .online { border-color: #3b82f6; }
 
         .input-area { background: var(--side); border-top: 1px solid var(--border); padding: 15px; }
-        .input-box { width: 100%; max-width: 800px; margin: 0 auto; background: var(--bg); border: 2px solid var(--border); border-radius: 30px; display: flex; padding: 5px 15px; }
+        .input-box { width: 100%; max-width: 800px; margin: 0 auto; background: var(--bg); border: 2px solid var(--border); border-radius: 30px; display: flex; padding: 5px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         input { flex: 1; background: transparent; border: none; outline: none; padding: 10px; color: inherit; font-size: 16px; }
 
-        .btn { background: var(--bg); border-radius: 12px; padding: 12px; width: 100%; text-align: left; font-weight: 700; margin-bottom: 10px; border: 1px solid var(--border); }
+        .btn { background: var(--bg); border-radius: 12px; padding: 12px; width: 100%; text-align: left; font-weight: 700; margin-bottom: 10px; border: 1px solid var(--border); transition: 0.2s; }
+        .btn:hover { background: #eff6ff; }
+        
         .switch { position: relative; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; inset: 0; background: #9ca3af; transition: .3s; border-radius: 20px; }
@@ -56,66 +60,75 @@
     <div id="overlay" onclick="toggleMenu()"></div>
     
     <aside id="side">
-        <h1 class="text-3xl font-black text-blue-600 mb-10 tracking-tighter">Askme</h1>
+        <h1 class="text-3xl font-black text-blue-600 mb-10 tracking-tighter">Askme AI</h1>
         
         <div class="flex items-center justify-between p-4 bg-blue-600 rounded-2xl mb-8 text-white shadow-lg shadow-blue-200">
-            <span class="text-xs font-black uppercase">Online Mode</span>
+            <span class="text-xs font-black uppercase">Online Priority</span>
             <label class="switch"><input type="checkbox" id="mode" checked onchange="updStatus()"><span class="slider"></span></label>
         </div>
 
-        <p class="text-[10px] font-black opacity-40 uppercase mb-4 tracking-widest">Master Themes</p>
+        <p class="text-[10px] font-black opacity-40 uppercase mb-4 tracking-widest">Theme System</p>
         <button onclick="setTheme('light')" class="btn">☀️ Stellar Light</button>
-        <button onclick="setTheme('bd')" class="btn text-emerald-600">🇧🇩 Heritage BD</button>
+        <button onclick="setTheme('bd')" class="btn text-emerald-700">🇧🇩 Heritage BD</button>
         
-        <div class="mt-10 pt-6 border-t border-gray-100">
-            <button onclick="clearChat()" class="btn text-red-500 bg-red-50 border-red-100">🗑️ Reset Session</button>
+        <div class="mt-10 pt-6 border-t">
+            <button onclick="clearChat()" class="btn text-red-500 bg-red-50">🗑️ Reset Session</button>
         </div>
-        <div class="mt-auto text-[9px] font-black opacity-30 text-center uppercase tracking-widest">Titan Core v96.0</div>
+        <div class="mt-auto text-[9px] font-black opacity-30 text-center uppercase pt-10">Titan Core v97.0</div>
     </aside>
 
     <div class="chat-container">
-        <header class="p-4 flex items-center justify-between bg-white border-b border-gray-200">
-            <button id="ham" onclick="toggleMenu()" class="text-2xl p-2 bg-gray-100 rounded-xl">☰</button>
-            <div id="badge" class="text-[10px] font-black px-4 py-1.5 rounded-full bg-blue-600 text-white shadow-lg">ONLINE ACTIVE</div>
-            <div class="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white font-black shadow-md">FH</div>
+        <header class="p-4 flex items-center justify-between bg-white border-b">
+            <button id="ham" onclick="toggleMenu()" class="text-2xl p-2 bg-gray-50 rounded-xl">☰</button>
+            <div id="badge" class="text-[10px] font-black px-4 py-1.5 rounded-full bg-blue-600 text-white shadow-md">ONLINE ACTIVE</div>
+            <div class="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white font-black">FH</div>
         </header>
 
         <div id="chat" class="messages">
-            <div id="hero" class="h-full flex flex-col items-center justify-center text-center px-6">
-                <h2 class="text-5xl font-black mb-4 tracking-tighter">Hello, <span class="text-blue-600">Askme</span></h2>
-                <p class="text-gray-400 font-medium italic">Online prioritized. Local as backup.</p>
+            <div id="hero" class="h-full flex flex-col items-center justify-center text-center">
+                <h2 class="text-5xl font-black mb-4 tracking-tighter">Welcome, <span class="text-blue-600">Askme</span></h2>
+                <p class="text-gray-400 font-medium">Developed by FidaHakim. Smart Hybrid Logic Enabled.</p>
             </div>
         </div>
 
         <div class="input-area">
             <div class="input-box">
                 <input id="query" placeholder="Ask anything, Askme..." onkeypress="if(event.key==='Enter') send()">
-                <button onclick="send()" class="text-blue-600 text-3xl font-bold px-2 hover:scale-110 transition active:scale-95">➔</button>
+                <button onclick="send()" class="text-blue-600 text-3xl font-bold px-2 transition active:scale-90">➔</button>
             </div>
         </div>
     </div>
 
 <script>
-// --- CORE DATABASE ---
+let lastTopic = ""; // Smart Memory Context
+
 const DB = {
-    "dev": "I was developed by **FidaHakim**. He is the lead engineer and architect of this AI.",
-    "heritage": "🇧🇩 **BD Heritage:** Mahasthangarh, Ahsan Manzil, Sundarbans, Somapura Mahavihara, Shat Gombuj Masjid, Puthia Temple.",
-    "national": "🇧🇩 **National:** Bird: Doel | Animal: Tiger | Fish: Hilsa | Flower: Water Lily | Fruit: Jackfruit | Poet: Nazrul | Game: Kabaddi.",
-    "greet": { "hi": "Hello Askme!", "kire": "কিরে মামা! সব চিল তো? 😎", "hello": "Hi! How can I help Askme today?" },
+    "dev": "I was developed by **FidaHakim**. He is the lead visionary and architect of the Askme AI system.",
+    "heritage": "🇧🇩 **BD Heritage:** Mahasthangarh, Ahsan Manzil, Sundarbans, Somapura Mahavihara, Shat Gombuj Masjid, Paharpur.",
+    "national": "🇧🇩 **National:** Bird: Doel | Animal: Tiger | Fish: Hilsa | Flower: Water Lily | Fruit: Jackfruit | Poet: Nazrul.",
+    "greet": { "hi": "Hello Askme! How's your day going?", "hello": "Hi there! Ready to explore some data?", "kire": "কিরে মামা! সব চিল তো? 😎" },
     "countries": { 
         "bangladesh": "Dhaka | BDT", "india": "New Delhi | INR", "usa": "DC | USD", "china": "Beijing | CNY", "uk": "London | GBP",
-        "japan": "Tokyo | JPY", "russia": "Moscow | RUB", "germany": "Berlin | EUR", "france": "Paris | EUR", "canada": "Ottawa | CAD",
-        "uae": "Abu Dhabi | AED", "saudi": "Riyadh | SAR", "brazil": "Brasilia | BRL", "italy": "Rome | EUR", "spain": "Madrid | EUR"
-        /* Additional 20 countries supported in full logic */
+        "canada": "Ottawa | CAD", "germany": "Berlin | EUR", "france": "Paris | EUR", "japan": "Tokyo | JPY", "russia": "Moscow | RUB",
+        "australia": "Canberra | AUD", "brazil": "Brasilia | BRL", "uae": "Abu Dhabi | AED", "saudi": "Riyadh | SAR", "turkey": "Ankara | TRY",
+        "pakistan": "Islamabad | PKR", "italy": "Rome | EUR", "spain": "Madrid | EUR", "qatar": "Doha | QAR", "egypt": "Cairo | EGP",
+        "singapore": "Singapore | SGD", "malaysia": "KL | MYR", "indonesia": "Jakarta | IDR", "mexico": "Mexico City | MXN", "korea": "Seoul | KRW",
+        "iran": "Tehran | IRR", "iraq": "Baghdad | IQD", "sweden": "Stockholm | SEK", "norway": "Oslo | NOK", "switzerland": "Bern | CHF",
+        "argentina": "Buenos Aires | ARS", "portugal": "Lisbon | EUR", "thailand": "Bangkok | THB", "vietnam": "Hanoi | VND", "kuwait": "Kuwait City | KWD"
     }
 };
 
-// --- UI LOGIC ---
+const fakeAnswers = [
+    "I'm currently recalibrating my offline neurons. Ask me about math or countries!",
+    "Interesting point! Without internet, I'm analyzing that using my core heritage logic.",
+    "FidaHakim always says, 'Logic is the beginning of wisdom.' My offline mode agrees with you!",
+    "I'm pondering that deeply... in the meantime, did you know Bangladesh has the longest sea beach?",
+    "My local database is small, but my ambition is huge! Try asking about math."
+];
+
 function toggleMenu() { 
     const s = document.getElementById('side'); 
-    const o = document.getElementById('overlay'); 
-    s.classList.toggle('open'); 
-    o.style.display = s.classList.contains('open') ? 'block' : 'none'; 
+    document.getElementById('overlay').style.display = s.classList.toggle('open') ? 'block' : 'none'; 
 }
 
 function setTheme(t) { document.body.setAttribute('data-theme', t); if(window.innerWidth < 1024) toggleMenu(); }
@@ -124,7 +137,7 @@ function updStatus() {
     const isOn = document.getElementById('mode').checked; 
     const b = document.getElementById('badge');
     b.innerText = isOn ? "ONLINE ACTIVE" : "LOCAL ONLY";
-    b.className = `text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg ${isOn ? 'bg-blue-600' : 'bg-emerald-600'} text-white`;
+    b.className = `text-[10px] font-black px-4 py-1.5 rounded-full shadow-md ${isOn ? 'bg-blue-600' : 'bg-emerald-600'} text-white`;
 }
 
 function clearChat() { document.getElementById('chat').innerHTML = ''; if(window.innerWidth < 1024) toggleMenu(); }
@@ -133,59 +146,69 @@ function display(text, type) {
     document.getElementById('hero')?.remove();
     const d = document.createElement('div');
     d.className = `msg ${type}`;
-    const labelColor = type === 'local' ? '#10b981' : '#3b82f6';
-    d.innerHTML = `<span style="color:${labelColor}; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:1px;">${type} engine</span><div class="mt-1">${marked.parse(text)}</div>`;
+    const label = type === 'local' ? '#10b981' : '#3b82f6';
+    d.innerHTML = `<span style="color:${label}; font-size:9px; font-weight:900; text-transform:uppercase;">${type} engine</span><div class="mt-1">${marked.parse(text)}</div>`;
     const chat = document.getElementById('chat');
     chat.appendChild(d);
     chat.scrollTo({top: chat.scrollHeight, behavior: 'smooth'});
 }
 
-// --- HYBRID SEND LOGIC ---
 async function send() {
     const q = document.getElementById('query').value.trim(); if(!q) return;
     const low = q.toLowerCase();
     const isOnline = document.getElementById('mode').checked;
     document.getElementById('query').value = "";
     
-    // 1. SUPREME PRIORITY: ONLINE MODE
+    // 1. SUPREME PRIORITY: ONLINE
     if (isOnline && navigator.onLine) {
         try {
             const r = await puter.ai.chat(q);
             display(r.toString(), "online");
-            return; // 🛑 Online logic finishes here
-        } catch(e) {
-            console.warn("Online Bridge Error, trying local...");
-        }
+            return;
+        } catch(e) { console.warn("Online Bridge Error"); }
     }
 
-    // 2. BACKUP PRIORITY: LOCAL ENGINE (Math, DB)
+    // 2. SMART LOCAL LOGIC (Math, Countries, Developer, Context)
     
-    // Math Backup
-    if (low.match(/[0-9]/) || ["si", "cos", "tan", "sqrt", "log", "plus", "minas", "pie"].some(m => low.includes(m))) {
+    // GREETINGS
+    for (let k in DB.greet) { if (low === k) { display(DB.greet[k], "local"); lastTopic = "greeting"; return; } }
+
+    // MATH ENGINE (Advanced Fix)
+    if (low.match(/[0-9]/) || ["sin", "cos", "tan", "sqrt", "log", "pi", "pow", "+", "-", "*", "/"].some(m => low.includes(m))) {
         try {
-            let e = low.replace(/si/g, 'Math.sin').replace(/cosc/g, '1/Math.sin').replace(/cos/g, 'Math.cos')
-                      .replace(/tan/g, 'Math.tan').replace(/sec/g, '1/Math.cos').replace(/pie/g, 'Math.PI')
-                      .replace(/sqrt|root/g, 'Math.sqrt').replace(/log/g, 'Math.log10')
-                      .replace(/plus/g, '+').replace(/minas/g, '-');
+            let e = low.replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/tan/g, 'Math.tan')
+                      .replace(/sqrt/g, 'Math.sqrt').replace(/log/g, 'Math.log10').replace(/pi/g, 'Math.PI')
+                      .replace(/pow/g, 'Math.pow').replace(/plus/g, '+').replace(/minus/g, '-');
             const res = eval(e);
-            if(!isNaN(res)) { display(`**Result:** ${res}`, "local"); return; }
+            if(!isNaN(res)) { display(`**Math Result:** ${res}`, "local"); lastTopic = "math"; return; }
         } catch(err){}
     }
 
-    // Local DB Backup
-    if (low.includes("developer")) { display(DB.dev, "local"); return; }
-    if (low.includes("heritage")) { display(DB.heritage, "local"); return; }
-    if (low.includes("national") || low.includes("bd")) { display(DB.national, "local"); return; }
-    
-    for (let k in DB.greet) if (low === k) { display(DB.greet[k], "local"); return; }
-    for (let k in DB.countries) if (low.includes(k)) { display(`**${k.toUpperCase()}**: ${DB.countries[k]}`, "local"); return; }
-
-    // No match found
-    if (!isOnline) {
-        display("Online mode is OFF and no local match found.", "local");
-    } else {
-        display("Connection lost. Please check your internet.", "local");
+    // DEVELOPER
+    if (low.includes("developer") || low.includes("fida") || low.includes("hakim")) { 
+        display(DB.dev, "local"); lastTopic = "dev"; return; 
     }
+
+    // BD STUFF
+    if (low.includes("heritage")) { display(DB.heritage, "local"); lastTopic = "heritage"; return; }
+    if (low.includes("national") || (low.includes("bd") && !low.includes("hi"))) { display(DB.national, "local"); lastTopic = "national"; return; }
+
+    // 35 COUNTRIES
+    for (let k in DB.countries) {
+        if (low.includes(k)) { display(`**${k.toUpperCase()}**: ${DB.countries[k]}`, "local"); lastTopic = "country"; return; }
+    }
+
+    // SMART CONTEXT FOLLOW-UP
+    if (lastTopic === "math" && (low.includes("again") || low.includes("more"))) {
+        display("I'm ready for more math! Just type the numbers.", "local"); return;
+    }
+    if (lastTopic === "dev" && low.includes("who")) {
+        display("FidaHakim is the one who coded me with this smart offline logic.", "local"); return;
+    }
+
+    // 3. FAKE SMART ANSWER (Hallucination for better UX)
+    const randomFake = fakeAnswers[Math.floor(Math.random() * fakeAnswers.length)];
+    display(randomFake, "local");
 }
 </script>
 </body>
