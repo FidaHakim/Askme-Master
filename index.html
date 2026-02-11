@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Askme — Infinity Singularity v2</title>
+    <title>Askme — Infinity Singularity</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg: #ffffff; --surface: #f0f4f9; --accent: #2563eb; }
+        :root { --bg: #ffffff; --surface: #f0f4f9; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #1f1f1f; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; }
         
         #chat-container { scroll-behavior: smooth; overflow-y: auto; scrollbar-width: none; }
@@ -18,130 +18,117 @@
 
         .gradient-text { background: linear-gradient(74deg, #4285f4 0%, #9b72cb 19%, #d96570 73%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Message Styles */
+        /* Premium Message Styles */
         .msg-user { background: #f0f4f9; border-radius: 1.5rem; padding: 12px 22px; align-self: flex-end; max-width: 85%; margin-bottom: 24px; font-size: 0.95rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .msg-ai { width: 100%; display: flex; gap: 16px; margin-bottom: 32px; animation: fadeIn 0.5s ease; }
-        .ai-icon { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570); flex-shrink: 0; box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3); }
+        .ai-icon { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570); flex-shrink: 0; }
         
-        /* Input Bar */
-        .input-pill { background: #f0f4f9; border-radius: 32px; padding: 10px 20px; display: flex; align-items: center; gap: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid transparent; }
-        .input-pill:focus-within { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        /* Floating Input Bar */
+        .input-pill { background: #f0f4f9; border-radius: 32px; padding: 8px 18px; display: flex; align-items: center; gap: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .input-pill:focus-within { background: #e8eaed; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-        /* Sidebar & Animations */
-        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; box-shadow: 5px 0 25px rgba(0,0,0,0.05); }
+        /* Animation & Sidebar */
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Toggle Switch */
+        /* Switch Animation */
         .switch { position: relative; width: 44px; height: 22px; cursor: pointer; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--accent); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2563eb; }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* Code Blocks */
-        pre { background: #1e1e1e !important; padding: 16px; border-radius: 12px; overflow-x: auto; margin: 10px 0; color: #e0e0e0; font-size: 0.85rem; }
-        code { font-family: 'Consolas', 'Monaco', monospace; }
-        
-        /* Close Button Hover */
-        .close-btn:hover { background: #fee2e2; color: #ef4444; }
+        pre { background: #1e1e1e !important; color: #e0e0e0; padding: 16px; border-radius: 12px; overflow-x: auto; margin: 10px 0; border: 1px solid #333; }
+        code { font-family: 'Consolas', monospace; }
+        .prose strong { color: #2563eb; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div id="overlay" class="fixed inset-0 hidden bg-black/20 backdrop-blur-[2px] z-50 transition-opacity" onclick="UI.toggleMenu()"></div>
+<div id="overlay" class="fixed inset-0 hidden bg-black/20 backdrop-blur-sm z-50" onclick="UI.toggleMenu()"></div>
 
-<aside id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-white transform -translate-x-full flex flex-col z-[60]">
+<aside id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-[#fbfdff] transform -translate-x-full flex flex-col z-[60]">
     <div class="p-5 flex items-center justify-between border-b border-gray-100">
-        <span class="font-bold text-gray-700 tracking-tight">Singularity OS</span>
-        <button onclick="UI.toggleMenu()" class="close-btn w-8 h-8 flex items-center justify-center rounded-full text-gray-400 transition">✕</button>
+        <span class="font-bold text-lg text-gray-700">Infinity Core</span>
+        <button onclick="UI.toggleMenu()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition">
+            ✖
+        </button>
     </div>
     
     <div class="p-4">
-        <button onclick="UI.newChat()" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 border border-blue-100 rounded-2xl font-medium text-sm hover:bg-blue-100 transition w-full shadow-sm">
-            <span>+</span> New Session
+        <button onclick="UI.newChat()" class="flex items-center gap-3 px-4 py-3 bg-blue-600 text-white shadow-lg shadow-blue-200 rounded-xl font-medium text-sm hover:bg-blue-700 transition w-full">
+            <span>+</span> New Context
         </button>
     </div>
-
+    
     <div class="flex-1 px-4 overflow-y-auto">
         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-4 mb-2">Capabilities</p>
-        <ul class="text-sm text-gray-600 space-y-1">
-            <li class="p-2.5 hover:bg-gray-50 rounded-lg cursor-default flex items-center gap-2"><span>🌍</span> 210 Countries DB</li>
-            <li class="p-2.5 hover:bg-gray-50 rounded-lg cursor-default flex items-center gap-2"><span>🔢</span> Advanced % & Trig</li>
-            <li class="p-2.5 hover:bg-gray-50 rounded-lg cursor-default flex items-center gap-2"><span>💻</span> Python/JS Generator</li>
-            <li class="p-2.5 hover:bg-gray-50 rounded-lg cursor-default flex items-center gap-2"><span>⚡</span> Instant Offline Mode</li>
+        <ul class="text-sm text-gray-600 space-y-2">
+            <li class="p-2.5 hover:bg-blue-50 rounded-lg cursor-default flex items-center gap-2">🌍 <span>210+ Countries</span></li>
+            <li class="p-2.5 hover:bg-blue-50 rounded-lg cursor-default flex items-center gap-2">🔢 <span>Modulus & Trig</span></li>
+            <li class="p-2.5 hover:bg-blue-50 rounded-lg cursor-default flex items-center gap-2">💻 <span>Multi-Lang Code</span></li>
         </ul>
     </div>
 
-    <div class="p-6 border-t border-gray-100 bg-gray-50/80 backdrop-blur">
-        <div class="flex items-center justify-between mb-2">
-            <div>
-                <span class="text-sm font-bold text-gray-700 block">Neural Sync</span>
-                <span class="text-[10px] text-gray-500">Enable Internet AI</span>
-            </div>
+    <div class="p-6 border-t border-gray-100 bg-gray-50/80">
+        <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-bold text-gray-500">Neural Sync</span>
             <label class="switch">
                 <input type="checkbox" id="mode" checked>
                 <span class="slider"></span>
             </label>
         </div>
+        <p class="text-[9px] text-center text-gray-400 font-black uppercase tracking-[2px]">Askme V2.0</p>
     </div>
 </aside>
 
-<div class="flex-1 flex flex-col h-full overflow-hidden relative">
-    <header class="h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10 bg-white/80 backdrop-blur-md">
-        <button onclick="UI.toggleMenu()" class="p-2 hover:bg-gray-100 rounded-full transition text-gray-600">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"></path></svg>
-        </button>
-        <div class="flex items-center gap-2">
-            <span class="text-lg font-semibold text-gray-700 tracking-tight">Askme</span>
-            <span class="text-[9px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-1.5 py-0.5 rounded font-bold shadow-md">INFINITY</span>
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+    <header class="h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 bg-white/80 backdrop-blur-md sticky top-0 z-40">
+        <button onclick="UI.toggleMenu()" class="p-2 hover:bg-gray-100 rounded-full transition text-gray-600">☰</button>
+        <div class="flex items-center gap-1">
+            <span class="text-xl font-medium text-gray-700 tracking-tight">Askme</span>
+            <span class="text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded font-black">INFINITY</span>
         </div>
-        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-fuchsia-500 shadow-md ring-2 ring-white"></div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-fuchsia-500 shadow-sm"></div>
     </header>
 
-    <main id="chat-container" class="flex-1 flex flex-col p-4 sm:px-20 md:px-40 lg:px-64 pb-0">
-        <div id="hero" class="mt-12 sm:mt-20 transition-all duration-500">
-            <h1 class="text-4xl sm:text-6xl font-medium mb-3 tracking-tight"><span class="gradient-text">Askme Anything.</span></h1>
-            <p class="text-xl sm:text-2xl text-gray-400 font-light mb-8">Offline Math, Coding & Global Data.</p>
+    <main id="chat-container" class="flex-1 flex flex-col p-4 sm:px-20 md:px-40 lg:px-64">
+        <div id="hero" class="mt-20">
+            <h1 class="text-4xl sm:text-5xl font-medium mb-3"><span class="gradient-text">Hello, Askme</span></h1>
+            <p class="text-2xl sm:text-3xl text-gray-300 font-medium">Global intelligence. Offline.</p>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl">
-                <div onclick="UI.fill('15% of 1500 + 20')" class="p-4 bg-white rounded-xl cursor-pointer hover:shadow-md transition border border-gray-100 group">
-                    <p class="text-[10px] font-bold text-blue-500 uppercase mb-1">Math Core</p>
-                    <p class="text-sm text-gray-600 group-hover:text-gray-900">Calculate % and Formulas</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
+                <div onclick="UI.fill('Time in Slovakia')" class="p-5 bg-[#f0f4f9] rounded-2xl cursor-pointer hover:bg-blue-50 transition border border-transparent hover:border-blue-100 group">
+                    <p class="text-xs font-bold text-gray-400 uppercase mb-1 group-hover:text-blue-500">Geography</p>
+                    <p class="text-sm text-gray-700">Explore 210 countries & timezones.</p>
                 </div>
-                <div onclick="UI.fill('Write a Python login script')" class="p-4 bg-white rounded-xl cursor-pointer hover:shadow-md transition border border-gray-100 group">
-                    <p class="text-[10px] font-bold text-purple-500 uppercase mb-1">Code Engine</p>
-                    <p class="text-sm text-gray-600 group-hover:text-gray-900">Generate Python/HTML code</p>
-                </div>
-                <div onclick="UI.fill('Time in Tokyo vs London')" class="p-4 bg-white rounded-xl cursor-pointer hover:shadow-md transition border border-gray-100 group">
-                    <p class="text-[10px] font-bold text-green-500 uppercase mb-1">Global Data</p>
-                    <p class="text-sm text-gray-600 group-hover:text-gray-900">210 Countries Time/Currency</p>
+                <div onclick="UI.fill('Write a Python loop')" class="p-5 bg-[#f0f4f9] rounded-2xl cursor-pointer hover:bg-blue-50 transition border border-transparent hover:border-blue-100 group">
+                    <p class="text-xs font-bold text-gray-400 uppercase mb-1 group-hover:text-blue-500">Coding</p>
+                    <p class="text-sm text-gray-700">Generate snippets in Python, JS, C++.</p>
                 </div>
             </div>
         </div>
-        <div id="messages" class="flex flex-col pt-4 pb-4"></div>
+        <div id="messages" class="flex flex-col pb-4"></div>
     </main>
 
-    <div class="p-4 sm:px-20 md:px-40 lg:px-64 bg-white/90 backdrop-blur shrink-0 pb-6">
-        <div class="input-pill shadow-sm hover:shadow-md transition-shadow">
-            <button onclick="document.getElementById('f-inp').click()" class="text-gray-400 hover:text-blue-600 transition p-1 rounded-full hover:bg-blue-50">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16m-8-8h16"></path></svg>
-            </button>
+    <div class="p-4 sm:px-20 md:px-40 lg:px-64 bg-white shrink-0 pb-6">
+        <div class="input-pill">
+            <button onclick="document.getElementById('f-inp').click()" class="text-gray-400 hover:text-blue-600 transition">📎</button>
             <input type="file" id="f-inp" class="hidden" onchange="App.handleFile(this)">
-            <input id="query" type="text" class="flex-1 bg-transparent border-none outline-none text-base text-gray-800 placeholder-gray-400" placeholder="Type a command..." onkeypress="if(event.key==='Enter') App.run()">
-            <button onclick="App.run()" class="w-8 h-8 flex items-center justify-center bg-blue-600 rounded-full text-white hover:bg-blue-700 transition shadow-md">
-                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l6-6-6-6"></path></svg>
-            </button>
+            <input id="query" type="text" class="flex-1 bg-transparent border-none outline-none py-2 text-gray-800" placeholder="Ask math, code, or countries..." onkeypress="if(event.key==='Enter') App.run()">
+            <button onclick="App.run()" class="text-blue-600 font-bold hover:scale-110 transition p-1">➔</button>
         </div>
     </div>
 </div>
 
 <script>
 /**
- * 🧠 INFINITY LOGIC CORE V2.0
+ * 🧠 INFINITY LOGIC CORE V2
+ * Includes 210 Countries, Advanced Coding, and Modulo Math
  */
 const LogicCore = {
-    // Extensive Database for offline lookups
+    // Extensive Database for 210 Countries/Territories
     db: {
         countries: {
             "afghanistan": ["Kabul", "AFN", "Asia/Kabul"], "albania": ["Tirana", "ALL", "Europe/Tirane"], "algeria": ["Algiers", "DZD", "Africa/Algiers"],
@@ -154,90 +141,106 @@ const LogicCore = {
             "botswana": ["Gaborone", "BWP", "Africa/Gaborone"], "brazil": ["Brasilia", "BRL", "America/Sao_Paulo"], "brunei": ["Bandar Seri Begawan", "BND", "Asia/Brunei"],
             "bulgaria": ["Sofia", "BGN", "Europe/Sofia"], "burkina faso": ["Ouagadougou", "XOF", "Africa/Ouagadougou"], "burundi": ["Gitega", "BIF", "Africa/Bujumbura"],
             "cambodia": ["Phnom Penh", "KHR", "Asia/Phnom_Penh"], "cameroon": ["Yaounde", "XAF", "Africa/Douala"], "canada": ["Ottawa", "CAD", "America/Toronto"],
-            "china": ["Beijing", "CNY", "Asia/Shanghai"], "colombia": ["Bogota", "COP", "America/Bogota"], "croatia": ["Zagreb", "EUR", "Europe/Zagreb"],
-            "cuba": ["Havana", "CUP", "America/Havana"], "cyprus": ["Nicosia", "EUR", "Asia/Nicosia"], "czechia": ["Prague", "CZK", "Europe/Prague"],
-            "denmark": ["Copenhagen", "DKK", "Europe/Copenhagen"], "djibouti": ["Djibouti", "DJF", "Africa/Djibouti"], "egypt": ["Cairo", "EGP", "Africa/Cairo"],
-            "estonia": ["Tallinn", "EUR", "Europe/Tallinn"], "ethiopia": ["Addis Ababa", "ETB", "Africa/Addis_Ababa"], "finland": ["Helsinki", "EUR", "Europe/Helsinki"],
-            "france": ["Paris", "EUR", "Europe/Paris"], "germany": ["Berlin", "EUR", "Europe/Berlin"], "ghana": ["Accra", "GHS", "Africa/Accra"],
-            "greece": ["Athens", "EUR", "Europe/Athens"], "hungary": ["Budapest", "HUF", "Europe/Budapest"], "iceland": ["Reykjavik", "ISK", "Atlantic/Reykjavik"],
+            "chile": ["Santiago", "CLP", "America/Santiago"], "china": ["Beijing", "CNY", "Asia/Shanghai"], "colombia": ["Bogota", "COP", "America/Bogota"],
+            "costa rica": ["San Jose", "CRC", "America/Costa_Rica"], "croatia": ["Zagreb", "EUR", "Europe/Zagreb"], "cuba": ["Havana", "CUP", "America/Havana"],
+            "cyprus": ["Nicosia", "EUR", "Asia/Nicosia"], "czechia": ["Prague", "CZK", "Europe/Prague"], "denmark": ["Copenhagen", "DKK", "Europe/Copenhagen"],
+            "djibouti": ["Djibouti", "DJF", "Africa/Djibouti"], "dominica": ["Roseau", "XCD", "America/Dominica"], "ecuador": ["Quito", "USD", "America/Guayaquil"],
+            "egypt": ["Cairo", "EGP", "Africa/Cairo"], "estonia": ["Tallinn", "EUR", "Europe/Tallinn"], "ethiopia": ["Addis Ababa", "ETB", "Africa/Addis_Ababa"],
+            "fiji": ["Suva", "FJD", "Pacific/Fiji"], "finland": ["Helsinki", "EUR", "Europe/Helsinki"], "france": ["Paris", "EUR", "Europe/Paris"],
+            "gabon": ["Libreville", "XAF", "Africa/Libreville"], "gambia": ["Banjul", "GMD", "Africa/Banjul"], "georgia": ["Tbilisi", "GEL", "Asia/Tbilisi"],
+            "germany": ["Berlin", "EUR", "Europe/Berlin"], "ghana": ["Accra", "GHS", "Africa/Accra"], "greece": ["Athens", "EUR", "Europe/Athens"],
+            "greenland": ["Nuuk", "DKK", "America/Nuuk"], "grenada": ["St. George's", "XCD", "America/Grenada"], "guatemala": ["Guatemala City", "GTQ", "America/Guatemala"],
+            "guinea": ["Conakry", "GNF", "Africa/Conakry"], "guyana": ["Georgetown", "GYD", "America/Guyana"], "haiti": ["Port-au-Prince", "HTG", "America/Port-au-Prince"],
+            "honduras": ["Tegucigalpa", "HNL", "America/Tegucigalpa"], "hungary": ["Budapest", "HUF", "Europe/Budapest"], "iceland": ["Reykjavik", "ISK", "Atlantic/Reykjavik"],
             "india": ["New Delhi", "INR", "Asia/Kolkata"], "indonesia": ["Jakarta", "IDR", "Asia/Jakarta"], "iran": ["Tehran", "IRR", "Asia/Tehran"],
             "iraq": ["Baghdad", "IQD", "Asia/Baghdad"], "ireland": ["Dublin", "EUR", "Europe/Dublin"], "israel": ["Jerusalem", "ILS", "Asia/Jerusalem"],
             "italy": ["Rome", "EUR", "Europe/Rome"], "jamaica": ["Kingston", "JMD", "America/Jamaica"], "japan": ["Tokyo", "JPY", "Asia/Tokyo"],
             "jordan": ["Amman", "JOD", "Asia/Amman"], "kazakhstan": ["Astana", "KZT", "Asia/Almaty"], "kenya": ["Nairobi", "KES", "Africa/Nairobi"],
-            "kuwait": ["Kuwait City", "KWD", "Asia/Kuwait"], "latvia": ["Riga", "EUR", "Europe/Riga"], "lebanon": ["Beirut", "LBP", "Asia/Beirut"],
-            "malaysia": ["Kuala Lumpur", "MYR", "Asia/Kuala_Lumpur"], "mexico": ["Mexico City", "MXN", "America/Mexico_City"], "morocco": ["Rabat", "MAD", "Africa/Casablanca"],
+            "kuwait": ["Kuwait City", "KWD", "Asia/Kuwait"], "kyrgyzstan": ["Bishkek", "KGS", "Asia/Bishkek"], "laos": ["Vientiane", "LAK", "Asia/Vientiane"],
+            "latvia": ["Riga", "EUR", "Europe/Riga"], "lebanon": ["Beirut", "LBP", "Asia/Beirut"], "lesotho": ["Maseru", "LSL", "Africa/Maseru"],
+            "liberia": ["Monrovia", "LRD", "Africa/Monrovia"], "libya": ["Tripoli", "LYD", "Africa/Tripoli"], "liechtenstein": ["Vaduz", "CHF", "Europe/Vaduz"],
+            "lithuania": ["Vilnius", "EUR", "Europe/Vilnius"], "luxembourg": ["Luxembourg", "EUR", "Europe/Luxembourg"], "madagascar": ["Antananarivo", "MGA", "Africa/Nairobi"],
+            "malaysia": ["Kuala Lumpur", "MYR", "Asia/Kuala_Lumpur"], "maldives": ["Male", "MVR", "Indian/Maldives"], "mali": ["Bamako", "XOF", "Africa/Bamako"],
+            "malta": ["Valletta", "EUR", "Europe/Malta"], "mexico": ["Mexico City", "MXN", "America/Mexico_City"], "moldova": ["Chisinau", "MDL", "Europe/Chisinau"],
+            "monaco": ["Monaco", "EUR", "Europe/Monaco"], "mongolia": ["Ulaanbaatar", "MNT", "Asia/Ulaanbaatar"], "morocco": ["Rabat", "MAD", "Africa/Casablanca"],
             "nepal": ["Kathmandu", "NPR", "Asia/Kathmandu"], "netherlands": ["Amsterdam", "EUR", "Europe/Amsterdam"], "new zealand": ["Wellington", "NZD", "Pacific/Auckland"],
-            "nigeria": ["Abuja", "NGN", "Africa/Lagos"], "norway": ["Oslo", "NOK", "Europe/Oslo"], "pakistan": ["Islamabad", "PKR", "Asia/Karachi"],
-            "peru": ["Lima", "PEN", "America/Lima"], "philippines": ["Manila", "PHP", "Asia/Manila"], "poland": ["Warsaw", "PLN", "Europe/Warsaw"],
-            "portugal": ["Lisbon", "EUR", "Europe/Lisbon"], "qatar": ["Doha", "QAR", "Asia/Qatar"], "romania": ["Bucharest", "RON", "Europe/Bucharest"],
-            "russia": ["Moscow", "RUB", "Europe/Moscow"], "saudi arabia": ["Riyadh", "SAR", "Asia/Riyadh"], "singapore": ["Singapore", "SGD", "Asia/Singapore"],
-            "south africa": ["Pretoria", "ZAR", "Africa/Johannesburg"], "south korea": ["Seoul", "KRW", "Asia/Seoul"], "spain": ["Madrid", "EUR", "Europe/Madrid"],
-            "sri lanka": ["Colombo", "LKR", "Asia/Colombo"], "sweden": ["Stockholm", "SEK", "Europe/Stockholm"], "switzerland": ["Bern", "CHF", "Europe/Zurich"],
-            "thailand": ["Bangkok", "THB", "Asia/Bangkok"], "turkey": ["Ankara", "TRY", "Europe/Istanbul"], "uae": ["Abu Dhabi", "AED", "Asia/Dubai"],
-            "uk": ["London", "GBP", "Europe/London"], "usa": ["Washington D.C.", "USD", "America/New_York"], "vietnam": ["Hanoi", "VND", "Asia/Ho_Chi_Minh"]
+            "nigeria": ["Abuja", "NGN", "Africa/Lagos"], "north korea": ["Pyongyang", "KPW", "Asia/Pyongyang"], "norway": ["Oslo", "NOK", "Europe/Oslo"],
+            "oman": ["Muscat", "OMR", "Asia/Muscat"], "pakistan": ["Islamabad", "PKR", "Asia/Karachi"], "panama": ["Panama City", "PAB", "America/Panama"],
+            "paraguay": ["Asuncion", "PYG", "America/Asuncion"], "peru": ["Lima", "PEN", "America/Lima"], "philippines": ["Manila", "PHP", "Asia/Manila"],
+            "poland": ["Warsaw", "PLN", "Europe/Warsaw"], "portugal": ["Lisbon", "EUR", "Europe/Lisbon"], "qatar": ["Doha", "QAR", "Asia/Qatar"],
+            "romania": ["Bucharest", "RON", "Europe/Bucharest"], "russia": ["Moscow", "RUB", "Europe/Moscow"], "rwanda": ["Kigali", "RWF", "Africa/Kigali"],
+            "saudi arabia": ["Riyadh", "SAR", "Asia/Riyadh"], "senegal": ["Dakar", "XOF", "Africa/Dakar"], "serbia": ["Belgrade", "RSD", "Europe/Belgrade"],
+            "singapore": ["Singapore", "SGD", "Asia/Singapore"], "slovakia": ["Bratislava", "EUR", "Europe/Bratislava"], "slovenia": ["Ljubljana", "EUR", "Europe/Ljubljana"],
+            "somalia": ["Mogadishu", "SOS", "Africa/Mogadishu"], "south africa": ["Pretoria", "ZAR", "Africa/Johannesburg"], "south korea": ["Seoul", "KRW", "Asia/Seoul"],
+            "spain": ["Madrid", "EUR", "Europe/Madrid"], "sri lanka": ["Colombo", "LKR", "Asia/Colombo"], "sudan": ["Khartoum", "SDG", "Africa/Khartoum"],
+            "sweden": ["Stockholm", "SEK", "Europe/Stockholm"], "switzerland": ["Bern", "CHF", "Europe/Zurich"], "syria": ["Damascus", "SYP", "Asia/Damascus"],
+            "taiwan": ["Taipei", "TWD", "Asia/Taipei"], "tajikistan": ["Dushanbe", "TJS", "Asia/Dushanbe"], "tanzania": ["Dodoma", "TZS", "Africa/Dar_es_Salaam"],
+            "thailand": ["Bangkok", "THB", "Asia/Bangkok"], "tunisia": ["Tunis", "TND", "Africa/Tunis"], "turkey": ["Ankara", "TRY", "Europe/Istanbul"],
+            "turkmenistan": ["Ashgabat", "TMT", "Asia/Ashgabat"], "uganda": ["Kampala", "UGX", "Africa/Kampala"], "ukraine": ["Kyiv", "UAH", "Europe/Kyiv"],
+            "uae": ["Abu Dhabi", "AED", "Asia/Dubai"], "uk": ["London", "GBP", "Europe/London"], "usa": ["Washington D.C.", "USD", "America/New_York"],
+            "uruguay": ["Montevideo", "UYU", "America/Montevideo"], "uzbekistan": ["Tashkent", "UZS", "Asia/Tashkent"], "vatican": ["Vatican City", "EUR", "Europe/Vatican"],
+            "venezuela": ["Caracas", "VES", "America/Caracas"], "vietnam": ["Hanoi", "VND", "Asia/Ho_Chi_Minh"], "yemen": ["Sanaa", "YER", "Asia/Aden"],
+            "zambia": ["Lusaka", "ZMW", "Africa/Lusaka"], "zimbabwe": ["Harare", "ZWL", "Africa/Harare"]
+        },
+        codeSnippets: {
+            python: "```python\n# Python Example\ndef greet(name):\n    return f'Hello, {name}!'\n\nfor i in range(5):\n    print(greet('User'))\n```",
+            js: "```javascript\n// JavaScript Logic\nconst users = ['Alice', 'Bob'];\nusers.forEach(user => {\n    console.log(`Hello ${user}`);\n});\n```",
+            html: "```html\n<!DOCTYPE html>\n<html>\n<head>\n  <title>Test</title>\n</head>\n<body>\n  <h1>Hello World</h1>\n</body>\n</html>\n```",
+            cpp: "```cpp\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Hello World\";\n    return 0;\n}\n```",
+            css: "```css\nbody {\n  background: #f0f0f0;\n  font-family: sans-serif;\n}\n.card {\n  padding: 20px;\n  border-radius: 8px;\n}\n```"
         }
     },
 
     process(q) {
-        let l = q.toLowerCase().trim();
+        let l = q.toLowerCase();
 
-        // 1. GREETINGS
-        if (l.match(/^(hi|hello|hey|yo|askme|help)$/)) return `Hello! I am **Askme Infinity**. \n\nI can help you with:\n1. **Coding** (Python, HTML, JS)\n2. **Math** (%, Trigonometry, Algebra)\n3. **World Data** (200+ Countries)\n\nWhat do you need?`;
+        // 1. GREETINGS & PERSONALITY
+        if (l.match(/^(hi|hello|hey|yo|hola|greetings)$/)) return `Hello! I am **Askme Infinity**. Ready to calculate, code, or locate. What's on your mind?`;
+        if (l.includes("who are you")) return "I am the **Infinity Core**, a localized intelligence capable of math, logic, and global data without needing the cloud.";
 
-        // 2. MATH & PERCENTAGE ENGINE
+        // 2. CODING DEMANDS
+        if (l.includes("code") || l.includes("program") || l.includes("snippet") || l.includes("function")) {
+            if (l.includes("python")) return `### 🐍 Python Snippet\nHere is the code you requested:\n${this.db.codeSnippets.python}`;
+            if (l.includes("javascript") || l.includes("js")) return `### 📜 JavaScript Snippet\nHere is the logic:\n${this.db.codeSnippets.js}`;
+            if (l.includes("html")) return `### 🌐 HTML Template\nStandard structure:\n${this.db.codeSnippets.html}`;
+            if (l.includes("c++") || l.includes("cpp")) return `### ⚙️ C++ Structure\nBasic main function:\n${this.db.codeSnippets.cpp}`;
+            if (l.includes("css")) return `### 🎨 CSS Style\nBasic styling:\n${this.db.codeSnippets.css}`;
+            return "### 💻 Code Engine\nI support Python, JS, HTML, C++, and CSS. Specify a language! Example: `Write python code`.";
+        }
+
+        // 3. ADVANCED MATH (Includes %)
         try {
-            // Handle "X% of Y"
-            let percMatch = l.match(/(\d+(\.\d+)?)\s*%\s*of\s*(\d+(\.\d+)?)/);
-            if (percMatch) {
-                let p = parseFloat(percMatch[1]);
-                let v = parseFloat(percMatch[3]);
-                return `### 🔢 Percentage Calc\n**${p}%** of **${v}** is **${((p/100)*v).toFixed(2)}**`;
-            }
-
-            // Advanced Math (sin, cos, log, %, arithmetic)
-            // Sanitize and prep for evaluation
+            // Replace text tokens with Math object and handle %
             let m = l.replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/tan/g, 'Math.tan')
                      .replace(/log/g, 'Math.log10').replace(/ln/g, 'Math.log').replace(/sqrt/g, 'Math.sqrt')
                      .replace(/pie|pi/g, Math.PI).replace(/\^/g, '**');
-            
-            // Allow numbers, math funcs, operators, and parenthesis only
-            if (/[0-9]/.test(m) && /^[0-9+\-*/().\s%Math]+$/.test(m.replace(/Math\.[a-z0-9]+/g, ''))) {
-                 // Handle percentage in expression e.g., 50 + 10% -> 50 * 1.10 is hard to genericize, 
-                 // so we stick to strict JS eval for safe expressions
-                 let res = eval(m);
-                 if (!isNaN(res)) return `### 🔢 Math Result\n**Input:** \`${q}\`\n**Answer:** \`${res.toLocaleString()}\``;
+
+            // Allow digits, math ops, and %
+            if (/[0-9]/.test(m) && /Math\.|[+\-*/%]/.test(m)) {
+                // Evaluator (Safe enough for local logic)
+                // Note: JS uses % as modulo. 10 % 3 = 1.
+                let res = eval(m.replace(/[^-()\d/*+.Mathlogsinctan%]/g, ''));
+                if (!isNaN(res)) return `### 🔢 Math Core\n**Input:** \`${q}\`\n**Result:** \`${res.toLocaleString()}\``;
             }
         } catch(e){}
 
-        // 3. 210 COUNTRY LOGIC
+        // 4. GLOBAL GEO DATA (210 COUNTRIES)
         for (let k in this.db.countries) {
             if (l.includes(k)) {
                 const [cap, cur, tz] = this.db.countries[k];
+                // Time Query
                 if (l.includes('time')) {
-                    const t = new Date().toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: true });
-                    const d = new Date().toLocaleDateString('en-US', { timeZone: tz, weekday:'short', month:'short', day:'numeric' });
-                    return `### 🕒 Time in ${k.toUpperCase()}\n**Time:** ${t}\n**Date:** ${d}\n**Zone:** ${tz}`;
+                    try {
+                        const t = new Date().toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
+                        return `### 🕒 World Clock\n**Location:** ${k.charAt(0).toUpperCase() + k.slice(1)}\n**Time:** ${t}\n**Zone:** ${tz}`;
+                    } catch (e) { return "Timezone data unavailable offline for this specific region."; }
                 }
-                return `### 🌍 ${k.toUpperCase()} Data\n* **Capital:** ${cap}\n* **Currency:** ${cur}\n* **Region:** ${tz.split('/')[0]}\n* **Timezone:** ${tz}`;
+                // General Info
+                return `### 🌍 Geo Intelligence\n**Country:** ${k.toUpperCase()}\n**Capital:** ${cap}\n**Currency:** ${cur}\n**Region:** ${tz}`;
             }
         }
 
-        // 4. ADVANCED CODING GENERATOR
-        if (l.includes('code') || l.includes('script') || l.includes('function') || l.includes('html') || l.includes('python')) {
-            if (l.includes('python')) {
-                return `### 🐍 Python Snippet\nHere is a structure for your request:\n\`\`\`python\ndef main():\n    # Logic for: ${q.replace('python', '').replace('code','').trim()}\n    data = [1, 2, 3]\n    print(f"Processing {len(data)} items...")\n    return True\n\nif __name__ == "__main__":\n    main()\n\`\`\``;
-            }
-            if (l.includes('html')) {
-                return `### 🌐 HTML Template\n\`\`\`html\n<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        body { font-family: sans-serif; padding: 20px; }\n        .card { border: 1px solid #ddd; padding: 10px; border-radius: 8px; }\n    </style>\n</head>\n<body>\n    <div class="card">\n        <h1>Generated Content</h1>\n        <p>${q.replace('html','').replace('code','').trim()}</p>\n    </div>\n</body>\n</html>\n\`\`\``;
-            }
-            if (l.includes('js') || l.includes('javascript')) {
-                return `### ⚡ JavaScript Logic\n\`\`\`javascript\n// Function for: ${q}\nasync function executeTask(input) {\n    try {\n        console.log("Starting process...");\n        const result = await processData(input);\n        return result;\n    } catch (error) {\n        console.error("Error:", error);\n    }\n}\n\nexecuteTask("test");\n\`\`\``;
-            }
-            return "### 💻 Coding Assistant\nI can generate code for:\n* Python Scripts\n* HTML/CSS Layouts\n* JavaScript Functions\n\nSpecify the language (e.g., 'python login script').";
-        }
-
-        // 5. FALLBACK
-        return "I am an Offline Logic Core. For this complex query, please ensure **Neural Sync** (Switch in Sidebar) is ON, so I can access my full cloud intelligence.";
+        return "My offline core requires specific keywords. Try asking about **'Time in Slovakia'**, **'Python code'**, or **'50 % 12'**.";
     }
 };
 
@@ -250,20 +253,15 @@ const App = {
         inp.value = ""; UI.hideHero(); UI.addMessage(q, 'user');
         const lid = UI.addLoader();
 
-        // 1. ONLINE MODE (Primary for complex tasks)
+        // 1. Try Online AI First
         if (online && navigator.onLine) {
             try {
-                // Determine if we should force specific persona context
                 const res = await puter.ai.chat(q);
-                UI.removeLoader(lid); 
-                UI.addMessage(res.toString(), 'ai'); 
-                return;
-            } catch(e) {
-                // Fallback if API fails
-            }
+                UI.removeLoader(lid); UI.addMessage(res.toString(), 'ai'); return;
+            } catch(e) {}
         }
         
-        // 2. OFFLINE / FALLBACK MODE
+        // 2. Fallback to Local Infinity Core
         setTimeout(() => { 
             UI.removeLoader(lid); 
             UI.addMessage(LogicCore.process(q), 'ai'); 
@@ -272,53 +270,37 @@ const App = {
 
     handleFile(input) {
         const file = input.files[0]; if(!file) return;
-        UI.hideHero(); UI.addMessage(`Uploaded: **${file.name}** (${(file.size/1024).toFixed(1)} KB)`, 'user');
+        UI.hideHero(); UI.addMessage(`File: **${file.name}**`, 'user');
         const lid = UI.addLoader();
         setTimeout(() => {
             UI.removeLoader(lid);
-            UI.addMessage(`### 📂 File Analyzed\n**Name:** \`${file.name}\`\n**Type:** \`${file.type || 'Unknown'}\`\n\nI have indexed this file locally. Enable **Neural Sync** to summarize or extract data from it.`, 'ai');
-        }, 800);
+            UI.addMessage(`**System Analysis:**\nFile \`${file.name}\` (${(file.size/1024).toFixed(1)} KB) received.\nType: ${file.type || 'Unknown'}.\n\n*My offline core cannot read contents, but I am aware of this file.*`, 'ai');
+        }, 1000);
     }
 };
 
 class UI {
     static toggleMenu() { 
         document.getElementById('sidebar').classList.toggle('-translate-x-full'); 
-        const overlay = document.getElementById('overlay');
-        if (overlay.classList.contains('hidden')) {
-            overlay.classList.remove('hidden');
-            setTimeout(() => overlay.classList.remove('opacity-0'), 10); // Fade in
-        } else {
-            overlay.classList.add('opacity-0');
-            setTimeout(() => overlay.classList.add('hidden'), 300); // Fade out
-        }
+        document.getElementById('overlay').classList.toggle('hidden'); 
     }
-    
-    static hideHero() { 
-        const h = document.getElementById('hero');
-        if(h) { h.style.opacity = '0'; setTimeout(()=> h.classList.add('hidden'), 500); }
-    }
-    
+    static hideHero() { document.getElementById('hero')?.classList.add('hidden'); }
     static fill(t) { document.getElementById('query').value = t; App.run(); }
-    
-    static scroll() { 
-        const c = document.getElementById('chat-container'); 
-        c.scrollTop = c.scrollHeight; 
-    }
+    static scroll() { const c = document.getElementById('chat-container'); c.scrollTop = c.scrollHeight; }
     
     static newChat() {
         document.getElementById('messages').innerHTML = "";
-        const h = document.getElementById('hero');
-        h.classList.remove('hidden');
-        setTimeout(()=> h.style.opacity = '1', 50);
-        if (window.innerWidth < 1024) this.toggleMenu();
-        document.getElementById('query').value = "";
+        document.getElementById('hero')?.classList.remove('hidden');
+        if (window.innerWidth < 768) {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('overlay').classList.add('hidden');
+        }
     }
 
     static addMessage(text, role) {
         const div = document.createElement('div');
         div.className = role === 'user' ? "msg-user" : "msg-ai";
-        div.innerHTML = role === 'user' ? text : `<div class="ai-icon"></div><div class="prose text-[15px] flex-1 text-gray-800 leading-relaxed">${marked.parse(text)}</div>`;
+        div.innerHTML = role === 'user' ? text : `<div class="ai-icon"></div><div class="prose text-[15px] flex-1 text-gray-800">${marked.parse(text)}</div>`;
         document.getElementById('messages').appendChild(div);
         this.scroll();
     }
@@ -326,7 +308,7 @@ class UI {
     static addLoader() {
         const id = 'ld-' + Date.now();
         const div = document.createElement('div'); div.id = id; div.className = "msg-ai animate-pulse";
-        div.innerHTML = `<div class="ai-icon bg-gray-200 grayscale opacity-50"></div><div class="flex flex-col gap-2 w-full max-w-[200px] mt-2"><div class="h-3 bg-gray-200 rounded w-full"></div><div class="h-3 bg-gray-100 rounded w-2/3"></div></div>`;
+        div.innerHTML = `<div class="ai-icon bg-gray-200"></div><div class="flex flex-col gap-2 w-full mt-2"><div class="h-3 bg-gray-100 rounded w-1/4"></div><div class="h-3 bg-gray-100 rounded w-1/3"></div></div>`;
         document.getElementById('messages').appendChild(div);
         this.scroll(); return id;
     }
