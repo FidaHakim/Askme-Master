@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Askme v120.0</title>
+    <title>Askme v121.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://js.puter.com/v2/"></script>
@@ -18,18 +18,22 @@
         .mode-online { background: #e8f0fe; color: #0b57d0; }
         .mode-offline { background: #fee8e8; color: #d00b0b; }
 
+        /* Profile Pic Styling */
+        .profile-pic { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1px solid #e3e3e3; background: white; display: flex; align-items: center; justify-content: center; }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
+
         /* Chat Area */
         #chat-window { flex: 1; overflow-y: auto; padding: 0 24px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
         #chat-window::-webkit-scrollbar { display: none; }
         
-        .hi-text { font-size: 28px; margin-top: 50px; color: #1f1f1f; background: linear-gradient(90deg, #4285f4, #9b72cb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; font-weight: 500; }
+        .hi-text { font-size: 28px; margin-top: 50px; color: #1f1f1f; background: linear-gradient(90deg, #d93025, #ea4335); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; font-weight: 500; }
         .hero-main { font-size: 42px; line-height: 1.15; margin-bottom: 40px; color: #444746; letter-spacing: -1px; }
 
         /* Action Pills */
         .action-pill { background: white; border: 1px solid #e3e3e3; border-radius: 32px; padding: 14px 24px; display: flex; align-items: center; gap: 12px; width: fit-content; font-size: 16px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .action-pill:active { transform: scale(0.97); background: #f8f9fa; }
 
-        /* Bottom UI (Pixel Perfect) */
+        /* Bottom UI */
         .bottom-nav { padding: 12px 16px 24px; background: white; border-top-left-radius: 32px; border-top-right-radius: 32px; flex-shrink: 0; box-shadow: 0 -4px 24px rgba(0,0,0,0.04); }
         .input-box { display: flex; flex-direction: column; gap: 12px; background: #f0f4f9; border-radius: 28px; padding: 16px 20px; transition: 0.3s; }
         #query { font-size: 18px; border: none; outline: none; background: transparent; width: 100%; color: #1f1f1f; font-family: 'Google Sans', sans-serif; }
@@ -38,8 +42,12 @@
         .tools-left { display: flex; gap: 24px; color: #444746; font-size: 24px; }
         .tools-right { display: flex; align-items: center; gap: 12px; }
         .fast-btn { border: 1px solid #c4c7c5; background: white; border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 500; color: #444746; }
-        .circle-btn { width: 42px; height: 42px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; }
+        
+        .circle-btn { width: 42px; height: 42px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
+        .mic-active { background: #fee8e8 !important; color: #d93025 !important; animation: pulse 1.5s infinite; }
         .spark-send { background: linear-gradient(135deg, #f0f4f9 0%, #e8f0fe 100%); color: #0b57d0; box-shadow: none; border: 1px solid #e3e3e3; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(217, 48, 37, 0); } 100% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0); } }
 
         /* Sidebar & Switch */
         #sidebar { position: fixed; left: -320px; top: 0; bottom: 0; width: 300px; background: white; z-index: 1000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; box-shadow: 10px 0 40px rgba(0,0,0,0.1); }
@@ -57,7 +65,7 @@
         /* Messages */
         .msg-u { align-self: flex-end; background: #f0f4f9; padding: 14px 22px; border-radius: 24px; border-bottom-right-radius: 4px; margin-bottom: 24px; max-width: 85%; margin-left: auto; font-size: 16px; color: #1f1f1f; }
         .msg-ai { display: flex; gap: 14px; margin-bottom: 32px; line-height: 1.6; font-size: 16px; color: #333; }
-        .ai-icon { width: 32px; height: 32px; border-radius: 50%; background: url('https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304fa6291414.svg') no-repeat center/cover; flex-shrink: 0; background-color: #f0f4f9; }
+        .ai-icon { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #d93025, #ea4335); flex-shrink: 0; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:10px; }
         
         .country-card { background: #f8fafd; border: 1px solid #e3e3e3; padding: 16px; border-radius: 16px; margin-top: 8px; }
         .time-display { font-size: 32px; font-weight: 500; color: #1f1f1f; margin: 10px 0; }
@@ -95,7 +103,9 @@
         <span class="font-medium text-[22px] text-[#1f1f1f]">Askme</span>
         <span id="status-badge" class="mode-badge mode-online">Online</span>
     </div>
-    <div onclick="App.sync()" class="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 overflow-hidden cursor-pointer"><img src="https://via.placeholder.com/36" class="opacity-80"></div>
+    <div onclick="App.sync()" class="profile-pic cursor-pointer">
+        <img src="https://ui-avatars.com/api/?name=Ask+Me&background=d93025&color=fff&rounded=true" alt="Askme Logo" id="user-logo"> 
+    </div>
 </header>
 
 <main id="chat-window">
@@ -122,7 +132,7 @@
             </div>
             <div class="tools-right">
                 <div class="fast-btn">Fast</div>
-                <div class="circle-btn">🎙️</div>
+                <div id="mic-btn" onclick="App.startVoice()" class="circle-btn">🎙️</div>
                 <button id="send-trigger" class="circle-btn spark-send">✨</button>
             </div>
         </div>
@@ -131,9 +141,8 @@
 </div>
 
 <script>
-// --- MASSIVE ATLAS DATABASE (210+ COUNTRIES & TERRITORIES) ---
+// --- 210+ COUNTRIES & TIME LOGIC ---
 const Atlas = {
-    // Structure: [Capital, Region, Currency, UTC Offset]
     db: {
         "afghanistan": ["Kabul", "Asia", "AFN", 4.5], "albania": ["Tirana", "Europe", "ALL", 1], "algeria": ["Algiers", "Africa", "DZD", 1],
         "andorra": ["Andorra la Vella", "Europe", "EUR", 1], "angola": ["Luanda", "Africa", "AOA", 1], "argentina": ["Buenos Aires", "S. America", "ARS", -3],
@@ -160,7 +169,7 @@ const Atlas = {
         "indonesia": ["Jakarta", "Asia", "IDR", 7], "iran": ["Tehran", "Asia", "IRR", 3.5], "iraq": ["Baghdad", "Asia", "IQD", 3],
         "ireland": ["Dublin", "Europe", "EUR", 0], "israel": ["Jerusalem", "Asia", "ILS", 2], "italy": ["Rome", "Europe", "EUR", 1],
         "jamaica": ["Kingston", "N. America", "JMD", -5], "japan": ["Tokyo", "Asia", "JPY", 9], "jordan": ["Amman", "Asia", "JOD", 3],
-        "kazakhstan": ["Astana", "Asia", "KZT", 6], "kenya": ["Nairobi", "Africa", "KES", 3], "kiribati": ["South Tarawa", "Oceania", "AUD", 14], // +14 UTC!
+        "kazakhstan": ["Astana", "Asia", "KZT", 6], "kenya": ["Nairobi", "Africa", "KES", 3], "kiribati": ["South Tarawa", "Oceania", "AUD", 14],
         "kuwait": ["Kuwait City", "Asia", "KWD", 3], "kyrgyzstan": ["Bishkek", "Asia", "KGS", 6], "laos": ["Vientiane", "Asia", "LAK", 7],
         "latvia": ["Riga", "Europe", "EUR", 2], "lebanon": ["Beirut", "Asia", "LBP", 2], "lesotho": ["Maseru", "Africa", "LSL", 2],
         "liberia": ["Monrovia", "Africa", "LRD", 0], "libya": ["Tripoli", "Africa", "LYD", 2], "liechtenstein": ["Vaduz", "Europe", "CHF", 1],
@@ -194,7 +203,6 @@ const Atlas = {
         "uruguay": ["Montevideo", "S. America", "UYU", -3], "uzbekistan": ["Tashkent", "Asia", "UZS", 5], "vanuatu": ["Port Vila", "Oceania", "VUV", 11],
         "vatican": ["Vatican City", "Europe", "EUR", 1], "venezuela": ["Caracas", "S. America", "VES", -4], "vietnam": ["Hanoi", "Asia", "VND", 7],
         "yemen": ["Sanaa", "Asia", "YER", 3], "zambia": ["Lusaka", "Africa", "ZMW", 2], "zimbabwe": ["Harare", "Africa", "ZWL", 2],
-        // uncommon territories
         "niue": ["Alofi", "Oceania", "NZD", -11], "tokelau": ["Nukunonu", "Oceania", "NZD", 13], "greenland": ["Nuuk", "N. America", "DKK", -3]
     },
     
@@ -229,6 +237,40 @@ const App = {
         b.innerText = this.isOnline ? "Online" : "Offline";
         b.className = `mode-badge ${this.isOnline ? 'mode-online' : 'mode-offline'}`;
     },
+    
+    // --- VOICE INPUT LOGIC ---
+    startVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Voice input is not supported in this browser.");
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        const micBtn = document.getElementById('mic-btn');
+        
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+            micBtn.classList.add('mic-active');
+            document.getElementById('query').placeholder = "Listening...";
+        };
+
+        recognition.onend = () => {
+            micBtn.classList.remove('mic-active');
+            document.getElementById('query').placeholder = "Ask Askme";
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('query').value = transcript;
+            this.send(); // Auto send after speaking
+        };
+
+        recognition.start();
+    },
 
     fill(t) { document.getElementById('query').value = t; this.send(); },
     
@@ -239,7 +281,7 @@ const App = {
         const m = document.getElementById('messages');
         const d = document.createElement('div');
         d.className = role === 'u' ? 'msg-u' : 'msg-ai';
-        d.innerHTML = role === 'u' ? content : `<div class="ai-icon"></div><div class="flex-1 prose">${marked.parse(content)}</div>`;
+        d.innerHTML = role === 'u' ? content : `<div class="ai-icon">A</div><div class="flex-1 prose">${marked.parse(content)}</div>`;
         m.appendChild(d);
         document.getElementById('chat-window').scrollTo(0, m.scrollHeight);
     },
