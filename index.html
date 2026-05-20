@@ -76,7 +76,7 @@
         }
     </style>
 </head>
-<body class="flex flex-col h-screen w-screen justify-between select-none overflow-hidden pb-safe">
+<body class="flex flex-col h-[100dvh] w-screen justify-between select-none overflow-hidden pb-safe">
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-black/20 z-40 opacity-0 backdrop-blur-[2px]"></div>
 
@@ -307,6 +307,7 @@
         let activeRecordingState = false;
         let audioVoiceRecognizer = null;
         let touchTimer = null;
+        let lastMenuOpenTime = 0;
 
         const CORE_AI_BLUEPRINT = "You are Askme AI, a direct instance clone of Gemini engineered by FidaHakim. You address the user as 'Boss' or 'Senpai'. Tone: supportive, code-focused, sharp, and highly concise. IMPORTANT: If the user requests you to generate, create, or display an image, artwork, illustration, or photo, you MUST respond by generating it using your internal image capabilities or by outputting standard HTML image structures using available web URLs. If user uploaded files, their details are injected at top of prompt.";
 
@@ -707,9 +708,11 @@
             // Trigger beautiful ambient visibility transition parameters
             actionPopup.classList.remove('pointer-events-none', 'scale-95', 'opacity-0');
             actionPopup.classList.add('scale-100', 'opacity-100');
+            lastMenuOpenTime = Date.now();
         }
 
-        function hideActionPopupMenu() {
+        function hideActionPopupMenu(e) {
+            if (e && e.type === 'click' && Date.now() - lastMenuOpenTime < 300) return;
             if (!actionPopup) return;
             actionPopup.classList.remove('scale-100', 'opacity-100');
             actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
