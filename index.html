@@ -320,6 +320,28 @@
             if (scroller) {
                 scroller.addEventListener('scroll', hideActionPopupMenu);
             }
+
+            // Mobile keyboard & visual viewport normalization layer
+            if (window.visualViewport) {
+                const handleViewportResize = () => {
+                    document.body.style.height = `${window.visualViewport.height}px`;
+                    setTimeout(() => {
+                        if (scroller) scroller.scrollTop = scroller.scrollHeight;
+                    }, 80);
+                };
+                window.visualViewport.addEventListener('resize', handleViewportResize);
+                window.visualViewport.addEventListener('scroll', () => window.scrollTo(0, 0));
+                handleViewportResize();
+            }
+
+            // Sync scroll alignment on workflow focus anchors
+            if (inputField) {
+                inputField.addEventListener('focus', () => {
+                    setTimeout(() => {
+                        if (scroller) scroller.scrollTop = scroller.scrollHeight;
+                    }, 280);
+                });
+            }
         });
 
         async function evaluateUserIdentityState() {
@@ -629,7 +651,7 @@
             
             return text
                 .replace(/\*\.(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
+                .replace(/\*\**(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
                 .replace(/\n/g, '<br>');
         }
 
