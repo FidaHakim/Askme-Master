@@ -50,6 +50,7 @@
         }
         
         #sidebar-overlay { transition: opacity 0.25s ease; }
+        #thinking-submenu { transition: all 0.2s ease-out; }
         .pulse-mic { animation: mic-pulse 1.5s infinite; }
         
         @keyframes gradientMove {
@@ -64,15 +65,14 @@
             100% { transform: scale(1); background-color: rgba(239, 68, 68, 0.2); }
         }
 
+        /* Prevent standard text selection during long press on bubbles */
         .msg-bubble {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             user-select: none;
-        }
-
-        .selectable-content {
-            -webkit-user-select: text !important;
-            user-select: text !important;
         }
     </style>
 </head>
@@ -84,6 +84,7 @@
         <div class="space-y-4">
             <div class="px-3 py-1 text-xl font-normal tracking-wide text-zinc-800 flex justify-between items-center">
                 <span>Askme</span>
+                <!-- Library Toggle Button -->
                 <button onclick="toggleLibraryMode()" id="library-toggle-btn" class="text-xs flex items-center space-x-1 bg-white/60 hover:bg-white/80 transition px-2.5 py-1 rounded-full font-medium text-zinc-700 border border-white/40 shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
                     <span id="library-btn-text">Library</span>
@@ -99,6 +100,7 @@
                 </button>
             </div>
 
+            <!-- Search Chat Component -->
             <div class="px-2 pt-1">
                 <div class="relative flex items-center bg-white/40 focus-within:bg-white/60 rounded-xl px-2.5 py-2 transition border border-white/30">
                     <svg class="w-4 h-4 text-zinc-600 mr-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -165,7 +167,7 @@
                     <div onclick="selectModel('3.1 Pro')" class="flex items-start justify-between cursor-pointer p-1 rounded-lg hover:bg-white/40">
                         <div class="flex-1">
                             <div class="font-normal text-[15px]">3.1 Pro</div>
-                            <p class="text-xs text-zinc-500">Advanced math and code</p>
+                            <p class="text-xs text-zinc-400">Advanced math and code</p>
                         </div>
                         <div class="w-4 h-4 mt-1 check-icon invisible" id="chk-pro">
                             <svg class="w-4 h-4 text-zinc-800" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
@@ -180,7 +182,7 @@
                             <svg id="thinking-arrow" class="w-4 h-4 text-zinc-600 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
                         </div>
                         
-                        <div id="thinking-submenu" class="space-y-3 pl-1 overflow-hidden hidden transition-all duration-200 max-h-0">
+                        <div id="thinking-submenu" class="space-y-3 pl-1 overflow-hidden transition-all duration-200 max-h-[200px]">
                             <div onclick="selectThinkingLevel('Standard')" class="flex items-start justify-between cursor-pointer p-1 rounded-lg">
                                 <div>
                                     <div class="text-sm font-normal text-zinc-800">Standard</div>
@@ -191,7 +193,7 @@
                                 </div>
                             </div>
                             <div onclick="selectThinkingLevel('Extended')" class="flex items-start justify-between cursor-pointer p-1 rounded-lg">
-                                <div>
+                                <div class="opacity-80">
                                     <div class="text-sm font-normal text-zinc-800">Extended</div>
                                     <p class="text-xs text-zinc-500">Complex problem solving</p>
                                 </div>
@@ -213,6 +215,7 @@
 
         <main id="scroll-workspace" class="flex-1 overflow-y-auto px-6 no-scrollbar flex flex-col relative">
             <div id="splash-view" class="my-auto flex flex-col items-center justify-center text-center space-y-6">
+                <!-- Clean Chat Sparkle Loop Logo -->
                 <svg class="w-[54px] h-[54px] drop-shadow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19L3 21L5 19.1414C7.03212 20.933 9.71217 22 12 22Z" stroke="url(#askme-sparkle-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M12 8V16M8 12H16" stroke="url(#askme-sparkle-gradient)" stroke-width="2" stroke-linecap="round"/>
@@ -273,6 +276,7 @@
 
     </div>
 
+    <!-- Proper Context Menu Action Popup -->
     <div id="action-popup-menu" class="hidden fixed z-50 rounded-2xl p-1.5 min-w-[120px] shadow-xl ambient-panel border border-white/50 transform scale-95 opacity-0 transition-all duration-150 ease-out pointer-events-none">
         <div class="flex flex-col space-y-0.5" id="popup-actions-wrapper"></div>
     </div>
@@ -303,7 +307,6 @@
         let activeRecordingState = false;
         let audioVoiceRecognizer = null;
         let touchTimer = null;
-        let isLongPressActionTriggered = false;
 
         const CORE_AI_BLUEPRINT = "You are Askme AI, a direct instance clone of Gemini engineered by FidaHakim. You address the user as 'Boss' or 'Senpai'. Tone: supportive, code-focused, sharp, and highly concise. IMPORTANT: If the user requests you to generate, create, or display an image, artwork, illustration, or photo, you MUST respond by generating it using your internal image capabilities or by outputting standard HTML image structures using available web URLs. If user uploaded files, their details are injected at top of prompt.";
 
@@ -311,10 +314,11 @@
             evaluateUserIdentityState();
             setupVoiceRecognitionEngine();
             
-            document.addEventListener('click', (e) => {
-                if(!actionPopup.contains(e.target)) hideActionPopupMenu();
-            });
-            scroller.addEventListener('scroll', hideActionPopupMenu);
+            // Global listener to close context popup on clicking elsewhere
+            document.addEventListener('click', hideActionPopupMenu);
+            if (scroller) {
+                scroller.addEventListener('scroll', hideActionPopupMenu);
+            }
         });
 
         async function evaluateUserIdentityState() {
@@ -324,10 +328,12 @@
 
             if (puter.auth.isSignedIn()) {
                 const profile = await puter.auth.getUser();
-                nameField.innerText = profile.username;
-                statusField.innerText = "Log Out Account";
-                avatar.innerText = profile.username.substring(0,2).toUpperCase();
-                avatar.className = "w-8 h-8 rounded-full bg-green-600/80 flex items-center justify-center font-bold text-xs text-white backdrop-blur-sm";
+                if (nameField) nameField.innerText = profile.username;
+                if (statusField) statusField.innerText = "Log Out Account";
+                if (avatar) {
+                    avatar.innerText = profile.username.substring(0,2).toUpperCase();
+                    avatar.className = "w-8 h-8 rounded-full bg-green-600/80 flex items-center justify-center font-bold text-xs text-white backdrop-blur-sm";
+                }
                 
                 try {
                     const savedCloudData = await puter.kv.get('askme_sessions_vault');
@@ -338,10 +344,12 @@
                 } catch(kvErr) { console.warn("KV sync failed: ", kvErr); }
 
             } else {
-                nameField.innerText = "Guest Account";
-                statusField.innerText = "Click to Log In";
-                avatar.innerText = "?";
-                avatar.className = "w-8 h-8 rounded-full bg-zinc-700/60 flex items-center justify-center font-bold text-xs text-white backdrop-blur-sm";
+                if (nameField) nameField.innerText = "Guest Account";
+                if (statusField) statusField.innerText = "Click to Log In";
+                if (avatar) {
+                    avatar.innerText = "?";
+                    avatar.className = "w-8 h-8 rounded-full bg-zinc-700/60 flex items-center justify-center font-bold text-xs text-white backdrop-blur-sm";
+                }
             }
         }
 
@@ -360,8 +368,10 @@
 
         function setupVoiceRecognitionEngine() {
             const SpeechEngineClass = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechEngineClass) return;
-            
+            if (!SpeechEngineClass) {
+                console.warn("Speech recognition systems are missing in this layout platform channel.");
+                return;
+            }
             audioVoiceRecognizer = new SpeechEngineClass();
             audioVoiceRecognizer.continuous = false;
             audioVoiceRecognizer.interimResults = false;
@@ -369,28 +379,35 @@
 
             audioVoiceRecognizer.onresult = (event) => {
                 const vocalInputTranscript = event.results[0][0].transcript;
-                inputField.value = (inputField.value + " " + vocalInputTranscript).trim();
+                if (inputField) {
+                    inputField.value = (inputField.value + " " + vocalInputTranscript).trim();
+                }
             };
 
             audioVoiceRecognizer.onend = () => {
                 activeRecordingState = false;
-                document.getElementById('voice-activation-key').classList.remove('pulse-mic', 'text-red-500');
+                const micBtn = document.getElementById('voice-activation-key');
+                if (micBtn) micBtn.classList.remove('pulse-mic', 'text-red-500');
+            };
+
+            audioVoiceRecognizer.onerror = (err) => {
+                console.error("Vocal stream evaluation block drop structural fault", err);
             };
         }
 
         function toggleVoiceTransmission() {
             if (!audioVoiceRecognizer) {
-                alert("Voice engine is unsupported on this canvas platform.");
+                alert("Voice runtime translation engine is unsupported on this processing canvas platform.");
                 return;
             }
             const vocalIcon = document.getElementById('voice-activation-key');
             if (!activeRecordingState) {
                 activeRecordingState = true;
-                vocalIcon.classList.add('pulse-mic', 'text-red-500');
+                if (vocalIcon) vocalIcon.classList.add('pulse-mic', 'text-red-500');
                 audioVoiceRecognizer.start();
             } else {
                 activeRecordingState = false;
-                vocalIcon.classList.remove('pulse-mic', 'text-red-500');
+                if (vocalIcon) vocalIcon.classList.remove('pulse-mic', 'text-red-500');
                 audioVoiceRecognizer.stop();
             }
         }
@@ -407,11 +424,13 @@
                     type: selectedFileObj.type,
                     rawPayloadContent: e.target.result
                 };
-                document.getElementById('file-meta-string').innerText = `${stagedFileData.name} (${Math.round(stagedFileData.size / 1024)} KB)`;
-                document.getElementById('file-preview-bay').classList.remove('hidden');
+                const metaString = document.getElementById('file-meta-string');
+                const previewBay = document.getElementById('file-preview-bay');
+                if (metaString) metaString.innerText = `${stagedFileData.name} (${Math.round(stagedFileData.size / 1024)} KB)`;
+                if (previewBay) previewBay.classList.remove('hidden');
             };
 
-            if (selectedFileObj.type.startsWith('text/') || selectedFileObj.name.match(/\.(json|xml|js|html|css|txt|sh)$/i)) {
+            if (selectedFileObj.type.startsWith('text/') || selectedFileObj.name.endsWith('.json') || selectedFileObj.name.endsWith('.xml') || selectedFileObj.name.endsWith('.js') || selectedFileObj.name.endsWith('.html') || selectedFileObj.name.endsWith('.css')) {
                 fileReaderChannel.readAsText(selectedFileObj);
             } else {
                 fileReaderChannel.readAsDataURL(selectedFileObj);
@@ -420,11 +439,14 @@
 
         function clearFileStaging() {
             stagedFileData = null;
-            document.getElementById('attachment-file-engine').value = "";
-            document.getElementById('file-preview-bay').classList.add('hidden');
+            const fileEngine = document.getElementById('attachment-file-engine');
+            const previewBay = document.getElementById('file-preview-bay');
+            if (fileEngine) fileEngine.value = "";
+            if (previewBay) previewBay.classList.add('hidden');
         }
 
         function toggleSidebar() {
+            if (!sidebar || !overlay) return;
             if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
@@ -437,38 +459,40 @@
         }
 
         function toggleDropdownMenu() {
+            if (!dropdown || !arrowIcon) return;
             const hidden = dropdown.classList.toggle('hidden');
             arrowIcon.style.transform = hidden ? "rotate(0deg)" : "rotate(180deg)";
         }
 
         function toggleThinkingSubmenu(event) {
-            event.stopPropagation();
-            const isHidden = thinkingSubmenu.classList.contains('hidden');
-            if (isHidden) {
+            if (event) event.stopPropagation();
+            if (!thinkingSubmenu || !thinkingArrow) return;
+            if (thinkingSubmenu.style.maxHeight === "0px" || thinkingSubmenu.classList.contains('hidden')) {
                 thinkingSubmenu.classList.remove('hidden');
-                setTimeout(() => {
-                    thinkingSubmenu.style.maxHeight = "200px";
-                    thinkingArrow.style.transform = "rotate(180deg)";
-                }, 10);
+                thinkingSubmenu.style.maxHeight = "200px";
+                thinkingArrow.style.transform = "rotate(0deg)";
             } else {
                 thinkingSubmenu.style.maxHeight = "0px";
-                thinkingArrow.style.transform = "rotate(0deg)";
+                thinkingArrow.style.transform = "rotate(180deg)";
                 setTimeout(() => thinkingSubmenu.classList.add('hidden'), 200);
             }
         }
 
         function selectModel(modelName) {
-            modelLabel.innerText = "Askme " + modelName;
+            if (modelLabel) modelLabel.innerText = "Askme " + modelName;
             document.querySelectorAll('.check-icon').forEach(icon => icon.classList.add('invisible'));
             
             if(modelName === '3.1 Flash-Lite') {
-                document.getElementById('chk-lite').classList.remove('invisible');
+                const icon = document.getElementById('chk-lite');
+                if (icon) icon.classList.remove('invisible');
                 selectedConfigModel = "google/gemini-3.1-flash-lite";
             } else if(modelName === '3.5 Flash') {
-                document.getElementById('chk-flash').classList.remove('invisible');
+                const icon = document.getElementById('chk-flash');
+                if (icon) icon.classList.remove('invisible');
                 selectedConfigModel = "google/gemini-3.5-flash";
             } else if(modelName === '3.1 Pro') {
-                document.getElementById('chk-pro').classList.remove('invisible');
+                const icon = document.getElementById('chk-pro');
+                if (icon) icon.classList.remove('invisible');
                 selectedConfigModel = "google/gemini-3.1-pro";
             }
             toggleDropdownMenu();
@@ -477,23 +501,33 @@
         function selectThinkingLevel(level) {
             thinkingSetting = level;
             document.querySelectorAll('.thinking-check').forEach(i => i.classList.add('invisible'));
-            if(level === 'Standard') document.getElementById('chk-standard').classList.remove('invisible');
-            if(level === 'Extended') document.getElementById('chk-extended').classList.remove('invisible');
+            if(level === 'Standard') {
+                const icon = document.getElementById('chk-standard');
+                if (icon) icon.classList.remove('invisible');
+            }
+            if(level === 'Extended') {
+                const icon = document.getElementById('chk-extended');
+                if (icon) icon.classList.remove('invisible');
+            }
             toggleDropdownMenu();
         }
 
         function createNewChat() {
             currentActiveSessionId = null;
-            stream.innerHTML = '';
-            stream.classList.add('hidden');
-            splashView.classList.remove('hidden');
-            inputField.value = '';
+            if (stream) {
+                stream.innerHTML = '';
+                stream.classList.add('hidden');
+            }
+            if (splashView) splashView.classList.remove('hidden');
+            if (inputField) inputField.value = '';
             clearFileStaging();
-            if(!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+            if(sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
         }
 
         function filterChatHistory() {
-            const currentSearchQuery = document.getElementById('search-chat-input').value.toLowerCase();
+            if (!historyContainer) return;
+            const searchInput = document.getElementById('search-chat-input');
+            const currentSearchQuery = searchInput ? searchInput.value.toLowerCase() : "";
             const historyElements = historyContainer.querySelectorAll('.dynamic-history-item');
             let matchedCount = 0;
 
@@ -531,20 +565,25 @@
             const sectionTitle = document.getElementById('section-title-label');
             
             if (isLibraryModeActive) {
-                toggleBtn.classList.remove('bg-white/60', 'text-zinc-700');
-                toggleBtn.classList.add('bg-blue-600/80', 'text-white');
-                btnText.innerText = "Recents";
-                sectionTitle.innerText = "Library Vault";
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('bg-white/60', 'text-zinc-700');
+                    toggleBtn.classList.add('bg-blue-600/80', 'text-white');
+                }
+                if (btnText) btnText.innerText = "Recents";
+                if (sectionTitle) sectionTitle.innerText = "Library Vault";
             } else {
-                toggleBtn.classList.remove('bg-blue-600/80', 'text-white');
-                toggleBtn.classList.add('bg-white/60', 'text-zinc-700');
-                btnText.innerText = "Library";
-                sectionTitle.innerText = "Recents";
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('bg-blue-600/80', 'text-white');
+                    toggleBtn.classList.add('bg-white/60', 'text-zinc-700');
+                }
+                if (btnText) btnText.innerText = "Library";
+                if (sectionTitle) sectionTitle.innerText = "Recents";
             }
             syncHistorySidebarList();
         }
 
         function syncHistorySidebarList() {
+            if (!historyContainer) return;
             const emptyNotice = document.getElementById('empty-history-notice');
             const keys = Object.keys(liveSessionsDatastore);
             
@@ -575,104 +614,81 @@
                 historyContainer.appendChild(row);
             });
 
-            if(document.getElementById('search-chat-input').value.trim() !== "") {
+            const searchInput = document.getElementById('search-chat-input');
+            if(searchInput && searchInput.value.trim() !== "") {
                 filterChatHistory();
             }
         }
 
         function renderFormattedContent(text) {
+            if (!text) return "";
             if (text.includes('<img') || text.includes('<div') || text.includes('<span')) {
                 return text;
             }
             
-            let escaped = text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
-
-            // Structural Codeblocks (Fences)
-            escaped = escaped.replace(/```([\s\S]*?)
-```/g, (match, code) => {
-                return `<div class="bg-black/90 text-emerald-400 p-4 rounded-2xl my-3 font-mono text-xs overflow-x-auto selection:bg-zinc-700 select-text class="selectable-content">${code.trim()}</div>`;
-            });
-
-            // Inline Code Segments
-            escaped = escaped.replace(/`([^`]+)`/g, '<code class="bg-white/50 px-1.5 py-0.5 rounded font-mono text-sm">$1</code>');
-
-            // Strong Bold Text Formatting Tokens
-            escaped = escaped.replace(/\*\*([\s\S]*?)\*\*/g, '<strong class="font-semibold text-black select-text">$1</strong>');
-
-            // Structural Bullet Parsing
-            let lineSegments = escaped.split('\n');
-            let formattedBody = lineSegments.map(line => {
-                if (line.trim().startsWith('* ')) {
-                    return `<li class="ml-4 list-disc pl-1 py-0.5 select-text">${line.trim().substring(2)}</li>`;
-                }
-                return line;
-            }).join('<br>');
-
-            return `<div class="selectable-content select-text">${formattedBody}</div>`;
+            return text
+                .replace(/\*\.(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
+                .replace(/\n/g, '<br>');
         }
 
+        // Long press handling registration pipeline
         function registerLongPressEvents(element, role, index) {
-            isLongPressActionTriggered = false;
-
+            if (!element) return;
             const startHandler = (e) => {
-                isLongPressActionTriggered = false;
+                // Determine touch or mouse position parameters safely
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
                 
                 touchTimer = setTimeout(() => {
-                    isLongPressActionTriggered = true;
-                    if (navigator.vibrate) navigator.vibrate(12);
+                    triggerVibrationFeedback();
                     showActionPopupMenu(clientX, clientY, role, index);
-                }, 500);
+                }, 550); // Standard long press duration threshold metric
             };
 
             const cancelHandler = () => {
                 if (touchTimer) clearTimeout(touchTimer);
             };
 
-            const clickProtectHandler = (e) => {
-                if (isLongPressActionTriggered) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            };
-
             element.addEventListener('touchstart', startHandler, { passive: true });
             element.addEventListener('mousedown', startHandler);
             
-            element.addEventListener('touchend', cancelHandler, { passive: true });
-            element.addEventListener('touchmove', cancelHandler, { passive: true });
+            element.addEventListener('touchend', cancelHandler);
+            element.addEventListener('touchmove', cancelHandler);
             element.addEventListener('mouseleave', cancelHandler);
             element.addEventListener('mouseup', cancelHandler);
-            element.addEventListener('click', clickProtectHandler, true);
+        }
+
+        function triggerVibrationFeedback() {
+            if (navigator.vibrate) navigator.vibrate(12);
         }
 
         function showActionPopupMenu(x, y, role, index) {
+            if (!popupWrapper || !actionPopup) return;
             popupWrapper.innerHTML = '';
             
+            // Build Context Actions based on node structural source identity mapping
             if (role === 'user') {
                 popupWrapper.innerHTML += `
-                    <button onclick="initMessageEditWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium">
-                        Edit
+                    <button onclick="initMessageEditWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Edit</span>
                     </button>
-                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium">
-                        Copy
+                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Copy</span>
                     </button>
                 `;
             } else {
                 popupWrapper.innerHTML += `
-                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium">
-                        Copy
+                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Copy</span>
                     </button>
-                    <button onclick="triggerMessageRetryWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium">
-                        Retry
+                    <button onclick="triggerMessageRetryWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Retry</span>
                     </button>
                 `;
             }
 
+            // Screen boundary protection calculations layout channel
             actionPopup.classList.remove('hidden');
             const popupWidth = 140;
             const popupHeight = 80;
@@ -688,11 +704,13 @@
             actionPopup.style.left = `${posX}px`;
             actionPopup.style.top = `${posY}px`;
             
+            // Trigger beautiful ambient visibility transition parameters
             actionPopup.classList.remove('pointer-events-none', 'scale-95', 'opacity-0');
             actionPopup.classList.add('scale-100', 'opacity-100');
         }
 
         function hideActionPopupMenu() {
+            if (!actionPopup) return;
             actionPopup.classList.remove('scale-100', 'opacity-100');
             actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
             setTimeout(() => {
@@ -711,7 +729,11 @@
                 if (srcMatch) pureText = srcMatch[1];
             }
             
-            navigator.clipboard.writeText(pureText);
+            navigator.clipboard.writeText(pureText).then(() => {
+                // Handled gracefully without invasive alerts interrupting the UI
+            }).catch(err => {
+                console.error("Could not copy layout text: ", err);
+            });
             hideActionPopupMenu();
         }
 
@@ -726,8 +748,10 @@
                 if (updatedPrompt === null || updatedPrompt.trim() === "") return;
 
                 liveSessionsDatastore[currentActiveSessionId].messages = liveSessionsDatastore[currentActiveSessionId].messages.slice(0, index);
-                inputField.value = updatedPrompt.trim();
-                dispatchAskmeAI();
+                if (inputField) {
+                    inputField.value = updatedPrompt.trim();
+                    dispatchAskmeAI();
+                }
             }, 50);
         }
 
@@ -743,19 +767,16 @@
             const standardPromptText = liveSessionsDatastore[currentActiveSessionId].messages[targetUserPromptIndex].content;
             liveSessionsDatastore[currentActiveSessionId].messages.pop();
             
-            inputField.value = standardPromptText;
-            dispatchAskmeAI();
-        }
-
-        function anchorScrollerToBottom() {
-            requestAnimationFrame(() => {
-                scroller.scrollTop = scroller.scrollHeight;
-            });
+            if (inputField) {
+                inputField.value = standardPromptText;
+                dispatchAskmeAI();
+            }
         }
 
         function loadActiveSession(id) {
+            if (!stream || !scroller) return;
             currentActiveSessionId = id;
-            splashView.classList.add('hidden');
+            if (splashView) splashView.classList.add('hidden');
             stream.classList.remove('hidden');
             stream.innerHTML = '';
 
@@ -766,7 +787,7 @@
                     wrapper.className = "space-y-1 text-right group relative";
                     wrapper.innerHTML = `
                         <div class="msg-bubble inline-block px-4 py-3 rounded-[20px] rounded-tr-sm text-[16px] max-w-[85%] text-left shadow-sm ambient-card text-zinc-900 cursor-pointer transition active:scale-[0.99]">
-                            ${msg.content.replace(/\n/g, '<br>')}
+                            ${msg.content}
                         </div>
                     `;
                     registerLongPressEvents(wrapper.querySelector('.msg-bubble'), 'user', idx);
@@ -782,18 +803,19 @@
                 stream.appendChild(wrapper);
             });
             
-            if(!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
-            anchorScrollerToBottom();
+            if(sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+            scroller.scrollTop = scroller.scrollHeight;
         }
 
         async function dispatchAskmeAI() {
+            if (!inputField || !stream || !scroller) return;
             let val = inputField.value.trim();
             if(!val && !stagedFileData) return;
 
             let isImageRequest = /\b(generate|create|make|draw|show)\b.*\b(image|picture|photo|artwork|illustration|logo)\b/i.test(val);
 
             inputField.value = '';
-            splashView.classList.add('hidden');
+            if (splashView) splashView.classList.add('hidden');
             stream.classList.remove('hidden');
 
             if (currentActiveSessionId === null) {
@@ -809,7 +831,7 @@
 
             if (stagedFileData) {
                 processingValueString = `[Attached Document/Data Package - Name: "${stagedFileData.name}", MIME-Type: "${stagedFileData.type}"]\n\nContent Base Context/Payload:\n${stagedFileData.rawPayloadContent}\n\nUser Question Directives:\n${val}`;
-                displayPromptNodeText = `📁 Attached: **${stagedFileData.name}**\n${val}`;
+                displayPromptNodeText = `📁 Attached: **${stagedFileData.name}**<br>${val}`;
                 clearFileStaging();
             }
 
@@ -831,7 +853,7 @@
             registerLongPressEvents(userWrapper.querySelector('.msg-bubble'), 'user', currentUserMsgIndex);
             stream.appendChild(userWrapper);
             
-            anchorScrollerToBottom();
+            scroller.scrollTop = scroller.scrollHeight;
 
             const loaderId = "loader-" + Date.now();
             const loaderNode = document.createElement('div');
@@ -852,7 +874,7 @@
                         const imgUrl = imgResult.src;
                         txt = `Here is your requested image, Boss:<br><br><div class="w-full max-w-sm overflow-hidden rounded-2xl shadow-md border border-white/40 bg-white/20 p-1 mb-2"><img src="${imgUrl}" alt="Generated Image" class="w-full h-auto rounded-xl object-cover select-text"></div>`;
                     } catch (imgErr) {
-                        console.warn("Handling via primary route:", imgErr);
+                        console.warn("Direct txt2img runtime dropped, handling via primary route:", imgErr);
                         isImageRequest = false;
                     }
                 }
@@ -866,8 +888,8 @@
                     txt = (typeof response === 'string') ? response : (response?.message?.content || JSON.stringify(response));
                 }
                 
-                const currentLoader = document.getElementById(loaderId);
-                if(currentLoader) currentLoader.remove();
+                const loaderEl = document.getElementById(loaderId);
+                if (loaderEl) loaderEl.remove();
                 
                 const currentAssistantMsgIndex = liveSessionsDatastore[currentActiveSessionId].messages.length;
                 liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "assistant", content: txt });
@@ -877,7 +899,7 @@
                 }
 
                 const assistantWrapper = document.createElement('div');
-                assistantWrapper.className = "space-y-1 pt-2 group relative";
+                assistantWrapper.className = "space-y-1 pt-2 animate-fadeIn group relative";
                 assistantWrapper.innerHTML = `
                     <div class="msg-bubble text-[16px] leading-relaxed font-normal text-zinc-900 pr-4 drop-shadow-sm cursor-pointer transition rounded-xl p-1 hover:bg-white/10 active:scale-[0.99]">
                         ${renderFormattedContent(txt)}
@@ -886,11 +908,11 @@
                 registerLongPressEvents(assistantWrapper.querySelector('.msg-bubble'), 'assistant', currentAssistantMsgIndex);
                 stream.appendChild(assistantWrapper);
                 
-                anchorScrollerToBottom();
+                scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
 
             } catch(e) {
-                const currentLoader = document.getElementById(loaderId);
-                if(currentLoader) currentLoader.remove();
+                const loaderEl = document.getElementById(loaderId);
+                if(loaderEl) loaderEl.remove();
                 console.error(e);
             }
         }
