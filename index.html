@@ -256,7 +256,7 @@
                         placeholder="Ask Askme" 
                         autocomplete="off"
                         class="flex-1 bg-transparent text-[16px] text-zinc-900 placeholder-zinc-600 outline-none border-none px-2 py-3"
-                        onkeypress="if(event.key === 'Enter') dispatchAskmeAI()"
+                        onkeydown="if(event.key === 'Enter') { event.preventDefault(); dispatchAskmeAI(); }"
                     >
 
                     <div class="flex items-center space-x-1.5">
