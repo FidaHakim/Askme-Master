@@ -14,12 +14,14 @@
             color: #1f1f1f;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
-            overflow: hidden;
-            padding-bottom: env(safe-area-inset-bottom);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Ambient Glassmorphism Layers */
         .ambient-panel {
             background: rgba(255, 255, 255, 0.45) !important;
             backdrop-filter: blur(20px) saturate(140%) !important;
@@ -70,9 +72,15 @@
             -webkit-user-select: none;
             user-select: none;
         }
+
+        /* Keyboard fix for mobile */
+        footer {
+            flex-shrink: 0;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
     </style>
 </head>
-<body class="flex flex-col h-screen w-screen justify-between select-none overflow-hidden">
+<body class="select-none overflow-hidden">
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-black/20 z-40 opacity-0 backdrop-blur-[2px]"></div>
 
@@ -121,7 +129,7 @@
         </div>
     </div>
 
-    <div class="flex-1 flex flex-col justify-between relative h-full w-full">
+    <div class="flex-1 flex flex-col h-full w-full overflow-hidden">
         
         <header class="w-full px-4 pt-4 pb-2 flex justify-between items-center bg-transparent z-30">
             <button onclick="toggleSidebar()" class="p-2 text-zinc-800 active:scale-95 transition rounded-full hover:bg-white/20">
@@ -227,8 +235,8 @@
             <div id="message-feed-stream" class="hidden space-y-6 pt-2 pb-8 w-full text-zinc-900"></div>
         </main>
 
-        <footer class="p-3 bg-transparent z-20 pb-[calc(12px+env(safe-area-inset-bottom))]">
-            <div class="rounded-[30px] px-2 py-2 flex flex-col shadow-lg mx-auto focus-within:ring-4 focus-within:ring-white/20 transition-all ambient-panel w-full max-w-2xl">
+        <footer class="p-3 bg-transparent z-20">
+            <div class="rounded-[30px] px-2 py-1.5 flex flex-col shadow-lg mx-auto focus-within:ring-4 focus-within:ring-white/20 transition-all ambient-panel w-full">
                 
                 <input type="file" id="attachment-file-engine" class="hidden" onchange="handleFileSelected(this)">
                 
@@ -238,8 +246,8 @@
                     <button onclick="clearFileStaging()" class="text-zinc-500 hover:text-red-500 font-bold px-1 text-sm">×</button>
                 </div>
 
-                <div class="flex items-center w-full min-h-[44px]">
-                    <button onclick="document.getElementById('attachment-file-engine').click()" class="p-3 text-zinc-800 hover:text-blue-600 transition rounded-full hover:bg-white/30">
+                <div class="flex items-center w-full">
+                    <button onclick="document.getElementById('attachment-file-engine').click()" class="p-2 text-zinc-800 hover:text-blue-600 transition rounded-full hover:bg-white/30">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                     </button>
                     
@@ -248,15 +256,15 @@
                         type="text" 
                         placeholder="Ask Askme" 
                         autocomplete="off"
-                        class="flex-1 bg-transparent text-[16px] text-zinc-900 placeholder-zinc-600 outline-none border-none px-3 py-3 w-full"
+                        class="flex-1 bg-transparent text-[16px] text-zinc-900 placeholder-zinc-600 outline-none border-none px-3 py-3 w-full min-w-0"
                         onkeypress="if(event.key === 'Enter') dispatchAskmeAI()"
                     >
 
                     <div class="flex items-center space-x-1">
-                        <button id="voice-activation-key" onclick="toggleVoiceTransmission()" class="p-3 text-zinc-800 rounded-full transition hover:bg-white/30">
+                        <button id="voice-activation-key" onclick="toggleVoiceTransmission()" class="p-2 text-zinc-800 rounded-full transition hover:bg-white/30">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
                         </button>
-                        <button onclick="dispatchAskmeAI()" class="w-[44px] h-[44px] bg-white/60 hover:bg-white/80 border border-white/40 active:scale-95 transition rounded-full flex items-center justify-center space-x-0.5 text-zinc-800 shadow-sm">
+                        <button onclick="dispatchAskmeAI()" class="w-[40px] h-[40px] bg-white/60 hover:bg-white/80 border border-white/40 active:scale-95 transition rounded-full flex items-center justify-center space-x-0.5 text-zinc-800 shadow-sm flex-shrink-0">
                             <span class="w-[2px] h-4 bg-zinc-800 rounded-full"></span>
                             <span class="w-[2px] h-5 bg-zinc-800 rounded-full mx-[1px]"></span>
                             <span class="w-[2px] h-3 bg-zinc-800 rounded-full"></span>
@@ -264,8 +272,13 @@
                     </div>
                 </div>
             </div>
+            <div class="w-24 h-[3px] bg-white/30 mx-auto mt-3 rounded-full backdrop-blur-sm"></div>
         </footer>
 
+    </div>
+
+    <div id="action-popup-menu" class="hidden fixed z-50 rounded-2xl p-1.5 min-w-[120px] shadow-xl ambient-panel border border-white/50 transform scale-95 opacity-0 transition-all duration-150 ease-out pointer-events-none">
+        <div class="flex flex-col space-y-0.5" id="popup-actions-wrapper"></div>
     </div>
 
     <script>
@@ -281,27 +294,39 @@
         const thinkingSubmenu = document.getElementById('thinking-submenu');
         const thinkingArrow = document.getElementById('thinking-arrow');
         const historyContainer = document.getElementById('history-item-list');
+        const actionPopup = document.getElementById('action-popup-menu');
+        const popupWrapper = document.getElementById('popup-actions-wrapper');
 
         let selectedConfigModel = "google/gemini-3.5-flash";
+        let thinkingSetting = "Standard";
         let liveSessionsDatastore = {}; 
         let currentActiveSessionId = null;
         let stagedFileData = null;
+        let isLibraryModeActive = false;
         let activeRecordingState = false;
         let audioVoiceRecognizer = null;
+        let touchTimer = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             evaluateUserIdentityState();
             setupVoiceRecognitionEngine();
+            document.addEventListener('click', hideActionPopupMenu);
+            if (scroller) scroller.addEventListener('scroll', hideActionPopupMenu);
         });
 
         async function evaluateUserIdentityState() {
+            const avatar = document.getElementById('user-avatar');
+            const nameField = document.getElementById('user-name');
+            const statusField = document.getElementById('user-status');
+
             if (puter.auth.isSignedIn()) {
                 const profile = await puter.auth.getUser();
-                document.getElementById('user-name').innerText = profile.username;
-                document.getElementById('user-status').innerText = "Log Out Account";
-                const avatar = document.getElementById('user-avatar');
-                avatar.innerText = profile.username.substring(0,2).toUpperCase();
-                avatar.className = "w-8 h-8 rounded-full bg-green-600/80 flex items-center justify-center font-bold text-xs text-white backdrop-blur-sm";
+                if (nameField) nameField.innerText = profile.username;
+                if (statusField) statusField.innerText = "Log Out Account";
+                if (avatar) {
+                    avatar.innerText = profile.username.substring(0,2).toUpperCase();
+                    avatar.className = "w-8 h-8 rounded-full bg-green-600/80 flex items-center justify-center font-bold text-xs text-white backdrop-blur-sm";
+                }
                 try {
                     const savedCloudData = await puter.kv.get('askme_sessions_vault');
                     if (savedCloudData) {
@@ -334,11 +359,12 @@
             audioVoiceRecognizer.lang = 'en-US';
             audioVoiceRecognizer.onresult = (event) => {
                 const vocalInputTranscript = event.results[0][0].transcript;
-                inputField.value = (inputField.value + " " + vocalInputTranscript).trim();
+                if (inputField) inputField.value = (inputField.value + " " + vocalInputTranscript).trim();
             };
             audioVoiceRecognizer.onend = () => {
                 activeRecordingState = false;
-                document.getElementById('voice-activation-key').classList.remove('pulse-mic', 'text-red-500');
+                const micBtn = document.getElementById('voice-activation-key');
+                if (micBtn) micBtn.classList.remove('pulse-mic', 'text-red-500');
             };
         }
 
@@ -347,16 +373,44 @@
             const vocalIcon = document.getElementById('voice-activation-key');
             if (!activeRecordingState) {
                 activeRecordingState = true;
-                vocalIcon.classList.add('pulse-mic', 'text-red-500');
+                if (vocalIcon) vocalIcon.classList.add('pulse-mic', 'text-red-500');
                 audioVoiceRecognizer.start();
             } else {
                 activeRecordingState = false;
-                vocalIcon.classList.remove('pulse-mic', 'text-red-500');
+                if (vocalIcon) vocalIcon.classList.remove('pulse-mic', 'text-red-500');
                 audioVoiceRecognizer.stop();
             }
         }
 
+        function handleFileSelected(inputElement) {
+            const selectedFileObj = inputElement.files[0];
+            if (!selectedFileObj) return;
+            const fileReaderChannel = new FileReader();
+            fileReaderChannel.onload = (e) => {
+                stagedFileData = {
+                    name: selectedFileObj.name,
+                    size: selectedFileObj.size,
+                    type: selectedFileObj.type,
+                    rawPayloadContent: e.target.result
+                };
+                const metaString = document.getElementById('file-meta-string');
+                const previewBay = document.getElementById('file-preview-bay');
+                if (metaString) metaString.innerText = `${stagedFileData.name} (${Math.round(stagedFileData.size / 1024)} KB)`;
+                if (previewBay) previewBay.classList.remove('hidden');
+            };
+            fileReaderChannel.readAsText(selectedFileObj);
+        }
+
+        function clearFileStaging() {
+            stagedFileData = null;
+            const fileEngine = document.getElementById('attachment-file-engine');
+            const previewBay = document.getElementById('file-preview-bay');
+            if (fileEngine) fileEngine.value = "";
+            if (previewBay) previewBay.classList.add('hidden');
+        }
+
         function toggleSidebar() {
+            if (!sidebar || !overlay) return;
             if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
@@ -369,26 +423,79 @@
         }
 
         function toggleDropdownMenu() {
-            dropdown.classList.toggle('hidden');
-            arrowIcon.style.transform = dropdown.classList.contains('hidden') ? "rotate(0deg)" : "rotate(180deg)";
+            if (!dropdown || !arrowIcon) return;
+            const hidden = dropdown.classList.toggle('hidden');
+            arrowIcon.style.transform = hidden ? "rotate(0deg)" : "rotate(180deg)";
+        }
+
+        function toggleThinkingSubmenu(event) {
+            if (event) event.stopPropagation();
+            if (!thinkingSubmenu || !thinkingArrow) return;
+            if (thinkingSubmenu.style.maxHeight === "0px" || thinkingSubmenu.classList.contains('hidden')) {
+                thinkingSubmenu.classList.remove('hidden');
+                thinkingSubmenu.style.maxHeight = "200px";
+                thinkingArrow.style.transform = "rotate(0deg)";
+            } else {
+                thinkingSubmenu.style.maxHeight = "0px";
+                thinkingArrow.style.transform = "rotate(180deg)";
+                setTimeout(() => thinkingSubmenu.classList.add('hidden'), 200);
+            }
+        }
+
+        function selectModel(modelName) {
+            if (modelLabel) modelLabel.innerText = "Askme " + modelName;
+            document.querySelectorAll('.check-icon').forEach(icon => icon.classList.add('invisible'));
+            if(modelName === '3.1 Flash-Lite') { document.getElementById('chk-lite').classList.remove('invisible'); selectedConfigModel = "google/gemini-3.1-flash-lite"; }
+            else if(modelName === '3.5 Flash') { document.getElementById('chk-flash').classList.remove('invisible'); selectedConfigModel = "google/gemini-3.5-flash"; }
+            else if(modelName === '3.1 Pro') { document.getElementById('chk-pro').classList.remove('invisible'); selectedConfigModel = "google/gemini-3.1-pro"; }
+            toggleDropdownMenu();
+        }
+
+        function selectThinkingLevel(level) {
+            thinkingSetting = level;
+            document.querySelectorAll('.thinking-check').forEach(i => i.classList.add('invisible'));
+            if(level === 'Standard') document.getElementById('chk-standard').classList.remove('invisible');
+            if(level === 'Extended') document.getElementById('chk-extended').classList.remove('invisible');
+            toggleDropdownMenu();
         }
 
         function createNewChat() {
             currentActiveSessionId = null;
-            stream.innerHTML = ''; 
-            stream.classList.add('hidden');
-            splashView.classList.remove('hidden');
-            inputField.value = '';
-            if(!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+            if (stream) { stream.innerHTML = ''; stream.classList.add('hidden'); }
+            if (splashView) splashView.classList.remove('hidden');
+            if (inputField) inputField.value = '';
+            clearFileStaging();
+            if(sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+        }
+
+        function filterChatHistory() {
+            const currentSearchQuery = document.getElementById('search-chat-input').value.toLowerCase();
+            historyContainer.querySelectorAll('.dynamic-history-item').forEach(item => {
+                item.classList.toggle('hidden', !item.innerText.toLowerCase().includes(currentSearchQuery));
+            });
+        }
+
+        function toggleLibraryMode() {
+            isLibraryModeActive = !isLibraryModeActive;
+            const toggleBtn = document.getElementById('library-toggle-btn');
+            const btnText = document.getElementById('library-btn-text');
+            const sectionTitle = document.getElementById('section-title-label');
+            toggleBtn.classList.toggle('bg-blue-600/80', isLibraryModeActive);
+            toggleBtn.classList.toggle('text-white', isLibraryModeActive);
+            btnText.innerText = isLibraryModeActive ? "Recents" : "Library";
+            sectionTitle.innerText = isLibraryModeActive ? "Library Vault" : "Recents";
+            syncHistorySidebarList();
         }
 
         function syncHistorySidebarList() {
-            historyContainer.innerHTML = '';
+            if (!historyContainer) return;
             const keys = Object.keys(liveSessionsDatastore);
-            if (keys.length === 0) historyContainer.innerHTML = '<div class="px-4 py-3 text-xs text-zinc-500 italic">No recent chats.</div>';
+            const emptyNotice = document.getElementById('empty-history-notice');
+            emptyNotice.classList.toggle('hidden', keys.length > 0);
+            historyContainer.querySelectorAll('.dynamic-history-item').forEach(el => el.remove());
             [...keys].reverse().forEach(id => {
                 const row = document.createElement('div');
-                row.className = "w-full px-4 py-3 text-[14.5px] cursor-pointer hover:bg-white/40 rounded-xl transition";
+                row.className = "dynamic-history-item w-full text-ellipsis overflow-hidden whitespace-nowrap px-4 py-3 text-[14.5px] cursor-pointer hover:bg-white/40 rounded-xl transition mb-0.5";
                 row.innerText = liveSessionsDatastore[id].title;
                 row.onclick = () => loadActiveSession(id);
                 historyContainer.appendChild(row);
@@ -399,21 +506,51 @@
             return text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>').replace(/\n/g, '<br>');
         }
 
+        function showActionPopupMenu(x, y, role, index) {
+            popupWrapper.innerHTML = `<button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition">Copy</button>`;
+            actionPopup.classList.remove('hidden');
+            actionPopup.style.left = `${Math.min(x, window.innerWidth - 140)}px`;
+            actionPopup.style.top = `${y}px`;
+            actionPopup.classList.add('scale-100', 'opacity-100');
+        }
+
+        function hideActionPopupMenu() {
+            actionPopup.classList.add('hidden', 'scale-95', 'opacity-0');
+        }
+
+        function copyMessageToClipboard(index) {
+            navigator.clipboard.writeText(liveSessionsDatastore[currentActiveSessionId].messages[index].content);
+            hideActionPopupMenu();
+        }
+
+        function loadActiveSession(id) {
+            currentActiveSessionId = id;
+            if (splashView) splashView.classList.add('hidden');
+            stream.classList.remove('hidden');
+            stream.innerHTML = '';
+            liveSessionsDatastore[id].messages.forEach((msg, idx) => {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = `<div class="msg-bubble px-4 py-3 rounded-2xl ${msg.role === 'user' ? 'bg-white/40 ml-auto' : ''}">${renderFormattedContent(msg.content)}</div>`;
+                stream.appendChild(wrapper);
+            });
+            toggleSidebar();
+            scroller.scrollTop = scroller.scrollHeight;
+        }
+
         async function dispatchAskmeAI() {
             let val = inputField.value.trim();
-            if(!val) return;
+            if(!val && !stagedFileData) return;
             inputField.value = '';
-            splashView.classList.add('hidden');
+            if (splashView) splashView.classList.add('hidden');
             stream.classList.remove('hidden');
             if (currentActiveSessionId === null) currentActiveSessionId = "session_" + Date.now();
             if (!liveSessionsDatastore[currentActiveSessionId]) liveSessionsDatastore[currentActiveSessionId] = { title: val, messages: [] };
             
             liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "user", content: val });
-            stream.innerHTML += `<div class="text-right"><div class="msg-bubble inline-block px-4 py-3 rounded-2xl bg-white/40">${val}</div></div>`;
-            
             const response = await puter.ai.chat(liveSessionsDatastore[currentActiveSessionId].messages, { model: selectedConfigModel });
             liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "assistant", content: response });
             
+            stream.innerHTML += `<div class="text-right"><div class="msg-bubble inline-block px-4 py-3 rounded-2xl bg-white/40">${val}</div></div>`;
             stream.innerHTML += `<div class="msg-bubble px-4 py-3 rounded-2xl">${renderFormattedContent(response)}</div>`;
             scroller.scrollTop = scroller.scrollHeight;
             syncHistorySidebarList();
