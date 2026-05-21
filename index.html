@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,6 +85,7 @@
         <div class="space-y-4">
             <div class="px-3 py-1 text-xl font-normal tracking-wide text-zinc-800 flex justify-between items-center">
                 <span>Askme</span>
+                <!-- Library Toggle Button -->
                 <button onclick="toggleLibraryMode()" id="library-toggle-btn" class="text-xs flex items-center space-x-1 bg-white/60 hover:bg-white/80 transition px-2.5 py-1 rounded-full font-medium text-zinc-700 border border-white/40 shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
                     <span id="library-btn-text">Library</span>
@@ -99,6 +101,7 @@
                 </button>
             </div>
 
+            <!-- Search Chat Component -->
             <div class="px-2 pt-1">
                 <div class="relative flex items-center bg-white/40 focus-within:bg-white/60 rounded-xl px-2.5 py-2 transition border border-white/30">
                     <svg class="w-4 h-4 text-zinc-600 mr-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -213,6 +216,7 @@
 
         <main id="scroll-workspace" class="flex-1 overflow-y-auto px-6 no-scrollbar flex flex-col relative">
             <div id="splash-view" class="my-auto flex flex-col items-center justify-center text-center space-y-6">
+                <!-- Clean Chat Sparkle Loop Logo -->
                 <svg class="w-[54px] h-[54px] drop-shadow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19L3 21L5 19.1414C7.03212 20.933 9.71217 22 12 22Z" stroke="url(#askme-sparkle-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M12 8V16M8 12H16" stroke="url(#askme-sparkle-gradient)" stroke-width="2" stroke-linecap="round"/>
@@ -232,7 +236,7 @@
         </main>
 
         <footer class="p-4 bg-transparent z-20">
-            <div class="rounded-[32px] px-4 py-2 flex flex-col shadow-lg max-w-xl mx-auto focus-within:ring-4 focus-within:ring-white/20 transition-all ambient-panel">
+            <div class="rounded-[32px] px-2 py-2 flex flex-col shadow-lg max-w-full mx-auto focus-within:ring-4 focus-within:ring-white/20 transition-all ambient-panel">
                 
                 <input type="file" id="attachment-file-engine" class="hidden" onchange="handleFileSelected(this)">
                 
@@ -243,7 +247,7 @@
                 </div>
 
                 <div class="flex items-center w-full">
-                    <button onclick="document.getElementById('attachment-file-engine').click()" class="flex-shrink-0 p-2.5 text-zinc-800 hover:text-blue-600 transition rounded-full hover:bg-white/30">
+                    <button onclick="document.getElementById('attachment-file-engine').click()" class="p-2.5 text-zinc-800 hover:text-blue-600 transition rounded-full hover:bg-white/30">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                     </button>
                     
@@ -256,11 +260,11 @@
                         onkeypress="if(event.key === 'Enter') dispatchAskmeAI()"
                     >
 
-                    <div class="flex flex-shrink-0 items-center space-x-1.5">
+                    <div class="flex items-center space-x-1.5">
                         <button id="voice-activation-key" onclick="toggleVoiceTransmission()" class="p-2.5 text-zinc-800 rounded-full transition hover:bg-white/30">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
                         </button>
-                        <button onclick="dispatchAskmeAI()" class="w-[42px] h-[42px] flex-shrink-0 bg-white/60 hover:bg-white/80 border border-white/40 active:scale-95 transition rounded-full flex items-center justify-center space-x-0.5 text-zinc-800 shadow-sm">
+                        <button onclick="dispatchAskmeAI()" class="w-[42px] h-[42px] bg-white/60 hover:bg-white/80 border border-white/40 active:scale-95 transition rounded-full flex items-center justify-center space-x-0.5 text-zinc-800 shadow-sm">
                             <span class="w-[2px] h-4 bg-zinc-800 rounded-full"></span>
                             <span class="w-[2px] h-5 bg-zinc-800 rounded-full mx-[1px]"></span>
                             <span class="w-[2px] h-3 bg-zinc-800 rounded-full"></span>
@@ -273,6 +277,7 @@
 
     </div>
 
+    <!-- Proper Context Menu Action Popup -->
     <div id="action-popup-menu" class="hidden fixed z-50 rounded-2xl p-1.5 min-w-[120px] shadow-xl ambient-panel border border-white/50 transform scale-95 opacity-0 transition-all duration-150 ease-out pointer-events-none">
         <div class="flex flex-col space-y-0.5" id="popup-actions-wrapper"></div>
     </div>
@@ -309,6 +314,8 @@
         document.addEventListener("DOMContentLoaded", () => {
             evaluateUserIdentityState();
             setupVoiceRecognitionEngine();
+            
+            // Global listener to close context popup on clicking elsewhere
             document.addEventListener('click', hideActionPopupMenu);
             if (scroller) {
                 scroller.addEventListener('scroll', hideActionPopupMenu);
@@ -362,7 +369,10 @@
 
         function setupVoiceRecognitionEngine() {
             const SpeechEngineClass = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechEngineClass) return;
+            if (!SpeechEngineClass) {
+                console.warn("Speech recognition systems are missing in this layout platform channel.");
+                return;
+            }
             audioVoiceRecognizer = new SpeechEngineClass();
             audioVoiceRecognizer.continuous = false;
             audioVoiceRecognizer.interimResults = false;
@@ -370,7 +380,9 @@
 
             audioVoiceRecognizer.onresult = (event) => {
                 const vocalInputTranscript = event.results[0][0].transcript;
-                if (inputField) inputField.value = (inputField.value + " " + vocalInputTranscript).trim();
+                if (inputField) {
+                    inputField.value = (inputField.value + " " + vocalInputTranscript).trim();
+                }
             };
 
             audioVoiceRecognizer.onend = () => {
@@ -378,10 +390,17 @@
                 const micBtn = document.getElementById('voice-activation-key');
                 if (micBtn) micBtn.classList.remove('pulse-mic', 'text-red-500');
             };
+
+            audioVoiceRecognizer.onerror = (err) => {
+                console.error("Vocal stream evaluation block drop structural fault", err);
+            };
         }
 
         function toggleVoiceTransmission() {
-            if (!audioVoiceRecognizer) return;
+            if (!audioVoiceRecognizer) {
+                alert("Voice runtime translation engine is unsupported on this processing canvas platform.");
+                return;
+            }
             const vocalIcon = document.getElementById('voice-activation-key');
             if (!activeRecordingState) {
                 activeRecordingState = true;
@@ -400,7 +419,12 @@
 
             const fileReaderChannel = new FileReader();
             fileReaderChannel.onload = (e) => {
-                stagedFileData = { name: selectedFileObj.name, size: selectedFileObj.size, type: selectedFileObj.type, rawPayloadContent: e.target.result };
+                stagedFileData = {
+                    name: selectedFileObj.name,
+                    size: selectedFileObj.size,
+                    type: selectedFileObj.type,
+                    rawPayloadContent: e.target.result
+                };
                 const metaString = document.getElementById('file-meta-string');
                 const previewBay = document.getElementById('file-preview-bay');
                 if (metaString) metaString.innerText = `${stagedFileData.name} (${Math.round(stagedFileData.size / 1024)} KB)`;
@@ -478,14 +502,23 @@
         function selectThinkingLevel(level) {
             thinkingSetting = level;
             document.querySelectorAll('.thinking-check').forEach(i => i.classList.add('invisible'));
-            if(level === 'Standard') { const icon = document.getElementById('chk-standard'); if (icon) icon.classList.remove('invisible'); }
-            if(level === 'Extended') { const icon = document.getElementById('chk-extended'); if (icon) icon.classList.remove('invisible'); }
+            if(level === 'Standard') {
+                const icon = document.getElementById('chk-standard');
+                if (icon) icon.classList.remove('invisible');
+            }
+            if(level === 'Extended') {
+                const icon = document.getElementById('chk-extended');
+                if (icon) icon.classList.remove('invisible');
+            }
             toggleDropdownMenu();
         }
 
         function createNewChat() {
             currentActiveSessionId = null;
-            if (stream) { stream.innerHTML = ''; stream.classList.add('hidden'); }
+            if (stream) {
+                stream.innerHTML = '';
+                stream.classList.add('hidden');
+            }
             if (splashView) splashView.classList.remove('hidden');
             if (inputField) inputField.value = '';
             clearFileStaging();
@@ -508,6 +541,22 @@
                     item.classList.add('hidden');
                 }
             });
+
+            const emptyNotice = document.getElementById('empty-history-notice');
+            if (matchedCount === 0 && Object.keys(liveSessionsDatastore).length > 0) {
+                if (!emptyNotice) {
+                    const notice = document.createElement('div');
+                    notice.id = 'empty-history-notice';
+                    notice.className = "px-4 py-3 text-xs text-zinc-500 italic font-normal";
+                    notice.innerText = "No matching chats found.";
+                    historyContainer.appendChild(notice);
+                } else {
+                    emptyNotice.innerText = "No matching chats found.";
+                    emptyNotice.classList.remove('hidden');
+                }
+            } else if (Object.keys(liveSessionsDatastore).length > 0) {
+                if (emptyNotice) emptyNotice.classList.add('hidden');
+            }
         }
 
         function toggleLibraryMode() {
@@ -517,11 +566,17 @@
             const sectionTitle = document.getElementById('section-title-label');
             
             if (isLibraryModeActive) {
-                if (toggleBtn) { toggleBtn.classList.remove('bg-white/60', 'text-zinc-700'); toggleBtn.classList.add('bg-blue-600/80', 'text-white'); }
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('bg-white/60', 'text-zinc-700');
+                    toggleBtn.classList.add('bg-blue-600/80', 'text-white');
+                }
                 if (btnText) btnText.innerText = "Recents";
                 if (sectionTitle) sectionTitle.innerText = "Library Vault";
             } else {
-                if (toggleBtn) { toggleBtn.classList.remove('bg-blue-600/80', 'text-white'); toggleBtn.classList.add('bg-white/60', 'text-zinc-700'); }
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('bg-blue-600/80', 'text-white');
+                    toggleBtn.classList.add('bg-white/60', 'text-zinc-700');
+                }
                 if (btnText) btnText.innerText = "Library";
                 if (sectionTitle) sectionTitle.innerText = "Recents";
             }
@@ -533,7 +588,13 @@
             const emptyNotice = document.getElementById('empty-history-notice');
             const keys = Object.keys(liveSessionsDatastore);
             
-            if(keys.length === 0) { if(emptyNotice) { emptyNotice.innerText = "No recent chats."; emptyNotice.classList.remove('hidden'); } return; }
+            if(keys.length === 0) {
+                if(emptyNotice) {
+                    emptyNotice.innerText = "No recent chats. Start typing below!";
+                    emptyNotice.classList.remove('hidden');
+                }
+                return;
+            }
             if(emptyNotice) emptyNotice.classList.add('hidden');
 
             const oldItems = historyContainer.querySelectorAll('.dynamic-history-item');
@@ -542,48 +603,109 @@
             [...keys].reverse().forEach(id => {
                 const sessionTitle = liveSessionsDatastore[id].title;
                 const row = document.createElement('div');
-                row.className = "dynamic-history-item w-full text-ellipsis overflow-hidden whitespace-nowrap px-4 py-3 text-[14.5px] font-normal text-zinc-800 cursor-pointer hover:bg-white/40 rounded-xl transition mb-0.5";
+                
+                if (isLibraryModeActive) {
+                    row.className = "dynamic-history-item w-full text-ellipsis overflow-hidden whitespace-nowrap px-4 py-3 text-[14.5px] font-normal text-blue-900 cursor-pointer bg-white/40 hover:bg-white/60 rounded-xl transition border-l-4 border-blue-500 mb-0.5 shadow-sm";
+                } else {
+                    row.className = "dynamic-history-item w-full text-ellipsis overflow-hidden whitespace-nowrap px-4 py-3 text-[14.5px] font-normal text-zinc-800 cursor-pointer hover:bg-white/40 rounded-xl transition mb-0.5";
+                }
+                
                 row.innerText = sessionTitle.length > 26 ? sessionTitle.substring(0, 26) + "..." : sessionTitle;
                 row.onclick = () => loadActiveSession(id);
                 historyContainer.appendChild(row);
             });
+
+            const searchInput = document.getElementById('search-chat-input');
+            if(searchInput && searchInput.value.trim() !== "") {
+                filterChatHistory();
+            }
         }
 
         function renderFormattedContent(text) {
             if (!text) return "";
-            if (text.includes('<img') || text.includes('<div') || text.includes('<span')) return text;
-            return text.replace(/\*\.(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>').replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>').replace(/\n/g, '<br>');
+            if (text.includes('<img') || text.includes('<div') || text.includes('<span')) {
+                return text;
+            }
+            
+            return text
+                .replace(/\*\.(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
+                .replace(/\n/g, '<br>');
         }
 
+        // Long press handling registration pipeline
         function registerLongPressEvents(element, role, index) {
             if (!element) return;
             const startHandler = (e) => {
+                // Determine touch or mouse position parameters safely
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                touchTimer = setTimeout(() => { if (navigator.vibrate) navigator.vibrate(12); showActionPopupMenu(clientX, clientY, role, index); }, 550);
+                
+                touchTimer = setTimeout(() => {
+                    triggerVibrationFeedback();
+                    showActionPopupMenu(clientX, clientY, role, index);
+                }, 550); // Standard long press duration threshold metric
             };
-            const cancelHandler = () => { if (touchTimer) clearTimeout(touchTimer); };
+
+            const cancelHandler = () => {
+                if (touchTimer) clearTimeout(touchTimer);
+            };
+
             element.addEventListener('touchstart', startHandler, { passive: true });
             element.addEventListener('mousedown', startHandler);
+            
             element.addEventListener('touchend', cancelHandler);
             element.addEventListener('touchmove', cancelHandler);
             element.addEventListener('mouseleave', cancelHandler);
             element.addEventListener('mouseup', cancelHandler);
         }
 
+        function triggerVibrationFeedback() {
+            if (navigator.vibrate) navigator.vibrate(12);
+        }
+
         function showActionPopupMenu(x, y, role, index) {
             if (!popupWrapper || !actionPopup) return;
             popupWrapper.innerHTML = '';
+            
+            // Build Context Actions based on node structural source identity mapping
             if (role === 'user') {
-                popupWrapper.innerHTML += `<button onclick="initMessageEditWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2"><span>Edit</span></button>
-                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2"><span>Copy</span></button>`;
+                popupWrapper.innerHTML += `
+                    <button onclick="initMessageEditWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Edit</span>
+                    </button>
+                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Copy</span>
+                    </button>
+                `;
             } else {
-                popupWrapper.innerHTML += `<button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2"><span>Copy</span></button>
-                    <button onclick="triggerMessageRetryWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2"><span>Retry</span></button>`;
+                popupWrapper.innerHTML += `
+                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Copy</span>
+                    </button>
+                    <button onclick="triggerMessageRetryWorkflow(${index})" class="w-full text-left px-3 py-2 text-sm text-zinc-800 hover:bg-white/50 rounded-xl transition font-medium flex items-center space-x-2">
+                        <span>Retry</span>
+                    </button>
+                `;
             }
+
+            // Screen boundary protection calculations layout channel
             actionPopup.classList.remove('hidden');
-            actionPopup.style.left = `${Math.min(x, window.innerWidth - 140 - 16)}px`;
-            actionPopup.style.top = `${Math.min(y, window.innerHeight - 80 - 16)}px`;
+            const popupWidth = 140;
+            const popupHeight = 80;
+            
+            let posX = x;
+            let posY = y;
+            
+            if (posX + popupWidth > window.innerWidth) posX = window.innerWidth - popupWidth - 16;
+            if (posY + popupHeight > window.innerHeight) posY = window.innerHeight - popupHeight - 16;
+            if (posX < 16) posX = 16;
+            if (posY < 16) posY = 16;
+
+            actionPopup.style.left = `${posX}px`;
+            actionPopup.style.top = `${posY}px`;
+            
+            // Trigger beautiful ambient visibility transition parameters
             actionPopup.classList.remove('pointer-events-none', 'scale-95', 'opacity-0');
             actionPopup.classList.add('scale-100', 'opacity-100');
         }
@@ -592,7 +714,64 @@
             if (!actionPopup) return;
             actionPopup.classList.remove('scale-100', 'opacity-100');
             actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
-            setTimeout(() => { if (actionPopup.classList.contains('opacity-0')) actionPopup.classList.add('hidden'); }, 150);
+            setTimeout(() => {
+                if (actionPopup.classList.contains('opacity-0')) actionPopup.classList.add('hidden');
+            }, 150);
+        }
+
+        function copyMessageToClipboard(index) {
+            if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
+            const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
+            if (!messageObj) return;
+            
+            let pureText = messageObj.content;
+            if (pureText.includes('<img')) {
+                const srcMatch = pureText.match(/src=["'](.*?)["']/);
+                if (srcMatch) pureText = srcMatch[1];
+            }
+            
+            navigator.clipboard.writeText(pureText).then(() => {
+                // Handled gracefully without invasive alerts interrupting the UI
+            }).catch(err => {
+                console.error("Could not copy layout text: ", err);
+            });
+            hideActionPopupMenu();
+        }
+
+        function initMessageEditWorkflow(index) {
+            if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
+            const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
+            if (!messageObj) return;
+
+            hideActionPopupMenu();
+            setTimeout(() => {
+                const updatedPrompt = prompt("Edit your message, Boss:", messageObj.content);
+                if (updatedPrompt === null || updatedPrompt.trim() === "") return;
+
+                liveSessionsDatastore[currentActiveSessionId].messages = liveSessionsDatastore[currentActiveSessionId].messages.slice(0, index);
+                if (inputField) {
+                    inputField.value = updatedPrompt.trim();
+                    dispatchAskmeAI();
+                }
+            }, 50);
+        }
+
+        function triggerMessageRetryWorkflow(index) {
+            if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
+            
+            hideActionPopupMenu();
+            liveSessionsDatastore[currentActiveSessionId].messages = liveSessionsDatastore[currentActiveSessionId].messages.slice(0, index);
+            
+            const targetUserPromptIndex = index - 1;
+            if (targetUserPromptIndex < 0) return;
+            
+            const standardPromptText = liveSessionsDatastore[currentActiveSessionId].messages[targetUserPromptIndex].content;
+            liveSessionsDatastore[currentActiveSessionId].messages.pop();
+            
+            if (inputField) {
+                inputField.value = standardPromptText;
+                dispatchAskmeAI();
+            }
         }
 
         function loadActiveSession(id) {
@@ -601,19 +780,30 @@
             if (splashView) splashView.classList.add('hidden');
             stream.classList.remove('hidden');
             stream.innerHTML = '';
-            liveSessionsDatastore[id].messages.forEach((msg, idx) => {
+
+            const activeHistory = liveSessionsDatastore[id].messages;
+            activeHistory.forEach((msg, idx) => {
                 const wrapper = document.createElement('div');
                 if(msg.role === 'user') {
                     wrapper.className = "space-y-1 text-right group relative";
-                    wrapper.innerHTML = `<div class="msg-bubble inline-block px-4 py-3 rounded-[20px] rounded-tr-sm text-[16px] max-w-[85%] text-left shadow-sm ambient-card text-zinc-900 cursor-pointer transition active:scale-[0.99]">${msg.content}</div>`;
+                    wrapper.innerHTML = `
+                        <div class="msg-bubble inline-block px-4 py-3 rounded-[20px] rounded-tr-sm text-[16px] max-w-[85%] text-left shadow-sm ambient-card text-zinc-900 cursor-pointer transition active:scale-[0.99]">
+                            ${msg.content}
+                        </div>
+                    `;
                     registerLongPressEvents(wrapper.querySelector('.msg-bubble'), 'user', idx);
                 } else {
                     wrapper.className = "space-y-1 pt-2 group relative";
-                    wrapper.innerHTML = `<div class="msg-bubble text-[16px] leading-relaxed font-normal text-zinc-900 pr-4 drop-shadow-sm cursor-pointer transition rounded-xl p-1 hover:bg-white/10 active:scale-[0.99]">${renderFormattedContent(msg.content)}</div>`;
+                    wrapper.innerHTML = `
+                        <div class="msg-bubble text-[16px] leading-relaxed font-normal text-zinc-900 pr-4 drop-shadow-sm cursor-pointer transition rounded-xl p-1 hover:bg-white/10 active:scale-[0.99]">
+                            ${renderFormattedContent(msg.content)}
+                        </div>
+                    `;
                     registerLongPressEvents(wrapper.querySelector('.msg-bubble'), 'assistant', idx);
                 }
                 stream.appendChild(wrapper);
             });
+            
             if(sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
             scroller.scrollTop = scroller.scrollHeight;
         }
@@ -622,61 +812,113 @@
             if (!inputField || !stream || !scroller) return;
             let val = inputField.value.trim();
             if(!val && !stagedFileData) return;
+
             let isImageRequest = /\b(generate|create|make|draw|show)\b.*\b(image|picture|photo|artwork|illustration|logo)\b/i.test(val);
+
             inputField.value = '';
             if (splashView) splashView.classList.add('hidden');
             stream.classList.remove('hidden');
+
             if (currentActiveSessionId === null) {
                 currentActiveSessionId = "session_" + Date.now();
-                liveSessionsDatastore[currentActiveSessionId] = { title: val || (stagedFileData ? `File: ${stagedFileData.name}` : "Untitled Session"), messages: [] };
+                liveSessionsDatastore[currentActiveSessionId] = {
+                    title: val || (stagedFileData ? `File: ${stagedFileData.name}` : "Untitled Session"),
+                    messages: []
+                };
             }
+
             let processingValueString = val;
             let displayPromptNodeText = val;
+
             if (stagedFileData) {
                 processingValueString = `[Attached Document/Data Package - Name: "${stagedFileData.name}", MIME-Type: "${stagedFileData.type}"]\n\nContent Base Context/Payload:\n${stagedFileData.rawPayloadContent}\n\nUser Question Directives:\n${val}`;
                 displayPromptNodeText = `📁 Attached: **${stagedFileData.name}**<br>${val}`;
                 clearFileStaging();
             }
+
             const currentUserMsgIndex = liveSessionsDatastore[currentActiveSessionId].messages.length;
             liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "user", content: processingValueString });
             syncHistorySidebarList();
-            if (puter.auth.isSignedIn()) puter.kv.set('askme_sessions_vault', JSON.stringify(liveSessionsDatastore)).catch(e => console.error(e));
+
+            if (puter.auth.isSignedIn()) {
+                puter.kv.set('askme_sessions_vault', JSON.stringify(liveSessionsDatastore)).catch(e => console.error(e));
+            }
+
             const userWrapper = document.createElement('div');
             userWrapper.className = "space-y-1 text-right group relative";
-            userWrapper.innerHTML = `<div class="msg-bubble inline-block px-4 py-3 rounded-[20px] rounded-tr-sm text-[16px] max-w-[85%] text-left shadow-sm ambient-card text-zinc-900 cursor-pointer transition active:scale-[0.99]">${displayPromptNodeText.replace(/\n/g, '<br>')}</div>`;
+            userWrapper.innerHTML = `
+                <div class="msg-bubble inline-block px-4 py-3 rounded-[20px] rounded-tr-sm text-[16px] max-w-[85%] text-left shadow-sm ambient-card text-zinc-900 cursor-pointer transition active:scale-[0.99]">
+                    ${displayPromptNodeText.replace(/\n/g, '<br>')}
+                </div>
+            `;
             registerLongPressEvents(userWrapper.querySelector('.msg-bubble'), 'user', currentUserMsgIndex);
             stream.appendChild(userWrapper);
+            
             scroller.scrollTop = scroller.scrollHeight;
+
             const loaderId = "loader-" + Date.now();
             const loaderNode = document.createElement('div');
             loaderNode.id = loaderId;
             loaderNode.className = "flex items-center space-x-2 text-zinc-700 text-sm italic font-medium animate-pulse pt-2 drop-shadow-sm";
-            loaderNode.innerHTML = `<div class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></div><span>Processing...</span>`;
+            loaderNode.innerHTML = `
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></div>
+                <span>Processing response...</span>
+            `;
             stream.appendChild(loaderNode);
+
             try {
                 let txt = "";
+
                 if (isImageRequest) {
                     try {
                         const imgResult = await puter.ai.txt2img(val);
-                        txt = `Here is your image, Boss:<br><br><div class="w-full max-w-sm overflow-hidden rounded-2xl shadow-md border border-white/40 bg-white/20 p-1 mb-2"><img src="${imgResult.src}" alt="Generated Image" class="w-full h-auto rounded-xl"></div>`;
-                    } catch (e) { isImageRequest = false; }
+                        const imgUrl = imgResult.src;
+                        txt = `Here is your requested image, Boss:<br><br><div class="w-full max-w-sm overflow-hidden rounded-2xl shadow-md border border-white/40 bg-white/20 p-1 mb-2"><img src="${imgUrl}" alt="Generated Image" class="w-full h-auto rounded-xl object-cover select-text"></div>`;
+                    } catch (imgErr) {
+                        console.warn("Direct txt2img runtime dropped, handling via primary route:", imgErr);
+                        isImageRequest = false;
+                    }
                 }
+
                 if (!isImageRequest) {
-                    const response = await puter.ai.chat([{ role: "system", content: CORE_AI_BLUEPRINT + ` Params: Thinking level is ${thinkingSetting}.` }, ...liveSessionsDatastore[currentActiveSessionId].messages], { model: selectedConfigModel });
+                    const response = await puter.ai.chat([
+                        { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Thinking level is ${thinkingSetting}.` },
+                        ...liveSessionsDatastore[currentActiveSessionId].messages
+                    ], { model: selectedConfigModel });
+
                     txt = (typeof response === 'string') ? response : (response?.message?.content || JSON.stringify(response));
                 }
-                document.getElementById(loaderId)?.remove();
+                
+                const loaderEl = document.getElementById(loaderId);
+                if (loaderEl) loaderEl.remove();
+                
                 const currentAssistantMsgIndex = liveSessionsDatastore[currentActiveSessionId].messages.length;
                 liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "assistant", content: txt });
-                if (puter.auth.isSignedIn()) puter.kv.set('askme_sessions_vault', JSON.stringify(liveSessionsDatastore)).catch(e => console.error(e));
+
+                if (puter.auth.isSignedIn()) {
+                    puter.kv.set('askme_sessions_vault', JSON.stringify(liveSessionsDatastore)).catch(e => console.error(e));
+                }
+
                 const assistantWrapper = document.createElement('div');
                 assistantWrapper.className = "space-y-1 pt-2 animate-fadeIn group relative";
-                assistantWrapper.innerHTML = `<div class="msg-bubble text-[16px] leading-relaxed font-normal text-zinc-900 pr-4 drop-shadow-sm cursor-pointer transition rounded-xl p-1 hover:bg-white/10 active:scale-[0.99]">${renderFormattedContent(txt)}</div>`;
+                assistantWrapper.innerHTML = `
+                    <div class="msg-bubble text-[16px] leading-relaxed font-normal text-zinc-900 pr-4 drop-shadow-sm cursor-pointer transition rounded-xl p-1 hover:bg-white/10 active:scale-[0.99]">
+                        ${renderFormattedContent(txt)}
+                    </div>
+                `;
                 registerLongPressEvents(assistantWrapper.querySelector('.msg-bubble'), 'assistant', currentAssistantMsgIndex);
                 stream.appendChild(assistantWrapper);
+                
                 scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
-            } catch(e) { document.getElementById(loaderId)?.remove(); }
+
+            } catch(e) {
+                const loaderEl = document.getElementById(loaderId);
+                if(loaderEl) loaderEl.remove();
+                console.error(e);
+            }
         }
     </script>
 </body>
 </html>
+
+```
