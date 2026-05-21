@@ -28,6 +28,11 @@
 
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/20 z-30 hidden opacity-0 transition-opacity duration-300" onclick="toggleSidebar()"></div>
 
+    <!-- Context Actions Popup Overlay -->
+    <div id="action-popup-menu" class="fixed hidden bg-white/90 backdrop-blur-md border border-zinc-200/80 p-1.5 rounded-2xl shadow-xl z-50 transition-all duration-150 scale-95 opacity-0 pointer-events-none min-w-[130px] flex flex-col gap-0.5">
+        <div id="popup-actions-wrapper"></div>
+    </div>
+
     <aside id="sidebar" class="fixed top-0 left-0 h-full w-[280px] bg-zinc-50 border-r border-zinc-200/80 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 shadow-2xl md:shadow-none">
         <div class="flex flex-col gap-2 overflow-y-auto custom-scrollbar flex-1">
             <div class="text-xl font-medium px-3 pt-2 text-zinc-900">Askme</div>
@@ -37,14 +42,16 @@
                 <i data-lucide="square-pen" class="w-5 h-5 text-zinc-600"></i>
             </button>
             
-            <button class="w-full flex items-center gap-3 hover:bg-zinc-200/50 text-zinc-700 py-2.5 px-4 rounded-xl transition mt-1">
-                <i data-lucide="search" class="w-5 h-5 text-zinc-500"></i>
-                <span class="text-sm font-medium">Search chats</span>
-            </button>
+            <div class="w-full relative mt-1">
+                <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-chat-input" oninput="filterChatHistory()" placeholder="Search chats" class="w-full bg-zinc-200/30 hover:bg-zinc-200/50 focus:bg-white focus:ring-1 focus:ring-zinc-200 outline-none text-sm text-zinc-700 py-2.5 pl-10 pr-4 rounded-xl transition font-medium">
+            </div>
 
-            <button class="w-full flex items-center gap-3 hover:bg-zinc-200/50 text-zinc-700 py-2.5 px-4 rounded-xl transition">
-                <i data-lucide="layout-grid" class="w-5 h-5 text-zinc-500"></i>
-                <span class="text-sm font-medium">Library</span>
+            <button id="library-toggle-btn" onclick="toggleLibraryMode()" class="w-full flex items-center justify-between bg-white/60 hover:bg-zinc-200/50 text-zinc-700 py-2.5 px-4 rounded-xl transition mt-0.5">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="layout-grid" class="w-5 h-5 text-zinc-500"></i>
+                    <span id="library-btn-text" class="text-sm font-medium">Library</span>
+                </div>
             </button>
 
             <hr class="border-zinc-200 my-2">
@@ -57,25 +64,20 @@
 
             <hr class="border-zinc-200 my-2">
 
-            <div class="px-3 text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">Recents</div>
-            <div class="flex flex-col gap-0.5">
-                <div class="truncate text-sm text-zinc-700 py-2 px-4 rounded-xl hover:bg-zinc-200/50 cursor-pointer transition">Please make a same to sa...</div>
-                <div class="truncate text-sm text-zinc-700 py-2 px-4 rounded-xl hover:bg-zinc-200/50 cursor-pointer transition">Fix Pop to PDP</div>
-                <div class="truncate text-sm text-zinc-700 py-2 px-4 rounded-xl hover:bg-zinc-200/50 cursor-pointer transition">POP 2026 Global Firearm F...</div>
-                <div class="truncate text-sm text-zinc-700 py-2 px-4 rounded-xl hover:bg-zinc-200/50 cursor-pointer transition">Cange the color with g...</div>
-                <div class="truncate text-sm text-zinc-700 py-2 px-4 rounded-xl hover:bg-zinc-200/50 cursor-pointer transition">Car to M416 Weapon Design</div>
-                <div class="truncate text-sm text-zinc-700 py-2 px-4 rounded-xl hover:bg-zinc-200/50 cursor-pointer transition">POP 2026 Global Firearm F...</div>
-                <div class="truncate text-sm text-zinc-700 py-2 px-4 rounded-xl hover:bg-zinc-200/50 cursor-pointer transition">Design this</div>
+            <div id="section-title-label" class="px-3 text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">Recents</div>
+            <div id="history-item-list" class="flex flex-col gap-0.5">
+                <div id="empty-history-notice" class="px-3 py-2 text-xs text-zinc-400 italic font-normal">No recent chats. Start typing below!</div>
             </div>
         </div>
 
         <div class="border-t border-zinc-200 pt-3 flex items-center justify-between mt-auto">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-sm overflow-hidden">
-                    <span id="avatar-fallback">GG</span>
+            <div class="flex items-center gap-3" onclick="handleAuthAction()" class="cursor-pointer">
+                <div id="user-avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-sm overflow-hidden select-none">
+                    ?
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-sm font-medium text-zinc-900 truncate max-w-[140px]">Genjam Gaming YT</span>
+                    <span id="user-name" class="text-sm font-medium text-zinc-900 truncate max-w-[140px]">Guest Account</span>
+                    <span id="user-status" class="text-[11px] text-zinc-400 font-medium">Click to Log In</span>
                 </div>
             </div>
             <button class="p-2 text-zinc-500 hover:bg-zinc-200/70 rounded-full transition">
@@ -86,21 +88,21 @@
 
     <main class="flex-1 flex flex-col h-full relative overflow-hidden">
         
-        <header class="w-full h-16 flex items-center justify-between px-4 bg-white/60 backdrop-blur-md border-b border-zinc-100 z-20">
+        <header class="w-full h-16 flex items-center justify-between px-4 bg-white/60 backdrop-blur-md border-b border-b-zinc-100/80 z-20">
             <button onclick="toggleSidebar()" class="p-2 hover:bg-zinc-100 rounded-full transition flex flex-col justify-center items-center gap-[4px] w-10 h-10">
                 <div class="w-5 h-[2px] bg-zinc-800 rounded-full"></div>
                 <div class="w-5 h-[2px] bg-zinc-800 rounded-full"></div>
             </button>
 
             <div class="relative">
-                <button id="model-dropdown-btn" onclick="toggleDropdown()" class="flex items-center gap-1.5 text-zinc-700 font-medium px-3 sm:px-4 py-1.5 rounded-2xl hover:bg-zinc-100 transition text-[14px] sm:text-[15px]">
-                    <span id="current-model-display">Askme 3.5 Flash</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-500"></i>
+                <button id="model-dropdown-btn" onclick="toggleDropdownMenu()" class="flex items-center gap-1.5 text-zinc-700 font-medium px-3 sm:px-4 py-1.5 rounded-2xl hover:bg-zinc-100 transition text-[14px] sm:text-[15px]">
+                    <span id="active-model-display">Askme 3.5 Flash</span>
+                    <i id="dropdown-arrow-icon" data-lucide="chevron-down" class="w-4 h-4 text-zinc-500 transition-transform duration-200"></i>
                 </button>
 
                 <div id="model-dropdown" class="absolute left-1/2 -translate-x-1/2 mt-2 w-[calc(100vw-32px)] max-w-72 bg-white border border-zinc-200 shadow-2xl rounded-[28px] py-3 hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div onclick="selectModel('3.1 Flash-Lite', 'gpt-4o-mini')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="check-3.1-lite" class="absolute left-4 top-4 text-zinc-800 hidden">
+                    <div onclick="selectModel('3.1 Flash-Lite')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-lite" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
@@ -110,8 +112,8 @@
                             <div class="text-xs text-zinc-400 mt-0.5">Fastest answers</div>
                         </div>
                     </div>
-                    <div onclick="selectModel('3.5 Flash', 'gpt-4o')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="check-3.5-flash" class="absolute left-4 top-4 text-zinc-800">
+                    <div onclick="selectModel('3.5 Flash')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-flash" class="check-icon absolute left-4 top-4 text-zinc-800">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
@@ -119,8 +121,8 @@
                             <div class="text-xs text-zinc-400 mt-0.5">All-around help</div>
                         </div>
                     </div>
-                    <div onclick="selectModel('3.1 Pro', 'claude-3-5-sonnet')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="check-3.1-pro" class="absolute left-4 top-4 text-zinc-800 hidden">
+                    <div onclick="selectModel('3.1 Pro')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-pro" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
@@ -131,21 +133,21 @@
 
                     <hr class="border-zinc-100 my-2">
 
-                    <div class="px-4 py-2">
-                        <div class="flex items-center justify-between text-sm text-zinc-700 font-medium cursor-pointer" onclick="toggleThinkingMenu()">
+                    <div class="px-4 py-1.5">
+                        <div class="flex items-center justify-between text-sm text-zinc-700 font-medium cursor-pointer" onclick="toggleThinkingSubmenu(event)">
                             <span>Thinking level</span>
-                            <i data-lucide="chevron-up" id="thinking-chevron" class="w-4 h-4 text-zinc-400 transition-transform"></i>
+                            <i id="thinking-arrow" data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 transition-transform duration-200"></i>
                         </div>
-                        <div id="thinking-options" class="flex flex-col gap-2 mt-2">
-                            <div class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-zinc-50 cursor-pointer">
-                                <i data-lucide="check" class="w-4 h-4 text-zinc-800"></i>
+                        <div id="thinking-submenu" class="flex flex-col gap-1.5 mt-2 overflow-hidden transition-all duration-200" style="max-height: 200px;">
+                            <div onclick="selectThinkingLevel('Standard')" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-zinc-50 cursor-pointer relative pl-7">
+                                <i id="chk-standard" data-lucide="check" class="thinking-check w-3.5 h-3.5 text-zinc-800 absolute left-1.5 top-1/2 -translate-y-1/2"></i>
                                 <div>
                                     <div class="text-xs font-medium text-zinc-900">Standard</div>
                                     <div class="text-[11px] text-zinc-400">Best for most questions</div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-zinc-50 cursor-pointer opacity-60">
-                                <div class="w-4"></div>
+                            <div onclick="selectThinkingLevel('Extended')" class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-zinc-50 cursor-pointer relative pl-7 opacity-80">
+                                <i id="chk-extended" data-lucide="check" class="thinking-check w-3.5 h-3.5 text-zinc-800 absolute left-1.5 top-1/2 -translate-y-1/2 invisible"></i>
                                 <div>
                                     <div class="text-xs font-medium text-zinc-900">Extended</div>
                                     <div class="text-[11px] text-zinc-400">Complex problem solving</div>
@@ -156,14 +158,14 @@
                 </div>
             </div>
 
-            <button class="p-2 border border-dashed border-zinc-300 rounded-full text-zinc-700 hover:bg-zinc-50 transition w-10 h-10 flex items-center justify-center">
+            <button onclick="startNewChat()" class="p-2 border border-dashed border-zinc-300 rounded-full text-zinc-700 hover:bg-zinc-50 transition w-10 h-10 flex items-center justify-center">
                 <i data-lucide="pen-tool" class="w-4 h-4 text-zinc-600"></i>
             </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center custom-scrollbar relative" id="workspace">
+        <div class="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center custom-scrollbar relative" id="scroll-workspace">
             
-            <div id="intro-hub" class="my-auto flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-300 pb-44 relative w-full">
+            <div id="splash-view" class="my-auto flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-300 pb-44 relative w-full">
                 <div class="w-16 h-16 relative flex items-center justify-center mb-6">
                     <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_4px_12px_rgba(56,189,248,0.4)]">
                         <defs>
@@ -181,223 +183,836 @@
                     What should we focus on?
                 </h1>
 
-                <!-- Repositioned Input Box Container directly under the header text inside the welcome interface -->
-                <div id="intro-input-wrapper" class="w-full max-w-2xl bg-zinc-100/90 backdrop-blur-md rounded-[32px] px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 shadow-sm border border-zinc-200/40 absolute -bottom-4 left-1/2 -translate-x-1/2">
-                    <button class="p-2 hover:bg-zinc-200/70 rounded-full text-zinc-600 transition shrink-0">
-                        <i data-lucide="plus" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-                    </button>
+                <!-- Core Input Shell Frame -->
+                <div id="intro-input-wrapper" class="w-full max-w-2xl bg-zinc-100/90 backdrop-blur-md rounded-[32px] px-3 sm:px-4 py-2 flex flex-col gap-2 shadow-sm border border-zinc-200/40 absolute -bottom-4 left-1/2 -translate-x-1/2 transition-all duration-300">
                     
-                    <input type="text" id="user-input" placeholder="Ask Askme" autocomplete="off"
-                           class="flex-1 bg-transparent border-none outline-none text-zinc-800 placeholder-zinc-500 text-[15px] sm:text-[16px] py-1 min-w-0"
-                           onkeydown="if(event.key === 'Enter') handleSendRequest()">
+                    <input type="file" id="attachment-file-engine" class="hidden" accept="image/*, .pdf, .txt, .doc, .docx, .json, .xml, .js, .html, .css" onchange="handleFileSelected(this)">
                     
-                    <button class="p-2 hover:bg-zinc-200/70 rounded-full text-zinc-600 transition shrink-0">
-                        <i data-lucide="mic" class="w-5 h-5"></i>
-                    </button>
+                    <!-- File Pipeline Meta Badge Preview -->
+                    <div id="file-preview-bay" class="hidden items-center gap-2 bg-zinc-200/80 self-start px-3 py-1 rounded-full text-xs text-zinc-700 font-medium ml-10 animate-in fade-in zoom-in-95 duration-150">
+                        <i data-lucide="paperclip" class="w-3.5 h-3.5"></i>
+                        <span id="file-meta-string" class="truncate max-w-[180px]">file.txt</span>
+                        <button onclick="clearFileStaging()" class="hover:bg-zinc-300 rounded-full p-0.5 ml-1 transition">
+                            <i data-lucide="x" class="w-3 h-3"></i>
+                        </button>
+                    </div>
 
-                    <button onclick="handleSendRequest()" class="p-2 sm:p-2.5 bg-sky-100 text-sky-600 hover:bg-sky-200/80 rounded-full transition shadow-sm flex items-center justify-center shrink-0">
-                        <i data-lucide="audio-lines" class="w-5 h-5"></i>
-                    </button>
+                    <div class="w-full flex items-center gap-2 sm:gap-3">
+                        <button onclick="document.getElementById('attachment-file-engine').click()" class="p-2 hover:bg-zinc-200/70 rounded-full text-zinc-600 transition shrink-0">
+                            <i data-lucide="plus" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                        </button>
+                        
+                        <input type="text" id="input-prompt-shell" placeholder="Ask Askme" autocomplete="off"
+                               class="flex-1 bg-transparent border-none outline-none text-zinc-800 placeholder-zinc-500 text-[15px] sm:text-[16px] py-1 min-w-0"
+                               onkeydown="if(event.key === 'Enter') dispatchAskmeAI()">
+                        
+                        <button id="voice-activation-key" onclick="toggleVoiceTransmission()" class="p-2 hover:bg-zinc-200/70 rounded-full text-zinc-600 transition shrink-0">
+                            <i data-lucide="mic" class="w-5 h-5"></i>
+                        </button>
+
+                        <button onclick="dispatchAskmeAI()" class="p-2 sm:p-2.5 bg-sky-100 text-sky-600 hover:bg-sky-200/80 rounded-full transition shadow-sm flex items-center justify-center shrink-0">
+                            <i data-lucide="audio-lines" class="w-5 h-5"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div id="chat-stream" class="w-full max-w-2xl flex flex-col gap-6 hidden pb-24"></div>
+            <div id="message-feed-stream" class="w-full max-w-2xl flex flex-col gap-6 hidden pb-24"></div>
         </div>
 
-        <!-- Sticky dynamic footer layout component for active chat streaming sessions -->
-        <footer id="active-chat-footer" class="w-full p-4 bg-gradient-to-t from-white via-white/90 to-transparent z-20 flex justify-center absolute bottom-0 left-0 right-0 hidden">
-        </footer>
+        <footer id="active-chat-footer" class="w-full p-4 bg-gradient-to-t from-white via-white/90 to-transparent z-20 flex justify-center absolute bottom-0 left-0 right-0 hidden"></footer>
     </main>
 
     <script>
-        // Initialize Lucide Icons Vector Matrix
+        // Initialize Lucide Vector Icons Engine
         lucide.createIcons();
 
-        // System Application State Variables
-        let chatContextHistory = [];
-        let selectedPuterModelId = 'gpt-4o'; // Matches Puter stable model standards
+        // System Layout Pointer Elements Mapping
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const dropdown = document.getElementById('model-dropdown');
+        const splashView = document.getElementById('splash-view');
+        const stream = document.getElementById('message-feed-stream');
+        const inputField = document.getElementById('input-prompt-shell');
+        const scroller = document.getElementById('scroll-workspace');
+        const modelLabel = document.getElementById('active-model-display');
+        const arrowIcon = document.getElementById('dropdown-arrow-icon');
+        const thinkingSubmenu = document.getElementById('thinking-submenu');
+        const thinkingArrow = document.getElementById('thinking-arrow');
+        const historyContainer = document.getElementById('history-item-list');
+        const actionPopup = document.getElementById('action-popup-menu');
+        const popupWrapper = document.getElementById('popup-actions-wrapper');
 
-        // Sidebar Navigation Toggles
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
+        // State Machine Storage Data Objects
+        let selectedConfigModel = "google/gemini-3.5-flash";
+        let thinkingSetting = "Standard";
+        let liveSessionsDatastore = {}; 
+        let currentActiveSessionId = null;
+        let stagedFileData = null;
+        let isLibraryModeActive = false;
+        let activeRecordingState = false;
+        let audioVoiceRecognizer = null;
+        let touchTimer = null;
+
+        // System Agent Personalization Directives
+        const CORE_AI_BLUEPRINT = "You are Askme AI, a direct instance clone of Gemini engineered by FidaHakim. You address the user as 'Boss' or 'Senpai'. Tone: supportive, code-focused, sharp, and highly concise. IMPORTANT: If the user requests you to generate, create, or display an image, artwork, illustration, or photo, you MUST respond by generating it using your internal image capabilities or by outputting standard HTML image structures using available web URLs. If user uploaded files, their details are injected at top of prompt.";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            evaluateUserIdentityState();
+            setupVoiceRecognitionEngine();
             
-            if(sidebar.classList.contains('-translate-x-full')) {
+            document.addEventListener('click', hideActionPopupMenu);
+            if (scroller) {
+                scroller.addEventListener('scroll', hideActionPopupMenu);
+            }
+        });
+
+        // Puter Cloud Vault Authentication Mapping Interface
+        async function evaluateUserIdentityState() {
+            const avatar = document.getElementById('user-avatar');
+            const nameField = document.getElementById('user-name');
+            const statusField = document.getElementById('user-status');
+
+            if (puter.auth.isSignedIn()) {
+                const profile = await puter.auth.getUser();
+                if (nameField) nameField.innerText = profile.username;
+                if (statusField) statusField.innerText = "Log Out Account";
+                if (avatar) {
+                    avatar.innerText = profile.username.substring(0,2).toUpperCase();
+                    avatar.className = "w-10 h-10 rounded-full bg-green-600 flex items-center justify-center font-bold text-sm text-white shadow-sm overflow-hidden select-none";
+                }
+                
+                try {
+                    const savedCloudData = await puter.kv.get('askme_sessions_vault');
+                    if (savedCloudData) {
+                        liveSessionsDatastore = JSON.parse(savedCloudData);
+                        syncHistorySidebarList();
+                    }
+                } catch(kvErr) { console.warn("KV sync failed: ", kvErr); }
+
+            } else {
+                if (nameField) nameField.innerText = "Guest Account";
+                if (statusField) statusField.innerText = "Click to Log In";
+                if (avatar) {
+                    avatar.innerText = "?";
+                    avatar.className = "w-10 h-10 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-sm overflow-hidden select-none";
+                }
+            }
+        }
+
+        async function handleAuthAction() {
+            if (puter.auth.isSignedIn()) {
+                puter.auth.signOut();
+                liveSessionsDatastore = {};
+                startNewChat();
+                syncHistorySidebarList();
+                evaluateUserIdentityState();
+            } else {
+                await puter.auth.signIn();
+                evaluateUserIdentityState();
+            }
+        }
+
+        // Voice Transcription Pipeline Setup
+        function setupVoiceRecognitionEngine() {
+            const SpeechEngineClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechEngineClass) {
+                console.warn("Speech recognition systems are missing in this layout platform channel.");
+                return;
+            }
+            audioVoiceRecognizer = new SpeechEngineClass();
+            audioVoiceRecognizer.continuous = false;
+            audioVoiceRecognizer.interimResults = false;
+            audioVoiceRecognizer.lang = 'en-US';
+
+            audioVoiceRecognizer.onstart = () => {
+                activeRecordingState = true;
+                const micBtn = document.getElementById('voice-activation-key');
+                if (micBtn) micBtn.classList.add('bg-red-100', 'text-red-500');
+                if (inputField) inputField.placeholder = "Listening attentively...";
+            };
+
+            audioVoiceRecognizer.onresult = (event) => {
+                const vocalInputTranscript = event.results[0][0].transcript;
+                if (inputField && vocalInputTranscript) {
+                    inputField.value = (inputField.value + " " + vocalInputTranscript).trim();
+                }
+            };
+
+            audioVoiceRecognizer.onend = () => {
+                activeRecordingState = false;
+                const micBtn = document.getElementById('voice-activation-key');
+                if (micBtn) micBtn.classList.remove('bg-red-100', 'text-red-500');
+                if (inputField) inputField.placeholder = "Ask Askme";
+            };
+
+            audioVoiceRecognizer.onerror = (err) => {
+                console.error("Vocal stream fault", err);
+                activeRecordingState = false;
+                const micBtn = document.getElementById('voice-activation-key');
+                if (micBtn) micBtn.classList.remove('bg-red-100', 'text-red-500');
+                if (inputField) inputField.placeholder = "Ask Askme";
+            };
+        }
+
+        function toggleVoiceTransmission() {
+            if (!audioVoiceRecognizer) {
+                alert("Voice runtime translation engine is unsupported on this platform.");
+                return;
+            }
+            if (!activeRecordingState) {
+                audioVoiceRecognizer.start();
+            } else {
+                audioVoiceRecognizer.stop();
+            }
+        }
+
+        // File Selection Ingestion Stream Handling
+        function handleFileSelected(inputElement) {
+            const selectedFileObj = inputElement.files[0];
+            if (!selectedFileObj) return;
+
+            const fileReaderChannel = new FileReader();
+            fileReaderChannel.onload = (e) => {
+                stagedFileData = {
+                    name: selectedFileObj.name,
+                    size: selectedFileObj.size,
+                    type: selectedFileObj.type,
+                    rawPayloadContent: e.target.result
+                };
+                const metaString = document.getElementById('file-meta-string');
+                const previewBay = document.getElementById('file-preview-bay');
+                if (metaString) metaString.innerText = `${stagedFileData.name} (${Math.round(stagedFileData.size / 1024)} KB)`;
+                if (previewBay) {
+                    previewBay.classList.remove('hidden');
+                    previewBay.classList.add('flex');
+                }
+            };
+
+            if (selectedFileObj.type.startsWith('text/') || selectedFileObj.name.endsWith('.json') || selectedFileObj.name.endsWith('.xml') || selectedFileObj.name.endsWith('.js') || selectedFileObj.name.endsWith('.html') || selectedFileObj.name.endsWith('.css')) {
+                fileReaderChannel.readAsText(selectedFileObj);
+            } else {
+                fileReaderChannel.readAsDataURL(selectedFileObj);
+            }
+        }
+
+        function clearFileStaging() {
+            stagedFileData = null;
+            const fileEngine = document.getElementById('attachment-file-engine');
+            const previewBay = document.getElementById('file-preview-bay');
+            if (fileEngine) fileEngine.value = "";
+            if (previewBay) {
+                previewBay.classList.add('hidden');
+                previewBay.classList.remove('flex');
+            }
+        }
+
+        // Sidebar Navigation Interfaces
+        function toggleSidebar() {
+            if (!sidebar || !overlay) return;
+            if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.add('opacity-100'), 10);
             } else {
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.remove('opacity-100');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
+                setTimeout(() => overlay.classList.add('hidden'), 250);
             }
         }
 
-        // Dropdown Architecture Manager
-        function toggleDropdown() {
-            const dropdown = document.getElementById('model-dropdown');
-            dropdown.classList.toggle('hidden');
+        // Dropdown Selection Controllers
+        function toggleDropdownMenu() {
+            if (!dropdown || !arrowIcon) return;
+            const hidden = dropdown.classList.toggle('hidden');
+            arrowIcon.style.transform = hidden ? "rotate(0deg)" : "rotate(180deg)";
         }
 
-        function toggleThinkingMenu() {
-            const options = document.getElementById('thinking-options');
-            const chevron = document.getElementById('thinking-chevron');
-            options.classList.toggle('hidden');
-            chevron.classList.toggle('rotate-180');
+        function toggleThinkingSubmenu(event) {
+            if (event) event.stopPropagation();
+            if (!thinkingSubmenu || !thinkingArrow) return;
+            if (thinkingSubmenu.classList.contains('hidden')) {
+                thinkingSubmenu.classList.remove('hidden');
+                thinkingSubmenu.style.maxHeight = "200px";
+                thinkingArrow.classList.add('rotate-180');
+            } else {
+                thinkingSubmenu.style.maxHeight = "0px";
+                thinkingArrow.classList.remove('rotate-180');
+                setTimeout(() => thinkingSubmenu.classList.add('hidden'), 200);
+            }
         }
 
-        // Model Selector Updates
-        function selectModel(displayName, modelId) {
-            document.getElementById('current-model-display').innerText = "Askme " + displayName;
-            selectedPuterModelId = modelId;
+        function selectModel(modelName) {
+            if (modelLabel) modelLabel.innerText = "Askme " + modelName;
+            document.querySelectorAll('.check-icon').forEach(icon => icon.classList.add('invisible'));
             
-            // Toggle checkmarks indicators visible states
-            document.getElementById('check-3.1-lite').classList.add('hidden');
-            document.getElementById('check-3.5-flash').classList.add('hidden');
-            document.getElementById('check-3.1-pro').classList.add('hidden');
-
-            if(displayName === '3.1 Flash-Lite') document.getElementById('check-3.1-lite').classList.remove('hidden');
-            if(displayName === '3.5 Flash') document.getElementById('check-3.5-flash').classList.remove('hidden');
-            if(displayName === '3.1 Pro') document.getElementById('check-3.1-pro').classList.remove('hidden');
-
-            toggleDropdown();
+            if(modelName === '3.1 Flash-Lite') {
+                const icon = document.getElementById('chk-lite');
+                if (icon) icon.classList.remove('invisible');
+                selectedConfigModel = "google/gemini-3.1-flash-lite";
+            } else if(modelName === '3.5 Flash') {
+                const icon = document.getElementById('chk-flash');
+                if (icon) icon.classList.remove('invisible');
+                selectedConfigModel = "google/gemini-3.5-flash";
+            } else if(modelName === '3.1 Pro') {
+                const icon = document.getElementById('chk-pro');
+                if (icon) icon.classList.remove('invisible');
+                selectedConfigModel = "google/gemini-3.1-pro";
+            }
+            toggleDropdownMenu();
         }
 
-        // Wipe Screen for New Iteration Session
+        function selectThinkingLevel(level) {
+            thinkingSetting = level;
+            document.querySelectorAll('.thinking-check').forEach(i => i.classList.add('invisible'));
+            if(level === 'Standard') {
+                const icon = document.getElementById('chk-standard');
+                if (icon) icon.classList.remove('invisible');
+            }
+            if(level === 'Extended') {
+                const icon = document.getElementById('chk-extended');
+                if (icon) icon.classList.remove('invisible');
+            }
+            toggleDropdownMenu();
+        }
+
+        // Reset App Canvas View to Initial Welcome Space
         function startNewChat() {
-            chatContextHistory = [];
+            currentActiveSessionId = null;
+            clearFileStaging();
             
-            // Return input box back inside the introductory menu workspace node
             const inputBar = document.getElementById('intro-input-wrapper');
             inputBar.classList.remove('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
             inputBar.classList.add('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
-            document.getElementById('intro-hub').appendChild(inputBar);
+            splashView.appendChild(inputBar);
             
             document.getElementById('active-chat-footer').classList.add('hidden');
-            document.getElementById('chat-stream').innerHTML = '';
-            document.getElementById('chat-stream').classList.add('hidden');
-            document.getElementById('intro-hub').classList.remove('hidden');
-            toggleSidebar();
+            if (stream) {
+                stream.innerHTML = '';
+                stream.classList.add('hidden');
+            }
+            if (splashView) {
+                splashView.classList.remove('hidden');
+                splashView.querySelector('h1').classList.remove('hidden');
+                splashView.querySelector('.w-16').classList.remove('hidden');
+                splashView.classList.add('my-auto', 'pb-44');
+                splashView.classList.remove('mt-4', 'mb-6');
+            }
+            if (inputField) inputField.value = '';
+            if (sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
         }
 
-        // Principal Message Stream Processing Orchestration
-        async function handleSendRequest() {
-            const inputElement = document.getElementById('user-input');
-            const messagePayload = inputElement.value.trim();
-            if (!messagePayload) return;
+        // History Filter Engine Lookup Routine
+        function filterChatHistory() {
+            if (!historyContainer) return;
+            const searchInput = document.getElementById('search-chat-input');
+            const currentSearchQuery = searchInput ? searchInput.value.toLowerCase() : "";
+            const historyElements = historyContainer.querySelectorAll('.dynamic-history-item');
+            let matchedCount = 0;
 
-            // Clean Input Matrix Node
-            inputElement.value = '';
-
-            // Layout Adaptability Shift Check - Keep input bar in intro frame, toggle header layout elements hidden instead of swapping DOM spaces
-            document.getElementById('intro-hub').querySelector('h1').classList.add('hidden');
-            document.getElementById('intro-hub').querySelector('.w-16').classList.add('hidden');
-            document.getElementById('intro-hub').classList.remove('my-auto', 'pb-44');
-            document.getElementById('intro-hub').classList.add('mt-4', 'mb-6');
-            
-            const streamArea = document.getElementById('chat-stream');
-            streamArea.classList.remove('hidden');
-
-            // Append User Query Presentation Block
-            appendMessageUI('user', messagePayload);
-
-            // Construct System Payload Logs
-            chatContextHistory.push({ role: 'user', content: messagePayload });
-
-            // Create Placeholder for Streaming Assistant Node
-            const uniqueAssistantNodeId = appendMessageUI('assistant', 'Preparing system context...');
-
-            try {
-                // Call Puter SDK Streaming Engine API Architecture Matrix
-                const aiResponseStream = await puter.ai.chat(chatContextHistory, {
-                    model: selectedPuterModelId,
-                    stream: true
-                });
-
-                let fullyCompiledString = '';
-                const responseTargetDOM = document.getElementById(uniqueAssistantNodeId);
-                responseTargetDOM.innerHTML = ''; // Wipe loading placeholder safely
-
-                // Stream chunks sequentially as they resolve live
-                for await (const messageChunk of aiResponseStream) {
-                    let textExtraction = '';
-                    if (typeof messageChunk === 'string') {
-                        textExtraction = messageChunk;
-                    } else if (messageChunk.text) {
-                        textExtraction = messageChunk.text;
-                    } else if (messageChunk.delta?.content) {
-                        textExtraction = messageChunk.delta.content;
-                    }
-
-                    fullyCompiledString += textExtraction;
-                    responseTargetDOM.innerHTML = processTextFormatting(fullyCompiledString);
-                    autoScrollToWorkspaceBottom();
+            historyElements.forEach(item => {
+                const titleText = item.innerText.toLowerCase();
+                if (titleText.includes(currentSearchQuery)) {
+                    item.classList.remove('hidden');
+                    matchedCount++;
+                } else {
+                    item.classList.add('hidden');
                 }
+            });
 
-                // Push absolute completed response context onto retention heap arrays
-                chatContextHistory.push({ role: 'assistant', content: fullyCompiledString });
-
-            } catch (systemIntegrationFault) {
-                console.error("Puter Pipeline Error: ", systemIntegrationFault);
-                document.getElementById(uniqueAssistantNodeId).innerText = "Unable to connect to Askme cloud pipeline. Verify local engine configurations.";
+            const emptyNotice = document.getElementById('empty-history-notice');
+            if (matchedCount === 0 && Object.keys(liveSessionsDatastore).length > 0) {
+                if (!emptyNotice) {
+                    const notice = document.createElement('div');
+                    notice.id = 'empty-history-notice';
+                    notice.className = "px-4 py-3 text-xs text-zinc-500 italic font-normal";
+                    notice.innerText = "No matching chats found.";
+                    historyContainer.appendChild(notice);
+                } else {
+                    emptyNotice.innerText = "No matching chats found.";
+                    emptyNotice.classList.remove('hidden');
+                }
+            } else if (Object.keys(liveSessionsDatastore).length > 0) {
+                if (emptyNotice) emptyNotice.classList.add('hidden');
             }
         }
 
-        // Append Node Layout Template Engines
-        function appendMessageUI(identityRole, literalString) {
-            const containerRef = document.getElementById('chat-stream');
-            const generatedNodeId = 'node-' + Math.random().toString(36).substring(2, 11);
+        // Vault Modes Management Toggles
+        function toggleLibraryMode() {
+            isLibraryModeActive = !isLibraryModeActive;
+            const toggleBtn = document.getElementById('library-toggle-btn');
+            const btnText = document.getElementById('library-btn-text');
+            const sectionTitle = document.getElementById('section-title-label');
             
-            const messageRow = document.createElement('div');
-            messageRow.className = `w-full flex ${identityRole === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-200`;
-
-            if (identityRole === 'user') {
-                messageRow.innerHTML = `
-                    <div class="bg-zinc-100 max-w-[85%] rounded-[24px] px-4 py-2.5 text-[15px] text-zinc-800 shadow-sm border border-zinc-200/30">
-                        ${processTextFormatting(literalString)}
-                    </div>`;
+            if (isLibraryModeActive) {
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('bg-white/60', 'text-zinc-700');
+                    toggleBtn.classList.add('bg-blue-600/80', 'text-white');
+                }
+                if (btnText) btnText.innerText = "Recents";
+                if (sectionTitle) sectionTitle.innerText = "Library Vault";
             } else {
-                messageRow.innerHTML = `
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('bg-blue-600/80', 'text-white');
+                    toggleBtn.classList.add('bg-white/60', 'text-zinc-700');
+                }
+                if (btnText) btnText.innerText = "Library";
+                if (sectionTitle) sectionTitle.innerText = "Recents";
+            }
+            syncHistorySidebarList();
+        }
+
+        // Sidebar Synchronizer Matrix
+        function syncHistorySidebarList() {
+            if (!historyContainer) return;
+            const emptyNotice = document.getElementById('empty-history-notice');
+            const keys = Object.keys(liveSessionsDatastore);
+            
+            if(keys.length === 0) {
+                if(emptyNotice) {
+                    emptyNotice.innerText = "No recent chats. Start typing below!";
+                    emptyNotice.classList.remove('hidden');
+                }
+                return;
+            }
+            if(emptyNotice) emptyNotice.classList.add('hidden');
+
+            const oldItems = historyContainer.querySelectorAll('.dynamic-history-item');
+            oldItems.forEach(el => el.remove());
+
+            [...keys].reverse().forEach(id => {
+                const sessionTitle = liveSessionsDatastore[id].title;
+                const row = document.createElement('div');
+                
+                if (isLibraryModeActive) {
+                    row.className = "dynamic-history-item w-full text-ellipsis overflow-hidden whitespace-nowrap px-4 py-2.5 text-[14px] font-medium text-blue-900 cursor-pointer bg-white/40 hover:bg-white/60 rounded-xl transition border-l-4 border-blue-500 mb-0.5 shadow-sm";
+                } else {
+                    row.className = "dynamic-history-item w-full text-ellipsis overflow-hidden whitespace-nowrap px-4 py-2.5 text-[14px] text-zinc-700 font-medium cursor-pointer hover:bg-zinc-200/50 rounded-xl transition mb-0.5";
+                }
+                
+                row.innerText = sessionTitle.length > 24 ? sessionTitle.substring(0, 24) + "..." : sessionTitle;
+                row.onclick = () => loadActiveSession(id);
+                historyContainer.appendChild(row);
+            });
+
+            const searchInput = document.getElementById('search-chat-input');
+            if(searchInput && searchInput.value.trim() !== "") {
+                filterChatHistory();
+            }
+        }
+
+        // Core Text Formatting Parsers
+        function renderFormattedContent(text) {
+            if (!text) return "";
+            if (text.includes('<img') || text.includes('<div') || text.includes('<span')) {
+                return text;
+            }
+            
+            // Basic layout vector validation parser
+            let protectedStr = text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+            const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
+            protectedStr = protectedStr.replace(markdownImageRegex, function(match, altText, imageUrl) {
+                const trueUrl = imageUrl.replace(/&amp;/g, '&');
+                return `<img src="${trueUrl}" alt="${altText}" class="max-w-full h-auto rounded-2xl my-3 shadow-md border border-zinc-200 object-contain max-h-[350px]">`;
+            });
+
+            return protectedStr
+                .replace(/\*\.(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Long Press & Interaction Managers
+        function registerLongPressEvents(element, role, index) {
+            if (!element) return;
+            const startHandler = (e) => {
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                
+                touchTimer = setTimeout(() => {
+                    triggerVibrationFeedback();
+                    showActionPopupMenu(clientX, clientY, role, index);
+                }, 550);
+            };
+
+            const cancelHandler = () => {
+                if (touchTimer) clearTimeout(touchTimer);
+            };
+
+            element.addEventListener('touchstart', startHandler, { passive: true });
+            element.addEventListener('mousedown', startHandler);
+            
+            element.addEventListener('touchend', cancelHandler);
+            element.addEventListener('touchmove', cancelHandler);
+            element.addEventListener('mouseleave', cancelHandler);
+            element.addEventListener('mouseup', cancelHandler);
+        }
+
+        function triggerVibrationFeedback() {
+            if (navigator.vibrate) navigator.vibrate(12);
+        }
+
+        function showActionPopupMenu(x, y, role, index) {
+            if (!popupWrapper || !actionPopup) return;
+            popupWrapper.innerHTML = '';
+            
+            if (role === 'user') {
+                popupWrapper.innerHTML += `
+                    <button onclick="initMessageEditWorkflow(${index})" class="w-full text-left px-3 py-2 text-xs text-zinc-800 hover:bg-zinc-100 rounded-xl transition font-semibold flex items-center space-x-2">
+                        <span>Edit</span>
+                    </button>
+                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-xs text-zinc-800 hover:bg-zinc-100 rounded-xl transition font-semibold flex items-center space-x-2">
+                        <span>Copy</span>
+                    </button>
+                `;
+            } else {
+                popupWrapper.innerHTML += `
+                    <button onclick="copyMessageToClipboard(${index})" class="w-full text-left px-3 py-2 text-xs text-zinc-800 hover:bg-zinc-100 rounded-xl transition font-semibold flex items-center space-x-2">
+                        <span>Copy</span>
+                    </button>
+                    <button onclick="triggerMessageRetryWorkflow(${index})" class="w-full text-left px-3 py-2 text-xs text-zinc-800 hover:bg-zinc-100 rounded-xl transition font-semibold flex items-center space-x-2">
+                        <span>Retry</span>
+                    </button>
+                `;
+            }
+
+            actionPopup.classList.remove('hidden');
+            const popupWidth = 140;
+            const popupHeight = 80;
+            
+            let posX = x;
+            let posY = y;
+            
+            if (posX + popupWidth > window.innerWidth) posX = window.innerWidth - popupWidth - 16;
+            if (posY + popupHeight > window.innerHeight) posY = window.innerHeight - popupHeight - 16;
+            if (posX < 16) posX = 16;
+            if (posY < 16) posY = 16;
+
+            actionPopup.style.left = `${posX}px`;
+            actionPopup.style.top = `${posY}px`;
+            
+            actionPopup.classList.remove('pointer-events-none', 'scale-95', 'opacity-0');
+            actionPopup.classList.add('scale-100', 'opacity-100');
+        }
+
+        function hideActionPopupMenu() {
+            if (!actionPopup) return;
+            actionPopup.classList.remove('scale-100', 'opacity-100');
+            actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                if (actionPopup.classList.contains('opacity-0')) actionPopup.classList.add('hidden');
+            }, 150);
+        }
+
+        function copyMessageToClipboard(index) {
+            if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
+            const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
+            if (!messageObj) return;
+            
+            let pureText = messageObj.content;
+            if (typeof pureText !== 'string' && Array.isArray(pureText)) {
+                pureText = pureText.map(item => item.text || '').join(' ');
+            }
+            if (pureText.includes('<img')) {
+                const srcMatch = pureText.match(/src=["'](.*?)["']/);
+                if (srcMatch) pureText = srcMatch[1];
+            }
+            
+            navigator.clipboard.writeText(pureText).catch(err => {
+                console.error("Could not copy layout text: ", err);
+            });
+            hideActionPopupMenu();
+        }
+
+        function initMessageEditWorkflow(index) {
+            if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
+            const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
+            if (!messageObj) return;
+
+            hideActionPopupMenu();
+            setTimeout(() => {
+                let initialPromptText = messageObj.content;
+                if (typeof initialPromptText !== 'string' && Array.isArray(initialPromptText)) {
+                    initialPromptText = initialPromptText.map(item => item.text || '').join(' ');
+                }
+                const updatedPrompt = prompt("Edit your message, Boss:", initialPromptText);
+                if (updatedPrompt === null || updatedPrompt.trim() === "") return;
+
+                liveSessionsDatastore[currentActiveSessionId].messages = liveSessionsDatastore[currentActiveSessionId].messages.slice(0, index);
+                if (inputField) {
+                    inputField.value = updatedPrompt.trim();
+                    dispatchAskmeAI();
+                }
+            }, 50);
+        }
+
+        function triggerMessageRetryWorkflow(index) {
+            if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
+            
+            hideActionPopupMenu();
+            liveSessionsDatastore[currentActiveSessionId].messages = liveSessionsDatastore[currentActiveSessionId].messages.slice(0, index);
+            
+            const targetUserPromptIndex = index - 1;
+            if (targetUserPromptIndex < 0) return;
+            
+            let standardPromptText = liveSessionsDatastore[currentActiveSessionId].messages[targetUserPromptIndex].content;
+            if (typeof standardPromptText !== 'string' && Array.isArray(standardPromptText)) {
+                standardPromptText = standardPromptText.map(item => item.text || '').join(' ');
+            }
+            liveSessionsDatastore[currentActiveSessionId].messages.pop();
+            
+            if (inputField) {
+                inputField.value = standardPromptText;
+                dispatchAskmeAI();
+            }
+        }
+
+        // Active Session View Loader
+        function loadActiveSession(id) {
+            if (!stream || !scroller) return;
+            currentActiveSessionId = id;
+            
+            // Adjust input bar location style framework
+            const inputBar = document.getElementById('intro-input-wrapper');
+            inputBar.classList.remove('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
+            inputBar.classList.add('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
+            document.getElementById('active-chat-footer').appendChild(inputBar);
+            document.getElementById('active-chat-footer').classList.remove('hidden');
+
+            if (splashView) splashView.classList.add('hidden');
+            stream.classList.remove('hidden');
+            stream.innerHTML = '';
+
+            const activeHistory = liveSessionsDatastore[id].messages;
+            activeHistory.forEach((msg, idx) => {
+                const wrapper = document.createElement('div');
+                
+                if(msg.role === 'user') {
+                    wrapper.className = "w-full flex justify-end animate-in fade-in slide-in-from-bottom-2 duration-200 group relative";
+                    let innerContent = '';
+                    let displayStr = msg.content;
+                    
+                    if (typeof displayStr !== 'string' && Array.isArray(displayStr)) {
+                        const foundImg = displayStr.find(i => i.type === 'image_url');
+                        const foundTxt = displayStr.find(i => i.type === 'text');
+                        if (foundImg) {
+                            innerContent += `<img src="${foundImg.image_url.url}" class="max-w-xs max-h-48 rounded-xl object-contain mb-2 border border-zinc-200 shadow-sm" alt="Upload context">`;
+                        }
+                        displayStr = foundTxt ? foundTxt.text : '';
+                    }
+
+                    if (displayStr.includes('[Attached File:')) {
+                        const matchName = displayStr.match(/\[Attached File:\s*(.*?)\]/);
+                        const fileName = matchName ? matchName[1] : "Document";
+                        innerContent += `
+                            <div class="flex items-center gap-2 bg-zinc-200 text-zinc-700 text-xs px-3 py-1.5 rounded-xl font-medium mb-2 w-max max-w-full">
+                                <i data-lucide="file-text" class="w-4 h-4 shrink-0"></i>
+                                <span class="truncate">${fileName}</span>
+                            </div>`;
+                        displayStr = displayStr.split('--- END CONTENT ---')[1] || displayStr;
+                        displayStr = displayStr.replace(/User Question:\s*/, '');
+                    }
+
+                    wrapper.innerHTML = `
+                        <div class="msg-bubble bg-zinc-100 max-w-[85%] rounded-[24px] px-4 py-2.5 text-[15px] text-zinc-800 shadow-sm border border-zinc-200/30 flex flex-col cursor-pointer active:scale-[0.99] transition-transform">
+                            ${innerContent}
+                            <div class="break-words">${renderFormattedContent(displayStr)}</div>
+                        </div>
+                    `;
+                    registerLongPressEvents(wrapper.querySelector('.msg-bubble'), 'user', idx);
+                } else {
+                    wrapper.className = "w-full flex justify-start animate-in fade-in slide-in-from-bottom-2 duration-200 group relative pt-2";
+                    wrapper.innerHTML = `
+                        <div class="flex items-start gap-3 max-w-[95%] sm:max-w-[90%]">
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-rose-500 flex items-center justify-center text-white shrink-0 shadow-sm mt-0.5">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            </div>
+                            <div class="flex flex-col gap-1 min-w-0 msg-bubble cursor-pointer rounded-xl p-0.5 hover:bg-zinc-100/40 active:scale-[0.99] transition-transform">
+                                <div class="text-[11px] font-semibold tracking-wider text-zinc-400 uppercase pl-0.5">Askme AI</div>
+                                <div class="text-[15px] text-zinc-800 leading-relaxed pl-0.5 prose prose-zinc break-words">
+                                    ${renderFormattedContent(msg.content)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    registerLongPressEvents(wrapper.querySelector('.msg-bubble'), 'assistant', idx);
+                }
+                stream.appendChild(wrapper);
+            });
+            
+            if(sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+            lucide.createIcons();
+            scroller.scrollTop = scroller.scrollHeight;
+        }
+
+        // Main Stream Processing Orchestrator
+        async function dispatchAskmeAI() {
+            if (!inputField || !stream || !scroller) return;
+            let val = inputField.value.trim();
+            if(!val && !stagedFileData) return;
+
+            let isImageRequest = /\b(generate|create|make|draw|show)\b.*\b(image|picture|photo|artwork|illustration|logo)\b/i.test(val);
+
+            inputField.value = '';
+            
+            // Reposition input bar dynamically to sticky footer layer element space
+            const inputBar = document.getElementById('intro-input-wrapper');
+            inputBar.classList.remove('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
+            inputBar.classList.add('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
+            document.getElementById('active-chat-footer').appendChild(inputBar);
+            document.getElementById('active-chat-footer').classList.remove('hidden');
+
+            if (splashView) splashView.classList.add('hidden');
+            stream.classList.remove('hidden');
+
+            if (currentActiveSessionId === null) {
+                currentActiveSessionId = "session_" + Date.now();
+                liveSessionsDatastore[currentActiveSessionId] = {
+                    title: val || (stagedFileData ? `File: ${stagedFileData.name}` : "Untitled Session"),
+                    messages: []
+                };
+            }
+
+            let processingValueString = val;
+            let submissionLogBlock = { role: "user", content: val };
+            let layoutFilePayloadRender = '';
+
+            if (stagedFileData) {
+                if (stagedFileData.type.startsWith('image/')) {
+                    layoutFilePayloadRender = `<img src="${stagedFileData.rawPayloadContent}" class="max-w-xs max-h-48 rounded-xl object-contain mb-2 border border-zinc-200 shadow-sm" alt="Upload context">`;
+                    submissionLogBlock = {
+                        role: "user",
+                        content: [
+                            { type: "text", text: val || "Describe this uploaded photo asset." },
+                            { type: "image_url", image_url: { url: stagedFileData.rawPayloadContent } }
+                        ]
+                    };
+                } else {
+                    layoutFilePayloadRender = `
+                        <div class="flex items-center gap-2 bg-zinc-200 text-zinc-700 text-xs px-3 py-1.5 rounded-xl font-medium mb-2 w-max max-w-full">
+                            <i data-lucide="file-text" class="w-4 h-4 shrink-0"></i>
+                            <span class="truncate">${stagedFileData.name}</span>
+                        </div>`;
+                    processingValueString = `[Attached File: ${stagedFileData.name}]\n--- CONTENT ---\n${stagedFileData.rawPayloadContent}\n--- END CONTENT ---\n\nUser Question: ${val}`;
+                    submissionLogBlock = { role: "user", content: processingValueString };
+                }
+                clearFileStaging();
+            }
+
+            const currentUserMsgIndex = liveSessionsDatastore[currentActiveSessionId].messages.length;
+            liveSessionsDatastore[currentActiveSessionId].messages.push(submissionLogBlock);
+            syncHistorySidebarList();
+
+            if (puter.auth.isSignedIn()) {
+                puter.kv.set('askme_sessions_vault', JSON.stringify(liveSessionsDatastore)).catch(e => console.error(e));
+            }
+
+            const userWrapper = document.createElement('div');
+            userWrapper.className = "w-full flex justify-end animate-in fade-in slide-in-from-bottom-2 duration-200 group relative";
+            userWrapper.innerHTML = `
+                <div class="msg-bubble bg-zinc-100 max-w-[85%] rounded-[24px] px-4 py-2.5 text-[15px] text-zinc-800 shadow-sm border border-zinc-200/30 flex flex-col cursor-pointer active:scale-[0.99] transition-transform">
+                    ${layoutFilePayloadRender}
+                    <div class="break-words">${renderFormattedContent(val)}</div>
+                </div>
+            `;
+            registerLongPressEvents(userWrapper.querySelector('.msg-bubble'), 'user', currentUserMsgIndex);
+            stream.appendChild(userWrapper);
+            
+            scroller.scrollTop = scroller.scrollHeight;
+
+            const loaderId = "loader-" + Date.now();
+            const loaderNode = document.createElement('div');
+            loaderNode.id = loaderId;
+            loaderNode.className = "flex items-center space-x-2 text-zinc-500 text-xs italic font-semibold animate-pulse pt-2 pl-10 drop-shadow-sm";
+            loaderNode.innerHTML = `
+                <div class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping"></div>
+                <span>Processing response...</span>
+            `;
+            stream.appendChild(loaderNode);
+            scroller.scrollTop = scroller.scrollHeight;
+
+            try {
+                let txt = "";
+
+                if (isImageRequest) {
+                    try {
+                        const imgResult = await puter.ai.txt2img(val);
+                        const imgUrl = imgResult.src;
+                        txt = `Here is your requested image, Boss:\n\n![Generated Image](${imgUrl})`;
+                    } catch (imgErr) {
+                        console.warn("Direct txt2img platform route dropped, fallback tracking via chat channel:", imgErr);
+                        isImageRequest = false;
+                    }
+                }
+
+                if (!isImageRequest) {
+                    // Normalize standard structured context payload vectors for API engines
+                    let historicPayloadContext = [];
+                    liveSessionsDatastore[currentActiveSessionId].messages.forEach(m => {
+                        if (typeof m.content === 'string') {
+                            historicPayloadContext.push({ role: m.role, content: m.content });
+                        } else if (Array.isArray(m.content)) {
+                            // Extract values safely
+                            let textPart = m.content.find(i => i.type === 'text')?.text || '';
+                            historicPayloadContext.push({ role: m.role, content: textPart });
+                        }
+                    });
+
+                    const response = await puter.ai.chat([
+                        { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Thinking level is ${thinkingSetting}.` },
+                        ...historicPayloadContext
+                    ], { model: selectedConfigModel });
+
+                    txt = (typeof response === 'string') ? response : (response?.message?.content || JSON.stringify(response));
+                }
+                
+                const loaderEl = document.getElementById(loaderId);
+                if (loaderEl) loaderEl.remove();
+                
+                const currentAssistantMsgIndex = liveSessionsDatastore[currentActiveSessionId].messages.length;
+                liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "assistant", content: txt });
+
+                if (puter.auth.isSignedIn()) {
+                    puter.kv.set('askme_sessions_vault', JSON.stringify(liveSessionsDatastore)).catch(e => console.error(e));
+                }
+
+                const assistantWrapper = document.createElement('div');
+                assistantWrapper.className = "w-full flex justify-start animate-in fade-in slide-in-from-bottom-2 duration-200 group relative pt-2";
+                assistantWrapper.innerHTML = `
                     <div class="flex items-start gap-3 max-w-[95%] sm:max-w-[90%]">
                         <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-rose-500 flex items-center justify-center text-white shrink-0 shadow-sm mt-0.5">
                             <i data-lucide="sparkles" class="w-4 h-4"></i>
                         </div>
-                        <div class="flex flex-col gap-1 min-w-0">
+                        <div class="flex flex-col gap-1 min-w-0 msg-bubble cursor-pointer rounded-xl p-0.5 hover:bg-zinc-100/40 active:scale-[0.99] transition-transform">
                             <div class="text-[11px] font-semibold tracking-wider text-zinc-400 uppercase pl-0.5">Askme AI</div>
-                            <div id="${generatedNodeId}" class="text-[15px] text-zinc-800 leading-relaxed pl-0.5 prose prose-zinc break-words">
-                                ${literalString}
+                            <div class="text-[15px] text-zinc-800 leading-relaxed pl-0.5 prose prose-zinc break-words">
+                                ${renderFormattedContent(txt)}
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                `;
+                registerLongPressEvents(assistantWrapper.querySelector('.msg-bubble'), 'assistant', currentAssistantMsgIndex);
+                stream.appendChild(assistantWrapper);
+                
+                lucide.createIcons();
+                scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
+
+            } catch(e) {
+                const loaderEl = document.getElementById(loaderId);
+                if(loaderEl) loaderEl.remove();
+                console.error(e);
             }
-
-            containerRef.appendChild(messageRow);
-            lucide.createIcons();
-            autoScrollToWorkspaceBottom();
-            return generatedNodeId;
         }
 
-        // Line Return Parser Utilities
-        function processTextFormatting(rawText) {
-            return rawText
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/\n/g, "<br>");
-        }
-
-        // Viewport Scroller Alignment Mechanisms
-        function autoScrollToWorkspaceBottom() {
-            const scrollingFrame = document.getElementById('workspace');
-            scrollingFrame.scrollTop = scrollingFrame.scrollHeight;
-        }
-
-        // Close Popovers automatically when clicking empty layout elements outside nodes
+        // Global Overlay Handlers
         window.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('model-dropdown');
-            const dropdownBtn = document.getElementById('model-dropdown-btn');
-            if (dropdown && dropdownBtn && !dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            if (dropdown && !document.getElementById('model-dropdown-btn').contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.add('hidden');
+                if(arrowIcon) arrowIcon.style.transform = "rotate(0deg)";
             }
         });
     </script>
