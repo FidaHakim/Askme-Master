@@ -163,7 +163,7 @@
 
         <div class="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center custom-scrollbar relative" id="workspace">
             
-            <div id="intro-hub" class="my-auto flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-300 pb-32 relative w-full">
+            <div id="intro-hub" class="my-auto flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-300 pb-44 relative w-full">
                 <div class="w-16 h-16 relative flex items-center justify-center mb-6">
                     <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_4px_12px_rgba(56,189,248,0.4)]">
                         <defs>
@@ -182,7 +182,7 @@
                 </h1>
 
                 <!-- Repositioned Input Box Container directly under the header text inside the welcome interface -->
-                <div id="intro-input-wrapper" class="w-full max-w-2xl bg-zinc-100/90 backdrop-blur-md rounded-[32px] px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 shadow-sm border border-zinc-200/40 absolute bottom-0 left-1/2 -translate-x-1/2">
+                <div id="intro-input-wrapper" class="w-full max-w-2xl bg-zinc-100/90 backdrop-blur-md rounded-[32px] px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 shadow-sm border border-zinc-200/40 absolute -bottom-4 left-1/2 -translate-x-1/2">
                     <button class="p-2 hover:bg-zinc-200/70 rounded-full text-zinc-600 transition shrink-0">
                         <i data-lucide="plus" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </button>
@@ -289,17 +289,12 @@
             // Clean Input Matrix Node
             inputElement.value = '';
 
-            // Shift input bar safely down to the screen footer layout once messages initialize
-            const inputBar = document.getElementById('intro-input-wrapper');
-            inputBar.classList.remove('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
-            inputBar.classList.add('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
+            // Layout Adaptability Shift Check - Keep input bar in intro frame, toggle header layout elements hidden instead of swapping DOM spaces
+            document.getElementById('intro-hub').querySelector('h1').classList.add('hidden');
+            document.getElementById('intro-hub').querySelector('.w-16').classList.add('hidden');
+            document.getElementById('intro-hub').classList.remove('my-auto', 'pb-44');
+            document.getElementById('intro-hub').classList.add('mt-4', 'mb-6');
             
-            const activeFooter = document.getElementById('active-chat-footer');
-            activeFooter.appendChild(inputBar);
-            activeFooter.classList.remove('hidden');
-
-            // Layout Adaptability Shift Check
-            document.getElementById('intro-hub').classList.add('hidden');
             const streamArea = document.getElementById('chat-stream');
             streamArea.classList.remove('hidden');
 
