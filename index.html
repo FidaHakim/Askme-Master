@@ -96,32 +96,38 @@
 
             <div class="relative">
                 <button id="model-dropdown-btn" onclick="toggleDropdownMenu()" class="flex items-center gap-1.5 text-zinc-700 font-medium px-3 sm:px-4 py-1.5 rounded-2xl hover:bg-zinc-100 transition text-[14px] sm:text-[15px]">
-                    <span id="active-model-display">Askme Flash</span>
+                    <span id="active-model-display">Askme 3.5 Flash</span>
                     <i id="dropdown-arrow-icon" data-lucide="chevron-down" class="w-4 h-4 text-zinc-500 transition-transform duration-200"></i>
                 </button>
 
-                <div id="model-dropdown" class="absolute left-1/2 -translate-x-1/2 mt-2 w-[calc(100vw-32px)] max-w-72 bg-white border border-zinc-200 shadow-2xl rounded-[28px] py-3 hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[420px] overflow-y-auto custom-scrollbar">
-                    <div onclick="selectModel('Askme Flash')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="chk-askme-flash" class="check-icon absolute left-4 top-4 text-zinc-800">
+                <div id="model-dropdown" class="absolute left-1/2 -translate-x-1/2 mt-2 w-[calc(100vw-32px)] max-w-72 bg-white border border-zinc-200 shadow-2xl rounded-[28px] py-3 hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div onclick="selectModel('3.1 Flash-Lite')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-lite" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
                             <div class="font-medium text-sm text-zinc-900 flex items-center gap-2">
-                                Askme Flash <span class="text-[10px] font-semibold bg-sky-100 text-sky-600 px-1.5 py-0.5 rounded-full uppercase">Core</span>
+                                3.1 Flash-Lite <span class="text-[10px] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded-full uppercase">New</span>
                             </div>
-                            <div class="text-xs text-zinc-400 mt-0.5">Optimized system execution</div>
+                            <div class="text-xs text-zinc-400 mt-0.5">Fastest answers</div>
                         </div>
                     </div>
-
-                    <div onclick="selectModel('Grok')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="chk-grok" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
+                    <div onclick="selectModel('3.5 Flash')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-flash" class="check-icon absolute left-4 top-4 text-zinc-800">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
-                            <div class="font-medium text-sm text-zinc-900 flex items-center gap-2">
-                                Grok <span class="text-[10px] font-semibold bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full uppercase">X</span>
-                            </div>
-                            <div class="text-xs text-zinc-400 mt-0.5">Real-time reasoning engine</div>
+                            <div class="font-medium text-sm text-zinc-900">3.5 Flash</div>
+                            <div class="text-xs text-zinc-400 mt-0.5">All-around help</div>
+                        </div>
+                    </div>
+                    <div onclick="selectModel('3.1 Pro')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-pro" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </div>
+                        <div class="pl-6">
+                            <div class="font-medium text-sm text-zinc-900">3.1 Pro</div>
+                            <div class="text-xs text-zinc-400 mt-0.5">Advanced math and code</div>
                         </div>
                     </div>
 
@@ -439,22 +445,25 @@
         }
 
         function selectModel(modelName) {
-            if (modelLabel) modelLabel.innerText = modelName;
+            if (modelLabel) modelLabel.innerText = "Askme " + modelName;
             document.querySelectorAll('.check-icon').forEach(icon => icon.classList.add('invisible'));
             
-            if(modelName === 'Askme Flash') {
-                const icon = document.getElementById('chk-askme-flash');
+            if(modelName === '3.1 Flash-Lite') {
+                const icon = document.getElementById('chk-lite');
+                if (icon) icon.classList.remove('invisible');
+                selectedConfigModel = "google/gemini-3.1-flash-lite";
+            } else if(modelName === '3.5 Flash') {
+                const icon = document.getElementById('chk-flash');
                 if (icon) icon.classList.remove('invisible');
                 selectedConfigModel = "google/gemini-3.5-flash";
-            } else if(modelName === 'Grok') {
-                const icon = document.getElementById('chk-grok');
+            } else if(modelName === '3.1 Pro') {
+                const icon = document.getElementById('chk-pro');
                 if (icon) icon.classList.remove('invisible');
-                selectedConfigModel = "x-ai/grok-2-1212";
+                selectedConfigModel = "google/gemini-3.1-pro";
             }
             toggleDropdownMenu();
         }
 
-        // Thinking layer configuration navigation panel controller
         function selectThinkingLevel(level) {
             thinkingSetting = level;
             document.querySelectorAll('.thinking-check').forEach(i => i.classList.add('invisible'));
@@ -691,66 +700,13 @@
             actionPopup.classList.add('scale-100', 'opacity-100');
         }
 
-        // Global async abstraction layer for Groq Cloud completions route execution
-        async function callGroqAI(messages) {
-            const config = {
-                apiKey: [
-                    "gsk", "zur7PeIZLhDDaPJEzvEP", "WGdyb3FYRnWXUpd7gO2a", "vGwplgD0RgtK"
-                ].join("_")
-            };
-            try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${config.apiKey}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: "llama-3.3-70b-versatile",
-                        messages: messages,
-                        temperature: 0.7
-                    })
-                });
-                const data = await response.json();
-                if (data.choices && data.choices[0]) {
-                    return data.choices[0].message.content;
-                }
-                return "Error: Invalid response layout payload from Groq gateway connection.";
-            } catch (err) {
-                console.error("Groq Network Exception: ", err);
-                return "Error: Could not finalize text logic streaming with Groq endpoint processor.";
-            }
-        }
-
-        // Global async execution layer for real X.AI Grok API route integration
-        async function callGrokAI(messages) {
-            const config = {
-                apiKey: [
-                    "gsk", "zur7PeIZLhDDaPJEzvEP", "WGdyb3FYRnWXUpd7gO2a", "vGwplgD0RgtK"
-                ].join("_")
-            };
-            try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${config.apiKey}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: "llama-3.3-70b-versatile",
-                        messages: messages,
-                        temperature: 0.7
-                    })
-                });
-                const data = await response.json();
-                if (data.choices && data.choices[0]) {
-                    return data.choices[0].message.content;
-                }
-                return "Error: Invalid response layout payload from Grok engine connection.";
-            } catch (err) {
-                console.error("Grok Network Exception: ", err);
-                return "Error: Could not finalize text logic streaming with Grok endpoint processor.";
-            }
+        function hideActionPopupMenu() {
+            if (!actionPopup) return;
+            actionPopup.classList.remove('scale-100', 'opacity-100');
+            actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                if (actionPopup.classList.contains('opacity-0')) actionPopup.classList.add('hidden');
+            }, 150);
         }
 
         function copyMessageToClipboard(index) {
@@ -773,7 +729,6 @@
             hideActionPopupMenu();
         }
 
-        // Init Message Edit Workflow
         function initMessageEditWorkflow(index) {
             if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
             const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
@@ -821,9 +776,10 @@
         function loadActiveSession(id) {
             if (!stream || !scroller) return;
             currentActiveSessionId = id;
-
+            
             stream.classList.remove('hidden');
             stream.innerHTML = '';
+            if (splashView) splashView.classList.add('hidden');
 
             const activeHistory = liveSessionsDatastore[id].messages;
             activeHistory.forEach((msg, idx) => {
@@ -896,10 +852,8 @@
             let isImageRequest = /\b(generate|create|make|draw|show)\b.*\b(image|picture|photo|artwork|illustration|logo)\b/i.test(val);
 
             inputField.value = '';
-
-            if (splashView) {
-                splashView.classList.add('hidden');
-            }
+            if (splashView) splashView.classList.add('hidden');
+            
             stream.classList.remove('hidden');
 
             if (currentActiveSessionId === null) {
@@ -1001,17 +955,12 @@
                         }
                     });
 
-                    if (selectedConfigModel === "x-ai/grok-2-1212") {
-                        txt = await callGrokAI([
-                            { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Model routing via real Groq-backed Grok engine. Thinking level is ${thinkingSetting}.` },
-                            ...historicPayloadContext
-                        ]);
-                    } else {
-                        txt = await callGroqAI([
-                            { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Model routing via ${selectedConfigModel}. Thinking level is ${thinkingSetting}.` },
-                            ...historicPayloadContext
-                        ]);
-                    }
+                    const response = await puter.ai.chat([
+                        { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Thinking level is ${thinkingSetting}.` },
+                        ...historicPayloadContext
+                    ], { model: selectedConfigModel });
+
+                    txt = (typeof response === 'string') ? response : (response?.message?.content || JSON.stringify(response));
                 }
                 
                 const loaderEl = document.getElementById(loaderId);
@@ -1059,15 +1008,6 @@
                 if(arrowIcon) arrowIcon.style.transform = "rotate(0deg)";
             }
         });
-        
-        function hideActionPopupMenu() {
-            if (!actionPopup) return;
-            actionPopup.classList.remove('scale-100', 'opacity-100');
-            actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                if (actionPopup.classList.contains('opacity-0')) actionPopup.classList.add('hidden');
-            }, 150);
-        }
     </script>
 </body>
 </html>
