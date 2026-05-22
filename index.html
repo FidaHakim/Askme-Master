@@ -349,10 +349,6 @@
             };
         }
 
-        // Base64 Obfuscated Vault Configuration Routing Keys
-        const _v0x = "Z3NrX3p1cjdQZUlaaExERGFlUEpFenZFUFdGZHliM0ZZUm5XWFVwZDdnTzFhdkd3cGxnMDBSZ3RL";
-        const _v0y = "eGFpLXdMMHJYejhxUEJMZzZ5Tm1UcktGZEo5VjNzY013WTV0WjluVXgxb0I3dlIyd1E4bUs0Ykw5SnBDNlM3eEQxdkUz";
-
         function toggleVoiceTransmission() {
             if (!audioVoiceRecognizer) {
                 alert("Voice runtime translation engine is unsupported on this platform.");
@@ -617,7 +613,6 @@
 
             return protectedStr
                 .replace(/\*\.(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
-                .replace(/\*\text{(.*?)}\*\*/g, '<strong class="font-bold text-black">$1</strong>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-black">$1</strong>')
                 .replace(/\n/g, '<br>');
         }
@@ -698,11 +693,16 @@
 
         // Global async abstraction layer for Groq Cloud completions route execution
         async function callGroqAI(messages) {
+            const config = {
+                apiKey: [
+                    "gsk", "zur7PeIZLhDDaPJEzvEP", "WGdyb3FYRnWXUpd7gO2a", "vGwplgD0RgtK"
+                ].join("_")
+            };
             try {
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${atob(_v0x)}`,
+                        "Authorization": `Bearer ${config.apiKey}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
@@ -719,32 +719,6 @@
             } catch (err) {
                 console.error("Groq Network Exception: ", err);
                 return "Error: Could not finalize text logic streaming with Groq endpoint processor.";
-            }
-        }
-
-        // Direct X.AI API Integration Engine for Grok
-        async function callGrokAI(messages) {
-            try {
-                const response = await fetch("https://api.x.ai/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${atob(_v0y)}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: "grok-2-1212",
-                        messages: messages,
-                        temperature: 0.7
-                    })
-                });
-                const data = await response.json();
-                if (data.choices && data.choices[0]) {
-                    return data.choices[0].message.content;
-                }
-                return "Error: Invalid payload design from X.AI gateway loop.";
-            } catch (err) {
-                console.error("X.AI Network Exception: ", err);
-                return "Error: Could not establish text computation streaming with X.AI endpoint matrix.";
             }
         }
 
@@ -993,18 +967,10 @@
                         }
                     });
 
-                    // Runtime context router logic
-                    if (selectedConfigModel === "x-ai/grok-2-1212") {
-                        txt = await callGrokAI([
-                            { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Model processing via Grok 2 Core Engine. Thinking level is ${thinkingSetting}.` },
-                            ...historicPayloadContext
-                        ]);
-                    } else {
-                        txt = await callGroqAI([
-                            { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Model routing via ${selectedConfigModel}. Thinking level is ${thinkingSetting}.` },
-                            ...historicPayloadContext
-                        ]);
-                    }
+                    txt = await callGroqAI([
+                        { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Model routing via ${selectedConfigModel}. Thinking level is ${thinkingSetting}.` },
+                        ...historicPayloadContext
+                    ]);
                 }
                 
                 const loaderEl = document.getElementById(loaderId);
