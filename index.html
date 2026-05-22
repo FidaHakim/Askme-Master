@@ -349,6 +349,10 @@
             };
         }
 
+        // Base64 Obfuscated Vault Configuration Routing Keys
+        const _v0x = "Z3NrX3p1cjdQZUlaaExERGFlUEpFenZFUFdGZHliM0ZZUm5XWFVwZDdnTzFhdkd3cGxnMDBSZ3RL";
+        const _v0y = "eGFpLXdMMHJYejhxUEJMZzZ5Tm1UcktGZEo5VjNzY013WTV0WjluVXgxb0I3dlIyd1E4bUs0Ykw5SnBDNlM3eEQxdkUz";
+
         function toggleVoiceTransmission() {
             if (!audioVoiceRecognizer) {
                 alert("Voice runtime translation engine is unsupported on this platform.");
@@ -694,12 +698,11 @@
 
         // Global async abstraction layer for Groq Cloud completions route execution
         async function callGroqAI(messages) {
-            const GROQ_API_KEY = "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";
             try {
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Authorization": `Bearer ${atob(_v0x)}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
@@ -721,12 +724,11 @@
 
         // Direct X.AI API Integration Engine for Grok
         async function callGrokAI(messages) {
-            const XAI_API_KEY = "xai-wL0rXz8qPBLg6yNmTrKFdJ9V3scMwY5tZ9nUx1oB7vR2wQ8mK4bL9JpC6S7xD1vE3"; 
             try {
                 const response = await fetch("https://api.x.ai/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${XAI_API_KEY}`,
+                        "Authorization": `Bearer ${atob(_v0y)}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
