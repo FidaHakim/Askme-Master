@@ -96,13 +96,33 @@
 
             <div class="relative">
                 <button id="model-dropdown-btn" onclick="toggleDropdownMenu()" class="flex items-center gap-1.5 text-zinc-700 font-medium px-3 sm:px-4 py-1.5 rounded-2xl hover:bg-zinc-100 transition text-[14px] sm:text-[15px]">
-                    <span id="active-model-display">Askme Flash</span>
+                    <span id="active-model-display">Askme 3.5 Flash</span>
                     <i id="dropdown-arrow-icon" data-lucide="chevron-down" class="w-4 h-4 text-zinc-500 transition-transform duration-200"></i>
                 </button>
 
                 <div id="model-dropdown" class="absolute left-1/2 -translate-x-1/2 mt-2 w-[calc(100vw-32px)] max-w-72 bg-white border border-zinc-200 shadow-2xl rounded-[28px] py-3 hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[420px] overflow-y-auto custom-scrollbar">
+                    <div onclick="selectModel('3.1 Flash-Lite')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-lite" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </div>
+                        <div class="pl-6">
+                            <div class="font-medium text-sm text-zinc-900 flex items-center gap-2">
+                                3.1 Flash-Lite <span class="text-[10px] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded-full uppercase">New</span>
+                            </div>
+                            <div class="text-xs text-zinc-400 mt-0.5">Fastest answers</div>
+                        </div>
+                    </div>
+                    <div onclick="selectModel('3.5 Flash')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-flash" class="check-icon absolute left-4 top-4 text-zinc-800">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </div>
+                        <div class="pl-6">
+                            <div class="font-medium text-sm text-zinc-900">3.5 Flash</div>
+                            <div class="text-xs text-zinc-400 mt-0.5">All-around help</div>
+                        </div>
+                    </div>
                     <div onclick="selectModel('Askme Flash')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="chk-askme-flash" class="check-icon absolute left-4 top-4 text-zinc-800">
+                        <div id="chk-askme-flash" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
@@ -112,16 +132,22 @@
                             <div class="text-xs text-zinc-400 mt-0.5">Optimized system execution</div>
                         </div>
                     </div>
-
-                    <div onclick="selectModel('Grok')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                    <div onclick="selectModel('Grok 2')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
                         <div id="chk-grok" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
-                            <div class="font-medium text-sm text-zinc-900 flex items-center gap-2">
-                                Grok <span class="text-[10px] font-semibold bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full uppercase">X</span>
-                            </div>
-                            <div class="text-xs text-zinc-400 mt-0.5">Real-time reasoning engine</div>
+                            <div class="font-medium text-sm text-zinc-900">Grok 2</div>
+                            <div class="text-xs text-zinc-400 mt-0.5">Real-time sharpness</div>
+                        </div>
+                    </div>
+                    <div onclick="selectModel('3.1 Pro')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-pro" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </div>
+                        <div class="pl-6">
+                            <div class="font-medium text-sm text-zinc-900">3.1 Pro</div>
+                            <div class="text-xs text-zinc-400 mt-0.5">Advanced math and code</div>
                         </div>
                     </div>
 
@@ -439,22 +465,33 @@
         }
 
         function selectModel(modelName) {
-            if (modelLabel) modelLabel.innerText = modelName;
+            if (modelLabel) modelLabel.innerText = "Askme " + modelName;
             document.querySelectorAll('.check-icon').forEach(icon => icon.classList.add('invisible'));
             
-            if(modelName === 'Askme Flash') {
+            if(modelName === '3.1 Flash-Lite') {
+                const icon = document.getElementById('chk-lite');
+                if (icon) icon.classList.remove('invisible');
+                selectedConfigModel = "google/gemini-3.1-flash-lite";
+            } else if(modelName === '3.5 Flash') {
+                const icon = document.getElementById('chk-flash');
+                if (icon) icon.classList.remove('invisible');
+                selectedConfigModel = "google/gemini-3.5-flash";
+            } else if(modelName === 'Askme Flash') {
                 const icon = document.getElementById('chk-askme-flash');
                 if (icon) icon.classList.remove('invisible');
                 selectedConfigModel = "google/gemini-3.5-flash";
-            } else if(modelName === 'Grok') {
+            } else if(modelName === 'Grok 2') {
                 const icon = document.getElementById('chk-grok');
                 if (icon) icon.classList.remove('invisible');
-                selectedConfigModel = "x-ai/grok-2-1212";
+                selectedConfigModel = "xai/grok-2";
+            } else if(modelName === '3.1 Pro') {
+                const icon = document.getElementById('chk-pro');
+                if (icon) icon.classList.remove('invisible');
+                selectedConfigModel = "google/gemini-3.1-pro";
             }
             toggleDropdownMenu();
         }
 
-        // Thinking layer configuration navigation panel controller
         function selectThinkingLevel(level) {
             thinkingSetting = level;
             document.querySelectorAll('.thinking-check').forEach(i => i.classList.add('invisible'));
@@ -599,11 +636,10 @@
                 return text;
             }
             
-            // Basic layout vector validation parser
             let protectedStr = text
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
+                .replace(/>/g, "&gt bridge;");
 
             const markdownImageRegex = /!\[(.*?)\]\((.*?)\)/g;
             protectedStr = protectedStr.replace(markdownImageRegex, function(match, altText, imageUrl) {
@@ -643,7 +679,6 @@
             element.addEventListener('mouseup', cancelHandler);
         }
 
-        // Hardware haptic trigger pipeline channel
         function triggerVibrationFeedback() {
             if (navigator.vibrate) navigator.vibrate(12);
         }
@@ -691,18 +726,14 @@
             actionPopup.classList.add('scale-100', 'opacity-100');
         }
 
-        // Global async abstraction layer for Groq Cloud completions route execution
-        async function callGroqAI(messages) {
-            const config = {
-                apiKey: [
-                    "gsk", "zur7PeIZLhDDaPJEzvEP", "WGdyb3FYRnWXUpd7gO2a", "vGwplgD0RgtK"
-                ].join("_")
-            };
+        // Global secure abstraction layer for AI completions routing
+        async function runPipelineCompletion(messages) {
+            const K_VAULT = "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";
             try {
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${config.apiKey}`,
+                        "Authorization": `Bearer ${K_VAULT}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
@@ -715,10 +746,10 @@
                 if (data.choices && data.choices[0]) {
                     return data.choices[0].message.content;
                 }
-                return "Error: Invalid response layout payload from Groq gateway connection.";
+                return "Error: Invalid response layout payload from gateway connection.";
             } catch (err) {
-                console.error("Groq Network Exception: ", err);
-                return "Error: Could not finalize text logic streaming with Groq endpoint processor.";
+                console.error("Network Exception: ", err);
+                return "Error: Could not finalize system execution logic.";
             }
         }
 
@@ -742,7 +773,6 @@
             hideActionPopupMenu();
         }
 
-        // Init Message Edit Workflow
         function initMessageEditWorkflow(index) {
             if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
             const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
@@ -863,9 +893,7 @@
             if(!val && !stagedFileData) return;
 
             let isImageRequest = /\b(generate|create|make|draw|show)\b.*\b(image|picture|photo|artwork|illustration|logo)\b/i.test(val);
-
             inputField.value = '';
-
             stream.classList.remove('hidden');
 
             if (currentActiveSessionId === null) {
@@ -951,7 +979,6 @@
                         const imgUrl = imgResult.src;
                         txt = `Here is your requested image, Boss:\n\n![Generated Image](${imgUrl})`;
                     } catch (imgErr) {
-                        console.warn("Direct txt2img platform route dropped, fallback tracking via chat channel:", imgErr);
                         isImageRequest = false;
                     }
                 }
@@ -967,7 +994,7 @@
                         }
                     });
 
-                    txt = await callGroqAI([
+                    txt = await runPipelineCompletion([
                         { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Model routing via ${selectedConfigModel}. Thinking level is ${thinkingSetting}.` },
                         ...historicPayloadContext
                     ]);
