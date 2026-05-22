@@ -165,7 +165,7 @@
 
         <div class="flex-1 overflow-y-auto px-4 py-6 flex flex-col items-center custom-scrollbar relative" id="scroll-workspace">
             
-            <div id="splash-view" class="my-auto flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-300 pb-44 relative w-full">
+            <div id="splash-view" class="my-auto flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-300 pb-44 relative w-full shrink-0">
                 <div class="w-16 h-16 relative flex items-center justify-center mb-6">
                     <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_4px_12px_rgba(56,189,248,0.4)]">
                         <defs>
@@ -217,7 +217,7 @@
                 </div>
             </div>
 
-            <div id="message-feed-stream" class="w-full max-w-2xl flex flex-col gap-6 hidden pb-24"></div>
+            <div id="message-feed-stream" class="w-full max-w-2xl flex flex-col gap-6 hidden pb-24 mt-8"></div>
         </div>
 
         <footer id="active-chat-footer" class="w-full p-4 bg-gradient-to-t from-white via-white/90 to-transparent z-20 flex justify-center absolute bottom-0 left-0 right-0 hidden"></footer>
@@ -490,10 +490,7 @@
                 previewBay.classList.remove('flex');
             }
             
-            const inputBar = document.getElementById('intro-input-wrapper');
-            inputBar.classList.remove('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
-            inputBar.classList.add('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
-            splashView.appendChild(inputBar);
+            // Note: DOM movement logic removed to keep inputbar locked in splash screen.
             
             document.getElementById('active-chat-footer').classList.add('hidden');
             if (stream) {
@@ -502,10 +499,6 @@
             }
             if (splashView) {
                 splashView.classList.remove('hidden');
-                splashView.querySelector('h1').classList.remove('hidden');
-                splashView.querySelector('.w-16').classList.remove('hidden');
-                splashView.classList.add('my-auto', 'pb-44');
-                splashView.classList.remove('mt-4', 'mb-6');
             }
             if (inputField) inputField.value = '';
             if (sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
@@ -786,14 +779,8 @@
             if (!stream || !scroller) return;
             currentActiveSessionId = id;
             
-            // Adjust input bar location style framework
-            const inputBar = document.getElementById('intro-input-wrapper');
-            inputBar.classList.remove('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
-            inputBar.classList.add('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
-            document.getElementById('active-chat-footer').appendChild(inputBar);
-            document.getElementById('active-chat-footer').classList.remove('hidden');
+            // Note: Input bar shifting logic has been strictly removed per architecture requirements
 
-            if (splashView) splashView.classList.add('hidden');
             stream.classList.remove('hidden');
             stream.innerHTML = '';
 
@@ -869,14 +856,8 @@
 
             inputField.value = '';
             
-            // Fixed configuration loop lock: input bar remains inside the exact viewport position shell structure
-            const inputBar = document.getElementById('intro-input-wrapper');
-            inputBar.classList.remove('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
-            inputBar.classList.add('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
-            document.getElementById('active-chat-footer').appendChild(inputBar);
-            document.getElementById('active-chat-footer').classList.remove('hidden');
+            // Note: DOM movement logic removed per request to ensure input bar stays nested in splash-view.
 
-            if (splashView) splashView.classList.add('hidden');
             stream.classList.remove('hidden');
 
             if (currentActiveSessionId === null) {
