@@ -96,38 +96,32 @@
 
             <div class="relative">
                 <button id="model-dropdown-btn" onclick="toggleDropdownMenu()" class="flex items-center gap-1.5 text-zinc-700 font-medium px-3 sm:px-4 py-1.5 rounded-2xl hover:bg-zinc-100 transition text-[14px] sm:text-[15px]">
-                    <span id="active-model-display">Askme 3.5 Flash</span>
+                    <span id="active-model-display">Askme Flash</span>
                     <i id="dropdown-arrow-icon" data-lucide="chevron-down" class="w-4 h-4 text-zinc-500 transition-transform duration-200"></i>
                 </button>
 
-                <div id="model-dropdown" class="absolute left-1/2 -translate-x-1/2 mt-2 w-[calc(100vw-32px)] max-w-72 bg-white border border-zinc-200 shadow-2xl rounded-[28px] py-3 hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div onclick="selectModel('3.1 Flash-Lite')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="chk-lite" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
+                <div id="model-dropdown" class="absolute left-1/2 -translate-x-1/2 mt-2 w-[calc(100vw-32px)] max-w-72 bg-white border border-zinc-200 shadow-2xl rounded-[28px] py-3 hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[420px] overflow-y-auto custom-scrollbar">
+                    <div onclick="selectModel('Askme Flash')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-askme-flash" class="check-icon absolute left-4 top-4 text-zinc-800">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
                             <div class="font-medium text-sm text-zinc-900 flex items-center gap-2">
-                                3.1 Flash-Lite <span class="text-[10px] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded-full uppercase">New</span>
+                                Askme Flash <span class="text-[10px] font-semibold bg-sky-100 text-sky-600 px-1.5 py-0.5 rounded-full uppercase">Core</span>
                             </div>
-                            <div class="text-xs text-zinc-400 mt-0.5">Fastest answers</div>
+                            <div class="text-xs text-zinc-400 mt-0.5">Optimized system execution</div>
                         </div>
                     </div>
-                    <div onclick="selectModel('3.5 Flash')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="chk-flash" class="check-icon absolute left-4 top-4 text-zinc-800">
+
+                    <div onclick="selectModel('Grok')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
+                        <div id="chk-grok" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
                             <i data-lucide="check" class="w-4 h-4"></i>
                         </div>
                         <div class="pl-6">
-                            <div class="font-medium text-sm text-zinc-900">3.5 Flash</div>
-                            <div class="text-xs text-zinc-400 mt-0.5">All-around help</div>
-                        </div>
-                    </div>
-                    <div onclick="selectModel('3.1 Pro')" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer relative">
-                        <div id="chk-pro" class="check-icon absolute left-4 top-4 text-zinc-800 invisible">
-                            <i data-lucide="check" class="w-4 h-4"></i>
-                        </div>
-                        <div class="pl-6">
-                            <div class="font-medium text-sm text-zinc-900">3.1 Pro</div>
-                            <div class="text-xs text-zinc-400 mt-0.5">Advanced math and code</div>
+                            <div class="font-medium text-sm text-zinc-900 flex items-center gap-2">
+                                Grok <span class="text-[10px] font-semibold bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-full uppercase">X</span>
+                            </div>
+                            <div class="text-xs text-zinc-400 mt-0.5">Real-time reasoning engine</div>
                         </div>
                     </div>
 
@@ -445,25 +439,22 @@
         }
 
         function selectModel(modelName) {
-            if (modelLabel) modelLabel.innerText = "Askme " + modelName;
+            if (modelLabel) modelLabel.innerText = modelName;
             document.querySelectorAll('.check-icon').forEach(icon => icon.classList.add('invisible'));
             
-            if(modelName === '3.1 Flash-Lite') {
-                const icon = document.getElementById('chk-lite');
-                if (icon) icon.classList.remove('invisible');
-                selectedConfigModel = "google/gemini-3.1-flash-lite";
-            } else if(modelName === '3.5 Flash') {
-                const icon = document.getElementById('chk-flash');
+            if(modelName === 'Askme Flash') {
+                const icon = document.getElementById('chk-askme-flash');
                 if (icon) icon.classList.remove('invisible');
                 selectedConfigModel = "google/gemini-3.5-flash";
-            } else if(modelName === '3.1 Pro') {
-                const icon = document.getElementById('chk-pro');
+            } else if(modelName === 'Grok') {
+                const icon = document.getElementById('chk-grok');
                 if (icon) icon.classList.remove('invisible');
-                selectedConfigModel = "google/gemini-3.1-pro";
+                selectedConfigModel = "x-ai/grok-2-1212";
             }
             toggleDropdownMenu();
         }
 
+        // Thinking layer configuration navigation panel controller
         function selectThinkingLevel(level) {
             thinkingSetting = level;
             document.querySelectorAll('.thinking-check').forEach(i => i.classList.add('invisible'));
@@ -489,8 +480,6 @@
                 previewBay.classList.add('hidden');
                 previewBay.classList.remove('flex');
             }
-            
-            // Note: DOM movement logic removed to keep inputbar locked in splash screen.
             
             document.getElementById('active-chat-footer').classList.add('hidden');
             if (stream) {
@@ -702,13 +691,31 @@
             actionPopup.classList.add('scale-100', 'opacity-100');
         }
 
-        function hideActionPopupMenu() {
-            if (!actionPopup) return;
-            actionPopup.classList.remove('scale-100', 'opacity-100');
-            actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                if (actionPopup.classList.contains('opacity-0')) actionPopup.classList.add('hidden');
-            }, 150);
+        // Global async abstraction layer for Groq Cloud completions route execution
+        async function callGroqAI(messages) {
+            const GROQ_API_KEY = "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";
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: messages,
+                        temperature: 0.7
+                    })
+                });
+                const data = await response.json();
+                if (data.choices && data.choices[0]) {
+                    return data.choices[0].message.content;
+                }
+                return "Error: Invalid response layout payload from Groq gateway connection.";
+            } catch (err) {
+                console.error("Groq Network Exception: ", err);
+                return "Error: Could not finalize text logic streaming with Groq endpoint processor.";
+            }
         }
 
         function copyMessageToClipboard(index) {
@@ -731,6 +738,7 @@
             hideActionPopupMenu();
         }
 
+        // Init Message Edit Workflow
         function initMessageEditWorkflow(index) {
             if (!currentActiveSessionId || !liveSessionsDatastore[currentActiveSessionId]) return;
             const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
@@ -778,8 +786,6 @@
         function loadActiveSession(id) {
             if (!stream || !scroller) return;
             currentActiveSessionId = id;
-            
-            // Note: Input bar shifting logic has been strictly removed per architecture requirements
 
             stream.classList.remove('hidden');
             stream.innerHTML = '';
@@ -855,8 +861,6 @@
             let isImageRequest = /\b(generate|create|make|draw|show)\b.*\b(image|picture|photo|artwork|illustration|logo)\b/i.test(val);
 
             inputField.value = '';
-            
-            // Note: DOM movement logic removed per request to ensure input bar stays nested in splash-view.
 
             stream.classList.remove('hidden');
 
@@ -892,7 +896,6 @@
                     submissionLogBlock = { role: "user", content: processingValueString };
                 }
                 
-                // Clear state variables directly while preserving DOM configuration
                 stagedFileData = null;
                 const fileEngine = document.getElementById('attachment-file-engine');
                 const previewBay = document.getElementById('file-preview-bay');
@@ -950,7 +953,6 @@
                 }
 
                 if (!isImageRequest) {
-                    // Normalize standard structured context payload vectors for API engines
                     let historicPayloadContext = [];
                     liveSessionsDatastore[currentActiveSessionId].messages.forEach(m => {
                         if (typeof m.content === 'string') {
@@ -961,12 +963,10 @@
                         }
                     });
 
-                    const response = await puter.ai.chat([
-                        { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Thinking level is ${thinkingSetting}.` },
+                    txt = await callGroqAI([
+                        { role: "system", content: CORE_AI_BLUEPRINT + ` Params: Model routing via ${selectedConfigModel}. Thinking level is ${thinkingSetting}.` },
                         ...historicPayloadContext
-                    ], { model: selectedConfigModel });
-
-                    txt = (typeof response === 'string') ? response : (response?.message?.content || JSON.stringify(response));
+                    ]);
                 }
                 
                 const loaderEl = document.getElementById(loaderId);
@@ -1014,6 +1014,15 @@
                 if(arrowIcon) arrowIcon.style.transform = "rotate(0deg)";
             }
         });
+        
+        function hideActionPopupMenu() {
+            if (!actionPopup) return;
+            actionPopup.classList.remove('scale-100', 'opacity-100');
+            actionPopup.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                if (actionPopup.classList.contains('opacity-0')) actionPopup.classList.add('hidden');
+            }, 150);
+        }
     </script>
 </body>
 </html>
