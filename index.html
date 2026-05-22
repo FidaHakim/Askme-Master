@@ -396,6 +396,7 @@
             }
         }
 
+        // Modified clearFileStaging to prevent layout resets on input bar location
         function clearFileStaging() {
             stagedFileData = null;
             const fileEngine = document.getElementById('attachment-file-engine');
@@ -428,6 +429,7 @@
             arrowIcon.style.transform = hidden ? "rotate(0deg)" : "rotate(180deg)";
         }
 
+        // Thinking layer configuration navigation panel controller
         function toggleThinkingSubmenu(event) {
             if (event) event.stopPropagation();
             if (!thinkingSubmenu || !thinkingArrow) return;
@@ -479,7 +481,14 @@
         // Reset App Canvas View to Initial Welcome Space
         function startNewChat() {
             currentActiveSessionId = null;
-            clearFileStaging();
+            stagedFileData = null;
+            const fileEngine = document.getElementById('attachment-file-engine');
+            if (fileEngine) fileEngine.value = "";
+            const previewBay = document.getElementById('file-preview-bay');
+            if (previewBay) {
+                previewBay.classList.add('hidden');
+                previewBay.classList.remove('flex');
+            }
             
             const inputBar = document.getElementById('intro-input-wrapper');
             inputBar.classList.remove('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
@@ -652,6 +661,7 @@
             element.addEventListener('mouseup', cancelHandler);
         }
 
+        // Hardware haptic trigger pipeline channel
         function triggerVibrationFeedback() {
             if (navigator.vibrate) navigator.vibrate(12);
         }
@@ -859,7 +869,7 @@
 
             inputField.value = '';
             
-            // Reposition input bar dynamically to sticky footer layer element space
+            // Fixed configuration loop lock: input bar remains inside the exact viewport position shell structure
             const inputBar = document.getElementById('intro-input-wrapper');
             inputBar.classList.remove('absolute', 'bottom-0', 'left-1/2', '-translate-x-1/2');
             inputBar.classList.add('relative', 'bottom-auto', 'left-auto', 'transform-none', 'mx-auto', 'mb-4');
@@ -900,7 +910,16 @@
                     processingValueString = `[Attached File: ${stagedFileData.name}]\n--- CONTENT ---\n${stagedFileData.rawPayloadContent}\n--- END CONTENT ---\n\nUser Question: ${val}`;
                     submissionLogBlock = { role: "user", content: processingValueString };
                 }
-                clearFileStaging();
+                
+                // Clear state variables directly while preserving DOM configuration
+                stagedFileData = null;
+                const fileEngine = document.getElementById('attachment-file-engine');
+                const previewBay = document.getElementById('file-preview-bay');
+                if (fileEngine) fileEngine.value = "";
+                if (previewBay) {
+                    previewBay.classList.add('hidden');
+                    previewBay.classList.remove('flex');
+                }
             }
 
             const currentUserMsgIndex = liveSessionsDatastore[currentActiveSessionId].messages.length;
@@ -956,7 +975,6 @@
                         if (typeof m.content === 'string') {
                             historicPayloadContext.push({ role: m.role, content: m.content });
                         } else if (Array.isArray(m.content)) {
-                            // Extract values safely
                             let textPart = m.content.find(i => i.type === 'text')?.text || '';
                             historicPayloadContext.push({ role: m.role, content: textPart });
                         }
