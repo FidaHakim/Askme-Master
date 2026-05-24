@@ -477,16 +477,9 @@
             actionPopup.classList.add('scale-100', 'opacity-100');
         }
 
-        function hideActionPopupMenu() {
-            if (!actionPopup) return;
-            actionPopup.classList.remove('scale-100', 'opacity-100');
-            actionPopup.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => actionPopup.classList.add('hidden'), 150);
-        }
-
         function copyMessageToClipboard(index) {
             const messageObj = liveSessionsDatastore[currentActiveSessionId].messages[index];
-            if (messageObj) navigator.clipboard.writeText(typeof messageObj.content === 'string' ? messageObj.content : "");
+            if (messageObj) navigator.clipboard.writeText(messageObj.displayContent || (typeof messageObj.content === 'string' ? messageObj.content : ""));
             hideActionPopupMenu();
         }
 
@@ -498,7 +491,7 @@
             liveSessionsDatastore[id].messages.forEach((msg, idx) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = msg.role === 'user' ? "w-full flex justify-end" : "w-full flex justify-start pt-2";
-                wrapper.innerHTML = `<div class="msg-bubble ${msg.role === 'user' ? 'bg-zinc-100' : 'bg-white'} px-4 py-2.5 rounded-[24px] shadow-sm text-[15px]">${renderFormattedContent(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content))}</div>`;
+                wrapper.innerHTML = `<div class="msg-bubble ${msg.role === 'user' ? 'bg-zinc-100' : 'bg-white'} px-4 py-2.5 rounded-[24px] shadow-sm text-[15px]">${renderFormattedContent(msg.displayContent || (typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)))}</div>`;
                 registerLongPressEvents(wrapper.querySelector('.msg-bubble'), msg.role, idx);
                 stream.appendChild(wrapper);
             });
@@ -510,6 +503,7 @@
             if (!inputField || !stream || !scroller) return;
             let val = inputField.value.trim();
             if(!val && !stagedFileData) return;
+            
             let isImageRequest = /\b(generate|create|make|draw|show)\b.*\b(image|picture|photo|artwork|illustration|logo)\b/i.test(val);
             inputField.value = '';
             if (splashView) splashView.classList.add('hidden');
@@ -517,13 +511,23 @@
 
             if (currentActiveSessionId === null) {
                 currentActiveSessionId = "session_" + Date.now();
-                liveSessionsDatastore[currentActiveSessionId] = { title: val || "New Chat", messages: [] };
+                liveSessionsDatastore[currentActiveSessionId] = { title: val || (stagedFileData ? stagedFileData.name : "New Chat"), messages: [] };
             }
 
-            liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "user", content: val });
+            let displayVal = val;
+            let aiContent = val;
+
+            if (stagedFileData) {
+                const fileText = stagedFileData.rawPayloadContent ? `\n\n[File Attached: ${stagedFileData.name}]\n${stagedFileData.rawPayloadContent}` : `\n\n[File Attached: ${stagedFileData.name}]`;
+                aiContent = val + fileText;
+                displayVal = val ? val + `\n\n*(Attached: ${stagedFileData.name})*` : `*(Attached: ${stagedFileData.name})*`;
+                clearFileStaging();
+            }
+
+            liveSessionsDatastore[currentActiveSessionId].messages.push({ role: "user", content: aiContent, displayContent: displayVal });
             const userWrapper = document.createElement('div');
             userWrapper.className = "w-full flex justify-end";
-            userWrapper.innerHTML = `<div class="msg-bubble bg-zinc-100 px-4 py-2.5 rounded-[24px] shadow-sm text-[15px]">${renderFormattedContent(val)}</div>`;
+            userWrapper.innerHTML = `<div class="msg-bubble bg-zinc-100 px-4 py-2.5 rounded-[24px] shadow-sm text-[15px]">${renderFormattedContent(displayVal)}</div>`;
             stream.appendChild(userWrapper);
             syncHistorySidebarList();
 
@@ -533,7 +537,11 @@
                     const imgResult = await fetch(`https://pollinations.ai/prompt/${encodeURIComponent(val)}`);
                     txt = `Here is your requested image, Boss:\n\n![Generated Image](${imgResult.url})`;
                 } else {
-                    const response = await puter.ai.chat(liveSessionsDatastore[currentActiveSessionId].messages, { model: selectedConfigModel });
+                    let chatMessages = [
+                        { role: "system", content: CORE_AI_BLUEPRINT },
+                        ...liveSessionsDatastore[currentActiveSessionId].messages.map(m => ({role: m.role, content: m.content}))
+                    ];
+                    const response = await puter.ai.chat(chatMessages, { model: selectedConfigModel });
                     txt = (typeof response === 'string') ? response : (response?.message?.content || "");
                 }
                 
